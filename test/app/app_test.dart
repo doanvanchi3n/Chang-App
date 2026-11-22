@@ -17,8 +17,10 @@ void main() {
     await tester.pumpWidget(const ProviderScope(child: ChangApp()));
     await tester.pumpAndSettle();
 
-    expect(find.text(AppConstants.name), findsOneWidget);
-    expect(find.text(AppConstants.tagline), findsOneWidget);
+    expect(find.text('Chào Chiến, đi từng chặng nhé.'), findsOneWidget);
+    expect(find.text('Việc ưu tiên'), findsOneWidget);
+    expect(find.text('Nhịp học tuần này'), findsOneWidget);
+    expect(find.text('Hôm nay'), findsOneWidget);
     expect(
       Localizations.localeOf(tester.element(find.byType(Scaffold))),
       const Locale('vi'),
@@ -39,7 +41,7 @@ void main() {
     await tester.pumpWidget(const ProviderScope(child: ChangApp()));
     await tester.pumpAndSettle();
 
-    expect(find.text(AppConstants.tagline), findsOneWidget);
+    expect(find.text('Chào Chiến, đi từng chặng nhé.'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 }

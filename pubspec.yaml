@@ -25,9 +25,8 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - assets/mascot/Onboarding.svg
-    - assets/mascot/onboarding_body.svg
-    - assets/mascot/onboarding_wave.svg
+    - assets/mascot/
+    - assets/UI/
   fonts:
     - family: Inter
       fonts:
