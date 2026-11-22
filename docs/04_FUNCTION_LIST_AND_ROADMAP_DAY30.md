@@ -7,40 +7,40 @@
 
 Toàn bộ 50 màn hình (M01 - M50) được chuẩn hóa thành 32 tính năng kỹ thuật, phân cấp theo mức độ ưu tiên MoSCoW (Must-have, Should-have, Could-have) và ước lượng Story Points (SP - thang Fibonacci: 1, 2, 3, 5, 8, 13).
 
-| Mã Feature | Tên Tính năng & Mô tả Kỹ thuật | Màn hình liên quan | Phân hệ (Module) | Độ ưu tiên (MoSCoW) | Story Points |
-| :--- | :--- | :--- | :--- | :---: | :---: |
-| **FEAT-01** | **Khởi tạo & Onboarding tương tác:** Intro hoạt họa linh vật 1.2s, chọn định hướng học tập, thiết lập khung giờ vàng và thời lượng cam kết hàng ngày. | M06, M03, M04 | Khởi động & Hồ sơ | **Must** | 5 |
-| **FEAT-02** | **Bảng điều khiển Trung tâm (Home Dashboard):** Tích hợp widget Việc hôm nay, Lịch gần nhất, Tiến độ tuần và biểu tượng cảm xúc linh vật. | M05 | Khởi động & Hồ sơ | **Must** | 5 |
-| **FEAT-03** | **Quản lý Hộp việc chưa lên lịch (Unscheduled Inbox):** Thu thập nhanh công việc, ý tưởng phát sinh không có ngày giờ cố định. | M01 | Công việc & 5 Bước | **Must** | 3 |
-| **FEAT-04** | **Lên kế hoạch cho hôm nay (Daily Planning Queue):** Kéo việc từ Inbox hoặc việc tồn đọng vào hàng chờ thực hiện trong ngày. | M02 | Công việc & 5 Bước | **Must** | 3 |
-| **FEAT-05** | **Tạo công việc & Phân rã 5 bước nhỏ:** Form tạo việc bắt buộc/khuyến khích chia tối đa 5 bước (micro-steps), gắn deadline và priority. | M12 | Công việc & 5 Bước | **Must** | 5 |
-| **FEAT-06** | **Thực thi chi tiết & Theo dõi tiến độ việc:** Checkbox hoàn thành từng bước nhỏ, thanh tiến độ tỷ lệ %, nút kích hoạt phiên học cho bước cụ thể. | M13 | Công việc & 5 Bước | **Must** | 5 |
-| **FEAT-07** | **Chỉnh sửa công việc (Draft vs Saved):** Cơ chế bảo toàn dữ liệu, cảnh báo thay đổi chưa lưu, hủy thay đổi hoặc cập nhật. | M14 | Công việc & 5 Bước | **Should** | 3 |
-| **FEAT-08** | **Quản lý danh sách 5 bước nhỏ:** Thêm, xóa, đổi tên, đổi thứ tự bước qua menu 3 chấm (fallback thay thế thao tác kéo thả phức tạp). | M15 | Công việc & 5 Bước | **Must** | 3 |
-| **FEAT-09** | **Danh sách công việc & Bộ lọc thông minh:** Tab phân loại (Hôm nay, Sắp tới, Quá hạn), tìm kiếm từ khóa, lọc theo Dự án và Độ ưu tiên. | M11, M16 | Công việc & 5 Bước | **Must** | 5 |
-| **FEAT-10** | **Lưu trữ & Mở lại việc đã hoàn thành (Archive/Reopen):** Danh sách việc đã xong kèm ngày hoàn thành, nút khôi phục việc về trạng thái làm tiếp. | M20 | Công việc & 5 Bước | **Should** | 2 |
-| **FEAT-11** | **Quản lý Dự án học tập:** Tạo dự án kèm màu nhận diện thương hiệu, mục tiêu, deadline và theo dõi tiến độ tổng thể các task con. | M17, M18, M19 | Quản lý Dự án | **Must** | 5 |
-| **FEAT-12** | **Lịch tuần thu gọn trên Mobile (Weekly Strip):** Dải trượt 7 ngày kèm chấm chỉ báo mật độ học tập, chuyển đổi nhanh giữa các ngày. | M21 | Lịch biểu | **Must** | 5 |
-| **FEAT-13** | **Lịch ngày chi tiết (Timeline & Free Slots):** Trục thời gian 24h thể hiện sự kiện đã có, vạch giờ hiện tại và nút xếp việc tại các khoảng trống. | M22 | Lịch biểu | **Must** | 5 |
-| **FEAT-14** | **Tạo & Hiệu chỉnh Lịch hẹn cố định:** Đặt lịch học trên lớp, ca thi, hỗ trợ lặp lại hàng tuần và nhắc trước 15-30 phút. | M23, M24 | Lịch biểu | **Must** | 5 |
-| **FEAT-15** | **Xếp việc vào khoảng trống lịch:** Chọn công việc và bước nhỏ cụ thể để lấp vào khoảng thời gian trống đã chọn, có preview trước. | M25 | Lịch biểu | **Must** | 5 |
-| **FEAT-16** | **Bộ xử lý Xung đột Lịch (Conflict Resolution Engine):** Phát hiện đè giờ, gợi ý khung giờ trống kế tiếp hoặc tùy chọn ghi đè có kiểm soát. | M26 | Lịch biểu | **Must** | 8 |
-| **FEAT-17** | **Chuẩn bị phiên tập trung (Focus Prep):** Chọn bước nhỏ cần làm, thời lượng (15-25-45p), chọn âm thanh nền (White noise). | M27 | Phiên Pomodoro | **Must** | 3 |
-| **FEAT-18** | **Đồng hồ Tập trung & Linh vật tương tác:** Đếm ngược toàn màn hình, linh vật tĩnh chống xao nhãng, hỗ trợ thu gọn PiP/Mini bar. | M28 | Phiên Pomodoro | **Must** | 8 |
-| **FEAT-19** | **Tạm dừng & Tiếp tục phiên học:** Bảo toàn chính xác số giây đã chạy, linh vật đổi tư thế nghỉ ngơi, tiếp tục hoặc kết thúc ngay. | M29 | Phiên Pomodoro | **Must** | 3 |
-| **FEAT-20** | **Tổng kết phiên & Xác nhận tiến độ độc lập:** Ghi nhận thời gian thực tế (không làm tròn 25p), hỏi xác nhận hoàn thành bước nhỏ tách biệt. | M30 | Phiên Pomodoro | **Must** | 5 |
-| **FEAT-21** | **Mục tiêu định lượng (Quantitative Goals):** Quản lý mục tiêu đo đếm bằng số (từ vựng, trang sách, giờ học, đề thi) và hạn chót. | M31, M32 | Mục tiêu & Milestone | **Must** | 5 |
-| **FEAT-22** | **Ghi nhận thêm tiến độ số học (+Delta Log):** Thêm số lượng vừa học (+10 từ), cập nhật thanh phần trăm và lưu nhật ký tăng trưởng. | M33 | Mục tiêu & Milestone | **Must** | 5 |
-| **FEAT-23** | **Điều chỉnh đích mục tiêu (Target Adjustment):** Đổi con số chỉ tiêu mà bảo toàn 100% lịch sử ghi nhận cũ, tính lại tỷ lệ phần trăm. | M34 | Mục tiêu & Milestone | **Must** | 3 |
-| **FEAT-24** | **Ăn mừng Đạt mốc Mục tiêu (Milestone Celebration):** Popup vinh danh linh vật khi chạm đích 100%, cấp huy hiệu và gợi ý lập mục tiêu mới. | M40 | Mục tiêu & Milestone | **Should** | 3 |
-| **FEAT-25** | **Theo dõi Thói quen hàng ngày & Điểm danh:** Check-in hoàn thành thói quen trong ngày, hỗ trợ hoàn tác (Undo) chống bấm nhầm. | M35, M36 | Thói quen rèn luyện | **Must** | 5 |
-| **FEAT-26** | **Biểu đồ nhiệt Streak Thói quen:** Heatmap phân biệt rõ ngày hoàn thành, ngày nghỉ kế hoạch (không đứt chuỗi) và ngày chưa đến. | M37 | Thói quen rèn luyện | **Should** | 5 |
-| **FEAT-27** | **Rà soát cuối ngày (End-of-day Rollover):** Quét việc chưa xong hôm nay: chọn chuyển sang mai hoặc trả về Inbox; bảo toàn hạn nộp gốc. | M10 | Rà soát & Thống kê | **Must** | 5 |
-| **FEAT-28** | **Báo cáo Tiến độ & Nhìn lại tuần:** Thống kê tổng giờ học thực tế, số phiên hoàn thành, đồ thị tuần và khung giờ vàng tập trung. | M38, M39 | Rà soát & Thống kê | **Should** | 5 |
-| **FEAT-29** | **Hội thoại Trợ lý AI & Khảo sát ràng buộc:** Nhận prompt tự nhiên, hỏi làm rõ thời gian rảnh và mức độ ưu tiên môn học. | M41, M42 | Trợ lý AI Co-pilot | **Must** | 5 |
-| **FEAT-30** | **Kiểm duyệt Phạm vi Dữ liệu & Tạo bản nháp AI:** Minh bạch dữ liệu AI được đọc, thanh tiến trình xử lý và quyền hủy ngang. | M43, M44 | Trợ lý AI Co-pilot | **Must** | 5 |
-| **FEAT-31** | **Xem trước, Giải thích & Chỉnh sửa đề xuất AI:** Xem trước các khối lịch xếp đề xuất, giải thích lý do logic, cho phép sửa trước khi chốt. | M45, M46, M47 | Trợ lý AI Co-pilot | **Must** | 8 |
-| **FEAT-32** | **Áp dụng Kế hoạch AI & Chốt an toàn Hoàn tác (Undo):** Ghi batch vào lịch, nút Undo khôi phục 100% nguyên trạng, kiểm soát audit log. | M48, M49, M50 | Trợ lý AI Co-pilot | **Must** | 8 |
+| Mã Feature  | Tên Tính năng & Mô tả Kỹ thuật                                                                                                                     | Màn hình liên quan | Phân hệ (Module)     | Độ ưu tiên (MoSCoW) | Story Points |
+| :---------- | :------------------------------------------------------------------------------------------------------------------------------------------------- | :----------------- | :------------------- | :-----------------: | :----------: |
+| **FEAT-01** | **Khởi tạo & Onboarding tương tác:** Hiển thị intro hoạt họa linh vật 1.2s, sau đó tự động mở Home.                                                | M06                | Khởi động & Hồ sơ    |      **Must**       |      2       |
+| **FEAT-02** | **Bảng điều khiển Trung tâm (Home Dashboard):** Tích hợp widget Việc hôm nay, Lịch gần nhất, Tiến độ tuần và biểu tượng cảm xúc linh vật.          | M05                | Khởi động & Hồ sơ    |      **Must**       |      5       |
+| **FEAT-03** | **Quản lý Hộp việc chưa lên lịch (Unscheduled Inbox):** Thu thập nhanh công việc, ý tưởng phát sinh không có ngày giờ cố định.                     | M01                | Công việc & 5 Bước   |      **Must**       |      3       |
+| **FEAT-04** | **Lên kế hoạch cho hôm nay (Daily Planning Queue):** Kéo việc từ Inbox hoặc việc tồn đọng vào hàng chờ thực hiện trong ngày.                       | M02                | Công việc & 5 Bước   |      **Must**       |      3       |
+| **FEAT-05** | **Tạo công việc & Phân rã 5 bước nhỏ:** Form tạo việc bắt buộc/khuyến khích chia tối đa 5 bước (micro-steps), gắn deadline và priority.            | M12                | Công việc & 5 Bước   |      **Must**       |      5       |
+| **FEAT-06** | **Thực thi chi tiết & Theo dõi tiến độ việc:** Checkbox hoàn thành từng bước nhỏ, thanh tiến độ tỷ lệ %, nút kích hoạt phiên học cho bước cụ thể.  | M13                | Công việc & 5 Bước   |      **Must**       |      5       |
+| **FEAT-07** | **Chỉnh sửa công việc (Draft vs Saved):** Cơ chế bảo toàn dữ liệu, cảnh báo thay đổi chưa lưu, hủy thay đổi hoặc cập nhật.                         | M14                | Công việc & 5 Bước   |     **Should**      |      3       |
+| **FEAT-08** | **Quản lý danh sách 5 bước nhỏ:** Thêm, xóa, đổi tên, đổi thứ tự bước qua menu 3 chấm (fallback thay thế thao tác kéo thả phức tạp).               | M15                | Công việc & 5 Bước   |      **Must**       |      3       |
+| **FEAT-09** | **Danh sách công việc & Bộ lọc thông minh:** Tab phân loại (Hôm nay, Sắp tới, Quá hạn), tìm kiếm từ khóa, lọc theo Dự án và Độ ưu tiên.            | M11, M16           | Công việc & 5 Bước   |      **Must**       |      5       |
+| **FEAT-10** | **Lưu trữ & Mở lại việc đã hoàn thành (Archive/Reopen):** Danh sách việc đã xong kèm ngày hoàn thành, nút khôi phục việc về trạng thái làm tiếp.   | M20                | Công việc & 5 Bước   |     **Should**      |      2       |
+| **FEAT-11** | **Quản lý Dự án học tập:** Tạo dự án kèm màu nhận diện thương hiệu, mục tiêu, deadline và theo dõi tiến độ tổng thể các task con.                  | M17, M18, M19      | Quản lý Dự án        |      **Must**       |      5       |
+| **FEAT-12** | **Lịch tuần thu gọn trên Mobile (Weekly Strip):** Dải trượt 7 ngày kèm chấm chỉ báo mật độ học tập, chuyển đổi nhanh giữa các ngày.                | M21                | Lịch biểu            |      **Must**       |      5       |
+| **FEAT-13** | **Lịch ngày chi tiết (Timeline & Free Slots):** Trục thời gian 24h thể hiện sự kiện đã có, vạch giờ hiện tại và nút xếp việc tại các khoảng trống. | M22                | Lịch biểu            |      **Must**       |      5       |
+| **FEAT-14** | **Tạo & Hiệu chỉnh Lịch hẹn cố định:** Đặt lịch học trên lớp, ca thi, hỗ trợ lặp lại hàng tuần và nhắc trước 15-30 phút.                           | M23, M24           | Lịch biểu            |      **Must**       |      5       |
+| **FEAT-15** | **Xếp việc vào khoảng trống lịch:** Chọn công việc và bước nhỏ cụ thể để lấp vào khoảng thời gian trống đã chọn, có preview trước.                 | M25                | Lịch biểu            |      **Must**       |      5       |
+| **FEAT-16** | **Bộ xử lý Xung đột Lịch (Conflict Resolution Engine):** Phát hiện đè giờ, gợi ý khung giờ trống kế tiếp hoặc tùy chọn ghi đè có kiểm soát.        | M26                | Lịch biểu            |      **Must**       |      8       |
+| **FEAT-17** | **Chuẩn bị phiên tập trung (Focus Prep):** Chọn bước nhỏ cần làm, thời lượng (15-25-45p), chọn âm thanh nền (White noise).                         | M27                | Phiên Pomodoro       |      **Must**       |      3       |
+| **FEAT-18** | **Đồng hồ Tập trung & Linh vật tương tác:** Đếm ngược toàn màn hình, linh vật tĩnh chống xao nhãng, hỗ trợ thu gọn PiP/Mini bar.                   | M28                | Phiên Pomodoro       |      **Must**       |      8       |
+| **FEAT-19** | **Tạm dừng & Tiếp tục phiên học:** Bảo toàn chính xác số giây đã chạy, linh vật đổi tư thế nghỉ ngơi, tiếp tục hoặc kết thúc ngay.                 | M29                | Phiên Pomodoro       |      **Must**       |      3       |
+| **FEAT-20** | **Tổng kết phiên & Xác nhận tiến độ độc lập:** Ghi nhận thời gian thực tế (không làm tròn 25p), hỏi xác nhận hoàn thành bước nhỏ tách biệt.        | M30                | Phiên Pomodoro       |      **Must**       |      5       |
+| **FEAT-21** | **Mục tiêu định lượng (Quantitative Goals):** Quản lý mục tiêu đo đếm bằng số (từ vựng, trang sách, giờ học, đề thi) và hạn chót.                  | M31, M32           | Mục tiêu & Milestone |      **Must**       |      5       |
+| **FEAT-22** | **Ghi nhận thêm tiến độ số học (+Delta Log):** Thêm số lượng vừa học (+10 từ), cập nhật thanh phần trăm và lưu nhật ký tăng trưởng.                | M33                | Mục tiêu & Milestone |      **Must**       |      5       |
+| **FEAT-23** | **Điều chỉnh đích mục tiêu (Target Adjustment):** Đổi con số chỉ tiêu mà bảo toàn 100% lịch sử ghi nhận cũ, tính lại tỷ lệ phần trăm.              | M34                | Mục tiêu & Milestone |      **Must**       |      3       |
+| **FEAT-24** | **Ăn mừng Đạt mốc Mục tiêu (Milestone Celebration):** Popup vinh danh linh vật khi chạm đích 100%, cấp huy hiệu và gợi ý lập mục tiêu mới.         | M40                | Mục tiêu & Milestone |     **Should**      |      3       |
+| **FEAT-25** | **Theo dõi Thói quen hàng ngày & Điểm danh:** Check-in hoàn thành thói quen trong ngày, hỗ trợ hoàn tác (Undo) chống bấm nhầm.                     | M35, M36           | Thói quen rèn luyện  |      **Must**       |      5       |
+| **FEAT-26** | **Biểu đồ nhiệt Streak Thói quen:** Heatmap phân biệt rõ ngày hoàn thành, ngày nghỉ kế hoạch (không đứt chuỗi) và ngày chưa đến.                   | M37                | Thói quen rèn luyện  |     **Should**      |      5       |
+| **FEAT-27** | **Rà soát cuối ngày (End-of-day Rollover):** Quét việc chưa xong hôm nay: chọn chuyển sang mai hoặc trả về Inbox; bảo toàn hạn nộp gốc.            | M10                | Rà soát & Thống kê   |      **Must**       |      5       |
+| **FEAT-28** | **Báo cáo Tiến độ & Nhìn lại tuần:** Thống kê tổng giờ học thực tế, số phiên hoàn thành, đồ thị tuần và khung giờ vàng tập trung.                  | M38, M39           | Rà soát & Thống kê   |     **Should**      |      5       |
+| **FEAT-29** | **Hội thoại Trợ lý AI & Khảo sát ràng buộc:** Nhận prompt tự nhiên, hỏi làm rõ thời gian rảnh và mức độ ưu tiên môn học.                           | M41, M42           | Trợ lý AI Co-pilot   |      **Must**       |      5       |
+| **FEAT-30** | **Kiểm duyệt Phạm vi Dữ liệu & Tạo bản nháp AI:** Minh bạch dữ liệu AI được đọc, thanh tiến trình xử lý và quyền hủy ngang.                        | M43, M44           | Trợ lý AI Co-pilot   |      **Must**       |      5       |
+| **FEAT-31** | **Xem trước, Giải thích & Chỉnh sửa đề xuất AI:** Xem trước các khối lịch xếp đề xuất, giải thích lý do logic, cho phép sửa trước khi chốt.        | M45, M46, M47      | Trợ lý AI Co-pilot   |      **Must**       |      8       |
+| **FEAT-32** | **Áp dụng Kế hoạch AI & Chốt an toàn Hoàn tác (Undo):** Ghi batch vào lịch, nút Undo khôi phục 100% nguyên trạng, kiểm soát audit log.             | M48, M49, M50      | Trợ lý AI Co-pilot   |      **Must**       |      8       |
 
 **Tổng Story Points:** 157 SP  
 **Tỷ lệ phân bổ:** Must-have (85%), Should-have (15%).
@@ -72,7 +72,7 @@ gantt
     dateFormat  YYYY-MM-DD
     section Giai đoạn 1: Nền tảng & 5 Bước
     Khởi tạo Base, Theme Tokens, CSDL Cục bộ   :done, 2026-11-18, 2026-11-19
-    Onboarding (M03,04,06) & Home (M05)        :active, 2026-11-19, 2026-11-20
+    Onboarding (M06) & Home (M05)               :active, 2026-11-19, 2026-11-20
     Công việc & Module 5 Bước nhỏ (M11-M16, M01,02): 2026-11-20, 2026-11-22
     section Giai đoạn 2: Lịch & Pomodoro
     Quản lý Dự án & Quản lý Lịch (M17-M24)     : 2026-11-22, 2026-11-24
@@ -102,17 +102,16 @@ gantt
 
 ---
 
-#### NGÀY 19: ONBOARDING, CÀI ĐẶT CÁ NHÂN & DASHBOARD HOME (M03, M04, M05, M06, M08, M09)
+#### NGÀY 19: ONBOARDING, CÀI ĐẶT CÁ NHÂN & DASHBOARD HOME (M05, M06, M08, M09)
 - **Mục tiêu ngày:** Người dùng có thể đi qua luồng giới thiệu lần đầu và tương tác trên màn hình chính.
 - **Frontend Mobile:**
-  - `M06 (Splash/Intro)`: Dựng animation linh vật 1.2s vẫy tay chào, 3 tiêu điểm giới thiệu, nút Bắt đầu / Bỏ qua.
-  - `M03, M04`: Giao diện chọn định hướng học tập và thiết lập giờ vàng + thời lượng mục tiêu.
+  - `M06 (Splash/Intro)`: Dựng giao diện theo ảnh UI, animation linh vật 1.2s vẫy tay chào rồi tự động mở Home.
   - `M05 (Home Dashboard)`: Layout card tiến độ ngày, widget sự kiện lịch gần nhất, thanh tiến độ tuần.
   - `M08, M09`: Màn hình Profile và Cài đặt (Giờ yên tĩnh, Mascot toggle, Reduced motion).
 - **Backend / Local DB:**
   - Logic lưu cờ `has_completed_onboarding` vào SharedPreferences / Local KV.
   - DAO truy vấn tổng hợp dữ liệu cho Home widget.
-- **Tiêu chí nghiệm thu (DoD):** Mở app lần đầu hiện Intro -> Điền onboarding -> Vào Home. Lần sau mở app đi thẳng vào Home.
+- **Tiêu chí nghiệm thu (DoD):** Mở app lần đầu hiện Intro trong 1.2 giây rồi tự động vào Home. Lần sau mở app đi thẳng vào Home.
 
 ---
 

@@ -1,0 +1,112 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="35 53 918 764" width="918" height="764" role="img" aria-labelledby="title desc">
+  <title id="title">Chặng – Penguin mascot</title>
+  <desc id="desc">An original vector recreation of the navy-blue Chặng penguin mascot wearing a blue beret and a yellow shoulder bag, holding a yellow checkmark flag on a transparent background.</desc>
+  <defs>
+    <linearGradient id="bodyBlue" x1="0" y1="0" x2="1" y2="0.24" objectBoundingBox="true">
+      <stop offset="0%" stop-color="#264E7D" />
+      <stop offset="55%" stop-color="#173E69" />
+      <stop offset="100%" stop-color="#204875" />
+    </linearGradient>
+    <linearGradient id="wingBlue" x1="0" y1="0" x2="1" y2="0.5">
+      <stop offset="0%" stop-color="#254F7D" /><stop offset="100%" stop-color="#183E69" />
+    </linearGradient>
+    <linearGradient id="hatBlue" x1="0.05" y1="0.0" x2="0.95" y2="1">
+      <stop offset="0%" stop-color="#2B78C7" /><stop offset="60%" stop-color="#458FDF" /><stop offset="100%" stop-color="#68B0F1" />
+    </linearGradient>
+    <linearGradient id="hatBrim" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0%" stop-color="#70B5EF" /><stop offset="70%" stop-color="#4A97E4" /><stop offset="100%" stop-color="#3B80CE" />
+    </linearGradient>
+    <linearGradient id="yellow" x1="0" y1="0.5" x2="1" y2="0.5">
+      <stop offset="0%" stop-color="#FFC33C" /><stop offset="56%" stop-color="#FFD568" /><stop offset="100%" stop-color="#FFC54A" />
+    </linearGradient>
+    <linearGradient id="flagYellow" x1="0" y1="0.4" x2="1" y2="0.7">
+      <stop offset="0%" stop-color="#FFCF59" /><stop offset="100%" stop-color="#FFBE3E" />
+    </linearGradient>
+    <linearGradient id="tummyWhite" x1="0.3" y1="0.2" x2="0.8" y2="1">
+      <stop offset="0%" stop-color="#FFFFFF" /><stop offset="100%" stop-color="#FFFDF7" />
+    </linearGradient>
+    <linearGradient id="bagYellow" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#FFD867" /><stop offset="55%" stop-color="#FFC447" /><stop offset="100%" stop-color="#FFD16B" />
+    </linearGradient>
+    <linearGradient id="peach" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#F8B8AB" /><stop offset="100%" stop-color="#F6C5B8" />
+    </linearGradient>
+    <linearGradient id="beakYellow" x1="0" y1="0" x2="0.7" y2="1">
+      <stop offset="0%" stop-color="#FFDC71" /><stop offset="100%" stop-color="#F5AF2D" />
+    </linearGradient>
+  </defs>
+
+  
+  <g id="ground-shadow"><ellipse cx="377" cy="796" rx="297" ry="19" fill="#B8D8F4" opacity="0.72" /></g>
+
+  
+  <g id="attention-marks" fill="none" stroke="#092C56" stroke-width="11" stroke-linecap="round">
+    <path d="M181 102 L176 71" />
+    <path d="M150 147 L112 121" />
+    <path d="M132 182 L100 181" />
+  </g>
+
+  
+  <g id="feet" fill="url(#yellow)">
+    <path id="foot-left" d="M202 746 C185 750 177 761 177 783 C177 801 192 809 212 807 C225 809 232 805 239 799 C247 809 263 808 270 801 C284 808 301 801 303 787 C307 768 294 767 270 767 C244 765 219 745 202 746 Z" />
+    <path id="foot-right" d="M446 764 C422 765 420 780 422 793 C425 806 441 810 459 806 C472 809 484 805 493 800 C503 808 515 809 526 801 C541 803 550 796 549 782 C548 760 532 752 515 754 C490 762 470 764 446 764 Z" />
+  </g>
+
+  
+  <g id="penguin-body">
+    <path d="M211 260 C245 217 305 196 379 198 C457 195 518 236 555 302 C584 353 596 416 590 477 C589 498 596 527 592 591 C590 661 565 727 523 756 C480 790 398 791 314 783 C239 780 188 756 156 712 C137 684 133 646 140 606 C155 550 155 521 154 462 C152 385 173 311 211 260 Z" fill="url(#bodyBlue)" />
+    
+    <path d="M541 307 C579 384 589 455 581 497 C590 565 592 655 564 706 C550 730 529 751 501 766 C547 754 579 702 589 629 C597 565 598 503 590 477 C594 421 580 355 541 307 Z" fill="#285280" opacity="0.23" />
+  </g>
+
+  
+  <g id="white-face-and-belly">
+    <path d="M308 286 C263 278 225 309 201 357 C181 399 181 442 202 475 C218 494 235 501 269 513 C238 555 219 597 214 659 C208 718 226 764 255 777 C293 789 394 791 450 783 C507 776 527 738 531 684 C538 608 526 553 499 509 C544 485 560 456 560 410 C561 348 535 289 492 286 C448 278 425 304 414 347 C408 357 402 362 400 363 C389 317 355 289 308 286 Z" fill="url(#tummyWhite)" />
+  </g>
+
+  
+  <g id="face">
+    <circle id="blush-left" cx="300" cy="423" r="29" fill="url(#peach)" opacity="0.96" />
+    <circle id="blush-right" cx="510" cy="416" r="28" fill="url(#peach)" opacity="0.96" />
+    <ellipse id="eye-left" cx="333" cy="367" rx="18" ry="22" fill="#062B56" />
+    <ellipse id="eye-right" cx="481" cy="366" rx="18" ry="22" fill="#062B56" />
+    <path id="beak" d="M413 365 C394 364 381 381 374 395 C367 405 370 415 383 426 C399 442 417 444 429 435 C446 425 460 409 459 396 C457 384 440 365 413 365 Z" fill="url(#beakYellow)" />
+    <path d="M383 408 Q413 410 451 405" fill="none" stroke="#E69F25" stroke-width="3" stroke-linecap="round" opacity="0.65" />
+  </g>
+
+  
+  <g id="beret">
+    <path d="M278 136 C277 116 307 116 311 134 L304 146 Z" fill="#22578E" />
+    <path d="M211 266 C201 223 213 186 243 156 C270 130 303 127 333 129 C367 128 395 138 418 166 C430 181 436 193 435 209 C393 205 345 231 292 251 C259 262 229 268 211 266 Z" fill="url(#hatBlue)" />
+    <path d="M212 254 C259 255 355 209 415 178 C439 163 462 154 476 168 C489 178 485 196 470 201 C454 207 448 199 432 201 C417 203 397 215 365 231 C297 266 239 274 212 264 Z" fill="url(#hatBrim)" />
+    <path d="M217 261 C263 251 355 213 414 179" fill="none" stroke="#A5D2FA" stroke-width="4" opacity="0.18" stroke-linecap="round" />
+  </g>
+
+  
+  <g id="flag">
+    <path id="yellow-fabric" d="M693 239 C754 235 794 255 827 271 C865 286 899 291 938 289 L882 375 L908 472 C869 474 826 469 789 453 C750 436 718 429 667 431 Z" fill="url(#flagYellow)" />
+    <path id="check-mark" d="M741 338 L770 375 L828 330" stroke="#073163" stroke-width="19" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+    <path id="flag-pole" d="M691 214 L608 727" stroke="#082F5D" stroke-width="23" stroke-linecap="round" fill="none" />
+  </g>
+
+  
+  <g id="right-flipper">
+    <path d="M582 476 C609 488 626 495 650 497 C667 499 678 506 690 523 C703 545 694 569 675 590 C659 609 629 624 592 621 L553 594 C559 548 570 500 582 476 Z" fill="url(#wingBlue)" />
+    <path d="M616 587 L639 605 L620 624 L591 621 Z" fill="#123A67" opacity="0.55" />
+  </g>
+
+  
+  <g id="shoulder-strap">
+    <path d="M158 473 C218 526 291 577 423 627" fill="none" stroke="url(#yellow)" stroke-width="29" stroke-linecap="round" />
+  </g>
+
+  
+  <g id="crossbody-bag">
+    <path id="bag-body" d="M426 604 C428 594 439 592 452 592 L566 585 C581 584 591 588 592 605 L593 681 C594 715 581 729 558 729 L461 733 C434 733 422 718 420 695 L418 627 C418 617 420 609 426 604 Z" fill="url(#bagYellow)" />
+    <path id="bag-flap-shadow" d="M422 606 C437 634 436 652 455 664 C471 677 549 676 571 661 C583 652 585 632 592 615 L592 633 C589 667 577 676 555 679 C515 685 471 680 454 676 C431 669 423 647 422 606 Z" fill="#E5A82F" opacity="0.76" />
+    <path id="bag-flap" d="M434 594 L566 585 C580 584 588 590 591 605 L590 628 C588 652 576 659 558 664 C520 672 471 671 453 662 C438 656 429 626 424 607 C422 600 427 596 434 594 Z" fill="url(#bagYellow)" />
+    <path id="bag-opening" d="M423 603 C432 627 435 650 454 662 C476 676 545 676 565 664 C579 658 587 644 591 623" fill="none" stroke="#E6AA34" stroke-width="8" stroke-linecap="round" />
+    <rect id="buckle" x="502" y="642" width="35" height="45" rx="9" fill="#07345E" />
+    <rect id="buckle-hole" x="511" y="652" width="17" height="20" rx="3" fill="#F9C34B" />
+  </g>
+</svg>

@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="35 53 918 764" width="918" height="764" role="img" aria-labelledby="title desc">
+  <title id="title">Chặng – Penguin mascot</title>
+  <desc id="desc">An original vector recreation of the navy-blue Chặng penguin mascot wearing a blue beret and a yellow shoulder bag, holding a yellow checkmark flag on a transparent background.</desc>
+  <defs>
+    <linearGradient id="bodyBlue" x1="0" y1="0" x2="1" y2="0.24" objectBoundingBox="true">
+      <stop offset="0%" stop-color="#264E7D" />
+      <stop offset="55%" stop-color="#173E69" />
+      <stop offset="100%" stop-color="#204875" />
+    </linearGradient>
+    <linearGradient id="wingBlue" x1="0" y1="0" x2="1" y2="0.5">
+      <stop offset="0%" stop-color="#254F7D" /><stop offset="100%" stop-color="#183E69" />
+    </linearGradient>
+    <linearGradient id="hatBlue" x1="0.05" y1="0.0" x2="0.95" y2="1">
+      <stop offset="0%" stop-color="#2B78C7" /><stop offset="60%" stop-color="#458FDF" /><stop offset="100%" stop-color="#68B0F1" />
+    </linearGradient>
+    <linearGradient id="hatBrim" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0%" stop-color="#70B5EF" /><stop offset="70%" stop-color="#4A97E4" /><stop offset="100%" stop-color="#3B80CE" />
+    </linearGradient>
+    <linearGradient id="yellow" x1="0" y1="0.5" x2="1" y2="0.5">
+      <stop offset="0%" stop-color="#FFC33C" /><stop offset="56%" stop-color="#FFD568" /><stop offset="100%" stop-color="#FFC54A" />
+    </linearGradient>
+    <linearGradient id="flagYellow" x1="0" y1="0.4" x2="1" y2="0.7">
+      <stop offset="0%" stop-color="#FFCF59" /><stop offset="100%" stop-color="#FFBE3E" />
+    </linearGradient>
+    <linearGradient id="tummyWhite" x1="0.3" y1="0.2" x2="0.8" y2="1">
+      <stop offset="0%" stop-color="#FFFFFF" /><stop offset="100%" stop-color="#FFFDF7" />
+    </linearGradient>
+    <linearGradient id="bagYellow" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#FFD867" /><stop offset="55%" stop-color="#FFC447" /><stop offset="100%" stop-color="#FFD16B" />
+    </linearGradient>
+    <linearGradient id="peach" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#F8B8AB" /><stop offset="100%" stop-color="#F6C5B8" />
+    </linearGradient>
+    <linearGradient id="beakYellow" x1="0" y1="0" x2="0.7" y2="1">
+      <stop offset="0%" stop-color="#FFDC71" /><stop offset="100%" stop-color="#F5AF2D" />
+    </linearGradient>
+  </defs>
+
+  
+  <g id="left-flipper">
+    <path d="M165 480 C130 510 88 552 63 591 C37 629 36 649 56 657 C78 665 112 650 156 637 L219 556 Z" fill="url(#wingBlue)" />
+  </g>
+
+  
+  </svg>

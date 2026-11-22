@@ -5,6 +5,13 @@ import 'app_colors.dart';
 abstract final class AppTheme {
   static final light = ThemeData(
     useMaterial3: true,
+    fontFamily: 'Inter',
+    filledButtonTheme: FilledButtonThemeData(
+      style: FilledButton.styleFrom(minimumSize: const Size(48, 48)),
+    ),
+    textButtonTheme: TextButtonThemeData(
+      style: TextButton.styleFrom(minimumSize: const Size(48, 48)),
+    ),
     colorScheme: ColorScheme.fromSeed(
       seedColor: AppColors.primary,
       primary: AppColors.primary,
