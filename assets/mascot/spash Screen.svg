@@ -1,0 +1,158 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="745" height="790" viewBox="40 33 745 790" role="img" aria-labelledby="title desc">
+  <title id="title">Chặng – chim cánh cụt vẫy tay</title>
+  <desc id="desc">Mascot chim cánh cụt màu xanh navy đội mũ xanh dương, đeo ba lô vàng, ôm sổ xanh và vẫy tay. Đồ họa vector chỉnh sửa được, nền trong suốt.</desc>
+  <defs>
+    <linearGradient id="bodyGradient" x1="0" y1="0.52" x2="1" y2="0.46" objectBoundingBox="true">
+      <stop offset="0" stop-color="#063d83"/>
+      <stop offset=".36" stop-color="#002c6d"/>
+      <stop offset=".75" stop-color="#001d53"/>
+      <stop offset="1" stop-color="#01295d"/>
+    </linearGradient>
+    <linearGradient id="wingGradient" x1="0" x2=".85" y1="1" y2="0">
+      <stop offset="0" stop-color="#01214f"/>
+      <stop offset=".58" stop-color="#00265f"/>
+      <stop offset="1" stop-color="#052e6c"/>
+    </linearGradient>
+    <linearGradient id="bellyGradient" x1="0" y1="0" x2=".95" y2="1">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset=".63" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#f7fbff"/>
+    </linearGradient>
+    <linearGradient id="bellyShade" x1="0" y1="0" x2=".7" y2="1">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#d7ecfd"/>
+    </linearGradient>
+    <linearGradient id="capGradient" x1="0" y1="0" x2="1" y2=".8">
+      <stop offset="0" stop-color="#348eff"/>
+      <stop offset=".6" stop-color="#2988ff"/>
+      <stop offset="1" stop-color="#1871ef"/>
+    </linearGradient>
+    <linearGradient id="brimGradient" x1="0" x2=".85" y1=".15" y2="1">
+      <stop offset="0" stop-color="#0781ff"/>
+      <stop offset=".6" stop-color="#006bff"/>
+      <stop offset="1" stop-color="#0861e4"/>
+    </linearGradient>
+    <linearGradient id="bagGradient" x1=".05" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ffcb14"/>
+      <stop offset=".55" stop-color="#ffb600"/>
+      <stop offset="1" stop-color="#ee9500"/>
+    </linearGradient>
+    <linearGradient id="bagFlapGradient" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ffce22"/>
+      <stop offset=".55" stop-color="#ffbe00"/>
+      <stop offset="1" stop-color="#f5a500"/>
+    </linearGradient>
+    <linearGradient id="bookGradient" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#3a9aff"/>
+      <stop offset=".45" stop-color="#1880ff"/>
+      <stop offset="1" stop-color="#0864ea"/>
+    </linearGradient>
+    <linearGradient id="beakGradient" x1="0" y1="0" x2=".8" y2="1">
+      <stop offset="0" stop-color="#ffcc00"/>
+      <stop offset=".65" stop-color="#ffac00"/>
+      <stop offset="1" stop-color="#ed8900"/>
+    </linearGradient>
+    <linearGradient id="shoeGradient" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffcc21"/>
+      <stop offset=".82" stop-color="#ffb600"/>
+      <stop offset="1" stop-color="#ea9b00"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Bóng nền: có thể xóa nhóm này nếu muốn nhân vật không có bóng -->
+  <g id="mascot" stroke-linejoin="round" stroke-linecap="round">
+    <!-- Hai chân đặt phía sau thân -->
+    <g id="feet">
+      <path d="M294 745 C275 754 267 773 273 791 C283 817 367 823 384 803 C402 783 376 769 355 766 Z" fill="url(#shoeGradient)"/>
+      <path d="M277 797 C296 809 355 816 380 802 C360 821 293 822 278 805 Z" fill="#eaa000" opacity=".6"/>
+      <path d="M557 741 C556 756 565 779 586 785 C611 800 665 781 677 760 C691 733 664 726 647 730 Z" fill="url(#shoeGradient)"/>
+      <path d="M569 777 C598 793 658 771 678 752 C673 778 627 794 600 793 C580 793 573 787 569 777 Z" fill="#e49a00" opacity=".58"/>
+    </g>
+
+    <!-- Cánh phải vẫy lên cao, nằm phía sau thân -->
+    <g id="waving-wing">
+      <path d="M575 359 C616 358 651 309 691 254 C716 221 731 217 745 234 C769 263 759 347 733 407 C709 466 671 501 623 528 C604 492 585 460 563 434 Z" fill="url(#wingGradient)"/>
+      <path d="M692 258 C716 227 731 221 744 242 C756 258 756 294 750 324 C747 282 735 242 714 248 Z" fill="#123c77" opacity=".22"/>
+    </g>
+
+    <!-- Ba lô và dây quai nằm phía sau tay trái -->
+    <g id="backpack">
+      <path d="M181 421 C145 430 120 457 112 490 L110 550 L157 581 C165 521 183 469 210 448 Z" fill="#ffa900"/>
+      <path d="M128 467 C143 450 158 436 177 427 C168 456 156 482 154 514 L113 514 C116 494 118 482 128 467 Z" fill="#e88b00" opacity=".46"/>
+      <path d="M166 605 C181 535 201 485 225 473 C254 453 278 464 298 484" fill="none" stroke="#e39700" stroke-width="39"/>
+      <path d="M166 604 C183 536 201 482 226 468 C255 449 279 462 300 483" fill="none" stroke="#ffca13" stroke-width="27"/>
+      <path d="M108 509 C71 523 57 571 60 603 C33 632 43 700 87 720 C119 736 166 748 192 737 C220 728 218 694 223 658 C235 616 222 566 192 533 C168 506 136 501 108 509 Z" fill="url(#bagGradient)"/>
+      <path d="M84 588 C63 629 59 686 85 704 C102 719 131 730 150 721 C165 714 164 677 169 642 C153 611 121 594 84 588 Z" fill="#ffc00b" opacity=".82"/>
+      <path d="M166 607 C165 655 152 691 154 714 C156 733 188 734 199 717 C211 695 204 648 214 617 Z" fill="#ffca14"/>
+      <path d="M165 608 C156 636 151 662 144 679 C125 683 95 672 78 653 C65 639 55 612 64 583 C72 557 89 535 107 529 C131 529 156 568 165 608 Z" fill="#df9000" opacity=".6"/>
+      <path d="M100 513 C78 525 67 543 65 572 C70 596 103 612 143 617 C153 605 160 581 177 567 C161 534 131 513 100 513 Z" fill="url(#bagFlapGradient)"/>
+      <path d="M69 575 C87 606 126 621 156 607 L146 627 C113 637 72 616 60 589 Z" fill="#ed9900" opacity=".65"/>
+      <ellipse cx="95" cy="621" rx="10" ry="15" transform="rotate(26 95 621)" fill="white"/>
+      <path d="M109 513 C117 500 129 487 147 485" fill="none" stroke="#ffcf31" stroke-width="10" opacity=".7"/>
+    </g>
+
+    <!-- Thân chim cánh cụt -->
+    <g id="body">
+      <path d="M176 312 C178 258 200 203 261 173 C316 143 397 132 489 141 C587 148 630 205 650 285 C671 368 652 402 630 439 C666 487 685 552 687 610 C689 674 665 732 630 751 C581 778 508 782 425 780 C339 782 277 782 221 762 C170 745 159 713 155 661 C151 606 162 547 178 488 C166 429 167 370 176 312 Z" fill="url(#bodyGradient)"/>
+      <path d="M178 310 C169 380 175 442 188 484 C169 537 160 617 159 657 C158 713 178 742 223 762 C193 746 183 707 183 662 C181 610 202 550 201 486 C187 433 188 360 198 307 Z" fill="#104a90" opacity=".25"/>
+      <path d="M582 753 C612 755 632 747 653 724 C658 738 643 760 620 770 C593 783 546 780 516 777 Z" fill="#001b47" opacity=".55"/>
+    </g>
+
+    <!-- Mảng lông trắng gồm hai gò má nối bụng -->
+    <g id="face-belly">
+      <path d="M289 363 C277 332 277 301 291 272 C306 239 336 231 363 245 C391 259 406 288 418 325 C434 302 457 292 477 292 C478 260 482 238 495 218 C508 197 530 198 545 200 C588 202 623 244 632 299 C642 355 626 388 590 424 C637 471 671 540 663 611 C658 684 625 735 566 750 C519 765 461 761 406 758 C358 755 333 741 320 712 C304 679 299 647 302 612 C276 598 264 576 263 548 C259 518 281 480 309 462 C277 448 260 430 259 408 C258 390 270 373 289 363 Z" fill="url(#bellyGradient)"/>
+      <path d="M319 678 C342 712 391 729 445 732 C520 741 599 718 644 674 C626 728 582 750 529 758 C469 766 404 765 367 751 C336 740 321 719 319 678 Z" fill="url(#bellyShade)" opacity=".9"/>
+      <path d="M293 351 C281 325 280 301 291 273 C302 242 336 231 358 244 C380 253 397 275 406 304 C383 264 350 243 321 258 C288 274 288 319 293 351 Z" fill="#f8fcff" opacity=".9"/>
+    </g>
+
+    <!-- Khuôn mặt tươi vui -->
+    <g id="face">
+      <path d="M338 345 C339 330 349 316 362 316 C375 315 385 322 391 332" fill="none" stroke="#073774" stroke-width="13"/>
+      <path d="M525 299 C529 281 538 275 548 277 C557 278 567 285 573 294" fill="none" stroke="#083a78" stroke-width="12"/>
+      <ellipse cx="334" cy="386" rx="24" ry="12" transform="rotate(-17 334 386)" fill="#ffdce3" opacity=".94"/>
+      <ellipse cx="592" cy="355" rx="22" ry="12" transform="rotate(-15 592 355)" fill="#ffdae3" opacity=".94"/>
+      <!-- Mỏ dưới -->
+      <path d="M437 338 C453 335 484 327 502 329 C503 351 493 373 479 383 C474 388 467 388 460 382 C447 373 440 352 437 338 Z" fill="url(#beakGradient)"/>
+      <path d="M442 347 C458 342 479 339 498 338 C494 354 484 370 470 376 C458 371 449 359 442 347 Z" fill="#ffae00" opacity=".45"/>
+      <!-- Mỏ trên -->
+      <path d="M423 332 C427 317 435 306 451 301 C469 292 489 292 503 301 C514 307 520 317 521 327 C522 338 514 339 505 335 C494 331 482 335 469 341 C452 349 434 347 425 342 C421 339 421 335 423 332 Z" fill="#ffbf00"/>
+      <path d="M426 338 C446 341 459 337 477 329 C493 323 506 321 520 327 C523 334 515 340 503 337 C494 334 481 340 468 345 C447 352 432 348 426 342 Z" fill="#f29d00" opacity=".73"/>
+    </g>
+
+    <!-- Sổ tay (đặt phía trước bụng, sau cánh ôm sổ) -->
+    <g id="notebook">
+      <path d="M326 450 C329 446 335 444 342 446 L468 479 C479 481 480 490 477 501 L426 688 C424 699 416 702 406 699 L286 667 C278 664 273 657 276 645 Z" fill="#c9e4ff"/>
+      <path d="M322 451 C326 447 330 447 337 449 L456 479 C463 482 467 488 463 499 L413 686 C411 693 408 696 401 694 L285 663 C278 662 274 657 279 647 Z" fill="white"/>
+      <path d="M314 451 C317 445 323 445 330 447 L454 479 C461 480 464 486 461 494 L412 674 C409 683 406 686 398 683 L284 652 C277 650 274 645 277 636 Z" fill="url(#bookGradient)"/>
+      <path d="M314 451 C320 447 325 447 333 450 L452 479 C458 481 461 487 457 493 L453 503 L310 467 Z" fill="#78bcff" opacity=".66"/>
+      <path d="M407 681 L459 492 C462 482 463 480 469 485 C475 490 474 496 472 501 L422 686 C419 693 414 696 405 695 Z" fill="#b7d9fa" opacity=".86"/>
+    </g>
+
+    <!-- Cánh trái đang ôm quyển sổ -->
+    <g id="holding-wing">
+      <path d="M221 488 C240 466 268 468 292 482 C319 498 327 517 348 525 C375 538 402 539 398 568 C395 597 369 614 343 625 C306 640 250 638 216 624 C195 615 190 589 197 554 C203 521 208 501 221 488 Z" fill="url(#wingGradient)"/>
+      <path d="M212 528 C214 504 227 481 245 475 C225 496 219 520 217 548 Z" fill="#075090" opacity=".31"/>
+    </g>
+
+    <!-- Mũ bóng chày xanh dương: vành, chóp, nút mũ -->
+    <g id="blue-cap">
+      <!-- Vành mũ chìa sang trái -->
+      <path d="M181 262 C156 272 117 294 91 321 C81 333 82 347 91 351 C108 359 150 332 181 316 L229 272 Z" fill="url(#brimGradient)"/>
+      <!-- Đường viền sau chóp -->
+      <path d="M172 266 C172 196 225 125 294 94 C377 53 482 48 551 102 C568 117 578 138 581 159 L544 180 L188 311 Z" fill="#0069ed"/>
+      <!-- Chóp mũ -->
+      <path d="M190 269 C190 205 245 137 302 107 C371 69 465 57 531 106 C550 119 564 140 568 156 C470 155 325 207 205 277 C196 282 190 278 190 269 Z" fill="url(#capGradient)"/>
+      <path d="M192 264 C194 200 243 135 301 106 C334 89 367 80 395 77 C329 99 280 143 248 182 C220 218 201 249 192 264 Z" fill="#4a9dff" opacity=".33"/>
+      <!-- Nút trên đỉnh mũ -->
+      <path d="M321 82 C317 60 327 44 347 44 C365 42 380 54 379 71 C378 87 374 91 363 89 C349 82 336 80 321 82 Z" fill="#0878f7"/>
+      <path d="M325 63 C329 49 343 44 354 47 C334 50 329 65 327 78 Z" fill="#308dff" opacity=".4"/>
+      <!-- Vành mũ đưa ra bên phải -->
+      <path d="M548 144 C581 134 616 133 648 141 C666 145 676 151 676 160 C676 170 665 174 646 176 L581 178 L521 166 Z" fill="#076fff"/>
+      <path d="M575 154 C602 146 643 143 664 150 C650 149 622 154 589 166 Z" fill="#2c8aff" opacity=".56"/>
+      <!-- Mép trước của vành chạy ngang trán -->
+      <path d="M180 291 C240 246 332 199 414 174 C481 154 538 144 580 145 C602 148 609 154 604 164 C528 160 457 177 379 207 C292 241 224 275 174 313 Z" fill="#056bea"/>
+      <path d="M180 297 C256 238 362 197 451 169 C501 155 548 150 580 148 C514 149 445 170 380 197 C286 235 221 274 181 304 Z" fill="#2f8fff" opacity=".32"/>
+    </g>
+  </g>
+</svg>

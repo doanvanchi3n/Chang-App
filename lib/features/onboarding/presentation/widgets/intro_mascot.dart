@@ -56,32 +56,26 @@ class _IntroMascotState extends State<IntroMascot>
       image: true,
       child: ExcludeSemantics(
         child: SizedBox(
-          height: 200,
+          height: 240,
           child: Center(
             child: AspectRatio(
-              aspectRatio: 918 / 764,
+              aspectRatio: 745 / 790,
               child: Stack(
                 children: [
                   Positioned.fill(
                     child: AnimatedBuilder(
                       animation: _controller,
-                      child: SvgPicture.asset(
-                        'assets/mascot/onboarding_wave.svg',
-                      ),
+                      child: SvgPicture.asset('assets/mascot/splash_wing.svg'),
                       builder: (context, child) => Transform.rotate(
-                        angle:
-                            (1 - math.cos(_controller.value * math.pi * 4)) *
-                            0.45,
-                        // Shoulder pivot in the original SVG viewBox (35, 53, 918, 764).
-                        alignment: const FractionalOffset(130 / 918, 427 / 764),
+                        angle: math.sin(_controller.value * math.pi * 4) * 0.10,
+                        // Shoulder pivot in the Splash SVG viewBox (40, 33, 745, 790).
+                        alignment: const FractionalOffset(560 / 745, 397 / 790),
                         child: child,
                       ),
                     ),
                   ),
                   Positioned.fill(
-                    child: SvgPicture.asset(
-                      'assets/mascot/onboarding_body.svg',
-                    ),
+                    child: SvgPicture.asset('assets/mascot/splash_body.svg'),
                   ),
                 ],
               ),

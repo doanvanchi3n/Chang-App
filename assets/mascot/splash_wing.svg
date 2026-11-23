@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="745" height="790" viewBox="40 33 745 790" role="img" aria-labelledby="title desc">
+  <title id="title">Chặng – chim cánh cụt vẫy tay</title>
+  <desc id="desc">Mascot chim cánh cụt màu xanh navy đội mũ xanh dương, đeo ba lô vàng, ôm sổ xanh và vẫy tay. Đồ họa vector chỉnh sửa được, nền trong suốt.</desc>
+  <defs>
+    <linearGradient id="bodyGradient" x1="0" y1="0.52" x2="1" y2="0.46" objectBoundingBox="true">
+      <stop offset="0" stop-color="#063d83" />
+      <stop offset=".36" stop-color="#002c6d" />
+      <stop offset=".75" stop-color="#001d53" />
+      <stop offset="1" stop-color="#01295d" />
+    </linearGradient>
+    <linearGradient id="wingGradient" x1="0" x2=".85" y1="1" y2="0">
+      <stop offset="0" stop-color="#01214f" />
+      <stop offset=".58" stop-color="#00265f" />
+      <stop offset="1" stop-color="#052e6c" />
+    </linearGradient>
+    <linearGradient id="bellyGradient" x1="0" y1="0" x2=".95" y2="1">
+      <stop offset="0" stop-color="#ffffff" />
+      <stop offset=".63" stop-color="#ffffff" />
+      <stop offset="1" stop-color="#f7fbff" />
+    </linearGradient>
+    <linearGradient id="bellyShade" x1="0" y1="0" x2=".7" y2="1">
+      <stop offset="0" stop-color="#ffffff" />
+      <stop offset="1" stop-color="#d7ecfd" />
+    </linearGradient>
+    <linearGradient id="capGradient" x1="0" y1="0" x2="1" y2=".8">
+      <stop offset="0" stop-color="#348eff" />
+      <stop offset=".6" stop-color="#2988ff" />
+      <stop offset="1" stop-color="#1871ef" />
+    </linearGradient>
+    <linearGradient id="brimGradient" x1="0" x2=".85" y1=".15" y2="1">
+      <stop offset="0" stop-color="#0781ff" />
+      <stop offset=".6" stop-color="#006bff" />
+      <stop offset="1" stop-color="#0861e4" />
+    </linearGradient>
+    <linearGradient id="bagGradient" x1=".05" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ffcb14" />
+      <stop offset=".55" stop-color="#ffb600" />
+      <stop offset="1" stop-color="#ee9500" />
+    </linearGradient>
+    <linearGradient id="bagFlapGradient" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ffce22" />
+      <stop offset=".55" stop-color="#ffbe00" />
+      <stop offset="1" stop-color="#f5a500" />
+    </linearGradient>
+    <linearGradient id="bookGradient" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#3a9aff" />
+      <stop offset=".45" stop-color="#1880ff" />
+      <stop offset="1" stop-color="#0864ea" />
+    </linearGradient>
+    <linearGradient id="beakGradient" x1="0" y1="0" x2=".8" y2="1">
+      <stop offset="0" stop-color="#ffcc00" />
+      <stop offset=".65" stop-color="#ffac00" />
+      <stop offset="1" stop-color="#ed8900" />
+    </linearGradient>
+    <linearGradient id="shoeGradient" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffcc21" />
+      <stop offset=".82" stop-color="#ffb600" />
+      <stop offset="1" stop-color="#ea9b00" />
+    </linearGradient>
+  </defs>
+
+  
+  <g id="mascot" stroke-linejoin="round" stroke-linecap="round">
+    
+    <g id="waving-wing">
+      <path d="M575 359 C616 358 651 309 691 254 C716 221 731 217 745 234 C769 263 759 347 733 407 C709 466 671 501 623 528 C604 492 585 460 563 434 Z" fill="url(#wingGradient)" />
+      <path d="M692 258 C716 227 731 221 744 242 C756 258 756 294 750 324 C747 282 735 242 714 248 Z" fill="#123c77" opacity=".22" />
+    </g>
+
+    
+    </g>
+</svg>
