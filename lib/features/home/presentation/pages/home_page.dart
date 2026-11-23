@@ -7,33 +7,8 @@ import '../../../../core/config/supabase_config.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../../../onboarding/data/onboarding_store.dart';
 import '../../../onboarding/presentation/pages/onboarding_page.dart';
-
-// ---------------------------------------------------------------------------
-// DATA MODEL FOR HOME DASHBOARD (M05)
-// ---------------------------------------------------------------------------
-class HomeTaskItem {
-  HomeTaskItem({
-    required this.id,
-    required this.title,
-    required this.category,
-    required this.dueText,
-    required this.completedSteps,
-    required this.totalSteps,
-    required this.durationMinutes,
-    this.scheduledTime,
-    this.isActive = false,
-  });
-
-  final String id;
-  String title;
-  String category;
-  String dueText;
-  int completedSteps;
-  int totalSteps;
-  int durationMinutes;
-  String? scheduledTime;
-  bool isActive;
-}
+import '../../../tasks/presentation/pages/inbox_page.dart';
+import '../providers/home_tasks_provider.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
@@ -48,46 +23,9 @@ class _HomePageState extends ConsumerState<HomePage> {
   String _supabaseStatus = 'Chưa kiểm tra';
   int _supabaseTaskCount = 0;
 
-  // Dữ liệu mẫu M05 chuẩn theo bản thiết kế UI
-  late List<HomeTaskItem> _tasks;
-
   @override
   void initState() {
     super.initState();
-    _tasks = [
-      HomeTaskItem(
-        id: '1',
-        title: 'Phác thảo luồng đăng ký',
-        category: 'UI/UX',
-        dueText: 'Hạn ngày mai',
-        completedSteps: 2,
-        totalSteps: 5,
-        durationMinutes: 25,
-        isActive: true,
-      ),
-      HomeTaskItem(
-        id: '2',
-        title: 'Ôn 15 từ TOEIC',
-        category: 'Tiếng Anh',
-        dueText: 'Hôm nay',
-        completedSteps: 0,
-        totalSteps: 5,
-        durationMinutes: 25,
-        scheduledTime: '19:00',
-        isActive: false,
-      ),
-      HomeTaskItem(
-        id: '3',
-        title: 'Đọc tài liệu CSDL',
-        category: 'Chuyên ngành',
-        dueText: 'Tuần này',
-        completedSteps: 0,
-        totalSteps: 5,
-        durationMinutes: 30,
-        isActive: false,
-      ),
-    ];
-
     _checkSupabaseConnection();
   }
 
@@ -177,22 +115,12 @@ class _HomePageState extends ConsumerState<HomePage> {
                 shape: const StadiumBorder(),
               ),
               onPressed: () {
-                final text = titleController.text.trim();
-                if (text.isNotEmpty) {
-                  setState(() {
-                    _tasks.add(
-                      HomeTaskItem(
-                        id: DateTime.now().millisecondsSinceEpoch.toString(),
-                        title: text,
-                        category: categoryController.text.trim(),
-                        dueText: 'Hôm nay',
-                        completedSteps: 0,
-                        totalSteps: 5,
-                        durationMinutes: 25,
-                      ),
+                ref
+                    .read(homeTasksProvider.notifier)
+                    .addTask(
+                      title: titleController.text,
+                      category: categoryController.text,
                     );
-                  });
-                }
                 Navigator.pop(ctx);
               },
               child: const Text('Thêm vào danh sách'),
@@ -291,7 +219,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                     Icons.visibility_outlined,
                     color: Color(0xFF1E67C6),
                   ),
-                  title: const Text('Xem màn hình Onboarding (Mobile_005)'),
+                  title: const Text('Xem màn hình giới thiệu (M06)'),
                   subtitle: const Text('Xem giao diện linh vật vẫy tay chào'),
                   onTap: () {
                     Navigator.pop(ctx);
@@ -326,83 +254,11 @@ class _HomePageState extends ConsumerState<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final tasks = ref.watch(homeTasksProvider);
+
     return Scaffold(
       backgroundColor: const Color(0xFFFEFDF9),
-      body: SafeArea(
-        child: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 440),
-            child: ListView(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-              children: [
-                _HomeHeader(
-                  onNotificationTap: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Không có thông báo mới (M07).'),
-                        duration: Duration(seconds: 2),
-                      ),
-                    );
-                  },
-                  onAvatarTap: _showSettingsSheet,
-                ),
-                const SizedBox(height: 18),
-                const _GreetingSection(),
-                const SizedBox(height: 20),
-                _UpcomingSessionCard(
-                  onTapSchedule: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text(
-                          'Mở Lịch tuần và Lịch ngày chi tiết (M21/M22)...',
-                        ),
-                      ),
-                    );
-                  },
-                ),
-                const SizedBox(height: 26),
-                _PriorityTasksSection(
-                  tasks: _tasks,
-                  onAddTask: _showAddTaskDialog,
-                  onStartFocus: (task) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          'Bắt đầu phiên tập trung 25 phút cho "${task.title}" (M27)!',
-                        ),
-                      ),
-                    );
-                  },
-                  onTaskTap: (task) {
-                    setState(() {
-                      if (task.completedSteps < task.totalSteps) {
-                        task.completedSteps++;
-                      } else {
-                        task.completedSteps = 0;
-                      }
-                    });
-                  },
-                ),
-                const SizedBox(height: 24),
-                const _WeeklyRhythmCard(),
-                const SizedBox(height: 18),
-                _ReviewAlertCard(
-                  onTapReview: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text(
-                          'Mở Rà soát cuối ngày (M10): Bài tập Stack đã quá hạn hôm qua.',
-                        ),
-                      ),
-                    );
-                  },
-                ),
-                const SizedBox(height: 24),
-              ],
-            ),
-          ),
-        ),
-      ),
+      body: _buildTabBody(tasks),
       bottomNavigationBar: _HomeBottomNav(
         currentIndex: _currentTabIndex,
         onTap: (index) {
@@ -412,6 +268,179 @@ class _HomePageState extends ConsumerState<HomePage> {
             setState(() => _currentTabIndex = index);
           }
         },
+      ),
+    );
+  }
+
+  Widget _buildTabBody(List<HomeTaskItem> tasks) {
+    switch (_currentTabIndex) {
+      case 1:
+        return const _UpcomingFeaturePage(
+          title: 'Mục tiêu',
+          message: 'Theo dõi mục tiêu định lượng sẽ có ở FEAT sau.',
+        );
+      case 2:
+        return InboxPage(
+          onScheduledForToday: (scheduled) {
+            ref.read(homeTasksProvider.notifier).addFromInbox(scheduled);
+            setState(() => _currentTabIndex = 0);
+            if (scheduled.isEmpty) return;
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  'Đã lên kế hoạch hôm nay cho ${scheduled.length} việc.',
+                ),
+              ),
+            );
+          },
+        );
+      case 3:
+        return const _UpcomingFeaturePage(
+          title: 'Lịch',
+          message: 'Lịch tuần và lịch ngày sẽ có ở các FEAT lịch biểu.',
+        );
+      default:
+        return _HomeDashboard(
+          tasks: tasks,
+          onNotificationTap: () {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Không có thông báo mới (M07).'),
+                duration: Duration(seconds: 2),
+              ),
+            );
+          },
+          onAvatarTap: _showSettingsSheet,
+          onAddTask: _showAddTaskDialog,
+          onStartFocus: (task) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  'Bắt đầu phiên tập trung 25 phút cho "${task.title}" (M27)!',
+                ),
+              ),
+            );
+          },
+          onTaskTap: (task) {
+            ref.read(homeTasksProvider.notifier).cycleProgress(task.id);
+          },
+          onTapSchedule: () {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text(
+                  'Mở Lịch tuần và Lịch ngày chi tiết (M21/M22)...',
+                ),
+              ),
+            );
+          },
+          onTapReview: () {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text(
+                  'Mở Rà soát cuối ngày (M10): Bài tập Stack đã quá hạn hôm qua.',
+                ),
+              ),
+            );
+          },
+        );
+    }
+  }
+}
+
+class _HomeDashboard extends StatelessWidget {
+  const _HomeDashboard({
+    required this.tasks,
+    required this.onNotificationTap,
+    required this.onAvatarTap,
+    required this.onAddTask,
+    required this.onStartFocus,
+    required this.onTaskTap,
+    required this.onTapSchedule,
+    required this.onTapReview,
+  });
+
+  final List<HomeTaskItem> tasks;
+  final VoidCallback onNotificationTap;
+  final VoidCallback onAvatarTap;
+  final VoidCallback onAddTask;
+  final ValueChanged<HomeTaskItem> onStartFocus;
+  final ValueChanged<HomeTaskItem> onTaskTap;
+  final VoidCallback onTapSchedule;
+  final VoidCallback onTapReview;
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 440),
+          child: ListView(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+            children: [
+              _HomeHeader(
+                onNotificationTap: onNotificationTap,
+                onAvatarTap: onAvatarTap,
+              ),
+              const SizedBox(height: 18),
+              const _GreetingSection(),
+              const SizedBox(height: 20),
+              _UpcomingSessionCard(onTapSchedule: onTapSchedule),
+              const SizedBox(height: 26),
+              _PriorityTasksSection(
+                tasks: tasks,
+                onAddTask: onAddTask,
+                onStartFocus: onStartFocus,
+                onTaskTap: onTaskTap,
+              ),
+              const SizedBox(height: 24),
+              const _WeeklyRhythmCard(),
+              const SizedBox(height: 18),
+              _ReviewAlertCard(onTapReview: onTapReview),
+              const SizedBox(height: 24),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _UpcomingFeaturePage extends StatelessWidget {
+  const _UpcomingFeaturePage({required this.title, required this.message});
+
+  final String title;
+  final String message;
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(32),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                title,
+                style: const TextStyle(
+                  color: Color(0xFF0D253C),
+                  fontSize: 24,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                message,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  color: Color(0xFF5D7189),
+                  fontSize: 15,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
