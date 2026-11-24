@@ -87,9 +87,11 @@ class DashboardPriorities extends StatelessWidget {
     super.key,
     required this.data,
     required this.onInbox,
+    required this.onPlan,
   });
   final DashboardData data;
   final VoidCallback onInbox;
+  final VoidCallback onPlan;
 
   @override
   Widget build(BuildContext context) => Column(
@@ -119,6 +121,12 @@ class DashboardPriorities extends StatelessWidget {
             ),
           ),
         ],
+      ),
+      const SizedBox(height: 12),
+      OutlinedButton.icon(
+        onPressed: onPlan,
+        icon: const Icon(Icons.edit_calendar_outlined),
+        label: const Text('Lên kế hoạch hôm nay'),
       ),
       const SizedBox(height: 12),
       Text(
@@ -219,6 +227,16 @@ class DashboardPriorities extends StatelessWidget {
                                   ),
                                 ),
                               const SizedBox(height: 10),
+                              if (data.tasks[i].estimatedMinutes != null)
+                                Padding(
+                                  padding: const EdgeInsets.only(bottom: 8),
+                                  child: Text(
+                                    'Dự kiến ${data.tasks[i].estimatedMinutes} phút',
+                                    style: const TextStyle(
+                                      color: dashboardMuted,
+                                    ),
+                                  ),
+                                ),
                               if (data.tasks[i].steps > 0) ...[
                                 LinearProgressIndicator(
                                   value:

@@ -7,6 +7,7 @@ import '../../tasks/presentation/inbox_provider.dart';
 class DashboardTask {
   DashboardTask.fromJson(Map<String, dynamic> row)
     : title = row['title'] as String,
+      estimatedMinutes = row['estimated_minutes'] as int?,
       project = (row['projects'] as Map<String, dynamic>?)?['name'] as String?,
       dueDate = DateTime.tryParse(row['due_date'] as String? ?? ''),
       steps = (row['subtasks'] as List).length,
@@ -15,6 +16,7 @@ class DashboardTask {
           .length;
 
   final String title;
+  final int? estimatedMinutes;
   final String? project;
   final DateTime? dueDate;
   final int steps;
@@ -77,11 +79,14 @@ final dashboardProvider = FutureProvider.autoDispose<DashboardData>((
     client.from('profiles').select('full_name').eq('id', userId).maybeSingle(),
     client
         .from('tasks')
-        .select('title,due_date,projects(name),subtasks(is_completed)')
+        .select(
+          'title,due_date,estimated_minutes,projects(name),subtasks(is_completed)',
+        )
         .eq('user_id', userId)
         .eq('scheduled_date', date)
         .eq('is_archived', false)
         .inFilter('status', ['TODO', 'IN_PROGRESS'])
+        .order('daily_order', nullsFirst: false)
         .order('priority', ascending: false)
         .order('due_date')
         .order('created_at')
