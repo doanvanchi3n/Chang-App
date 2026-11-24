@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../../home/data/dashboard_provider.dart';
+import 'daily_plan_page.dart';
 import 'inbox_provider.dart';
 import 'widgets/inbox_widgets.dart';
 
@@ -20,7 +19,6 @@ class _InboxPageState extends ConsumerState<InboxPage> {
   bool _saving = false;
   bool _planning = false;
   String? _saveError;
-  String? _planError;
 
   @override
   void dispose() {
@@ -70,56 +68,22 @@ class _InboxPageState extends ConsumerState<InboxPage> {
     final ids = tasks.asData?.value
         .where((task) => _selected.contains(task.id))
         .map((task) => task.id)
-        .toSet();
+        .toList();
     if (ids == null || ids.isEmpty) return;
     FocusScope.of(context).unfocus();
-    setState(() {
-      _planning = true;
-      _planError = null;
-    });
-    var complete = false;
+    setState(() => _planning = true);
     try {
-      final updated = await ref.read(inboxRepositoryProvider).planToday(ids);
+      final saved = await Navigator.of(context).push<bool>(
+        MaterialPageRoute(builder: (_) => DailyPlanPage(initialTaskIds: ids)),
+      );
       if (!mounted) return;
-      setState(() {
-        _selected.removeAll(updated);
-        complete = updated.length == ids.length;
-        if (!complete) {
-          _planError =
-              'Đã xếp ${updated.length}/${ids.length} việc vào hôm nay. '
-              'Một số việc chưa được cập nhật hoặc đã thay đổi. '
-              'Hãy kiểm tra lại danh sách trước khi thử lại.';
-        }
-      });
-    } catch (error) {
-      if (mounted) {
-        setState(() {
-          _planError = error is PostgrestException && error.code == '42501'
-              ? 'Chưa có quyền cập nhật kế hoạch. Vui lòng kiểm tra quyền truy cập dữ liệu.'
-              : 'Chưa xác nhận được kế hoạch đã lưu. '
-                    'Hãy làm mới danh sách trước khi thử lại.';
-        });
+      ref.invalidate(inboxProvider);
+      if (saved == true && Navigator.of(context).canPop()) {
+        Navigator.of(context).pop();
       }
     } finally {
-      if (mounted) {
-        // Re-read even after a network error: the server may have committed.
-        ref.invalidate(inboxProvider);
-        ref.invalidate(dashboardProvider);
-        setState(() => _planning = false);
-      }
+      if (mounted) setState(() => _planning = false);
     }
-    if (!mounted) return;
-    if (!complete) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(_planError!)));
-      return;
-    }
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Đã xếp ${ids.length} việc vào kế hoạch hôm nay.'),
-      ),
-    );
-    if (Navigator.of(context).canPop()) Navigator.of(context).pop();
   }
 
   @override
@@ -317,21 +281,6 @@ class _InboxPageState extends ConsumerState<InboxPage> {
                               ),
                             ),
                             const SizedBox(height: 16),
-                            if (_planError != null)
-                              Padding(
-                                padding: const EdgeInsets.only(bottom: 16),
-                                child: Semantics(
-                                  liveRegion: true,
-                                  child: Text(
-                                    _planError!,
-                                    style: TextStyle(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .error,
-                                    ),
-                                  ),
-                                ),
-                              ),
                             tasks.when(
                               skipLoadingOnRefresh: false,
                               loading: () => const Padding(
@@ -398,18 +347,20 @@ class _InboxPageState extends ConsumerState<InboxPage> {
                                       items: items,
                                       selected: _selected,
                                       onToggle: (id) => setState(() {
-                                        if (!_selected.add(id))
+                                        if (!_selected.add(id)) {
                                           _selected.remove(id);
+                                        }
                                       }),
                                       onToggleAll: () => setState(() {
                                         final allSelected = items.every(
                                           (task) => _selected.contains(task.id),
                                         );
                                         _selected.clear();
-                                        if (!allSelected)
+                                        if (!allSelected) {
                                           _selected.addAll(
                                             items.map((task) => task.id),
                                           );
+                                        }
                                       }),
                                     ),
                             ),

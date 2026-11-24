@@ -11,13 +11,14 @@ const inboxBorder = Color(0xFFD8E7FF);
 const inboxSoft = Color(0xFFE6F1FF);
 
 class InboxHeader extends StatelessWidget {
-  const InboxHeader({super.key, required this.onRefresh});
+  const InboxHeader({super.key, required this.onRefresh, this.showBack = true});
   final VoidCallback onRefresh;
+  final bool showBack;
 
   @override
   Widget build(BuildContext context) => Row(
     children: [
-      if (Navigator.of(context).canPop())
+      if (showBack && Navigator.of(context).canPop())
         IconButton(
           tooltip: 'Về Dashboard',
           onPressed: () => Navigator.of(context).pop(),

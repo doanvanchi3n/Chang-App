@@ -42,27 +42,6 @@ class InboxRepository {
     }
   }
 
-  Future<Set<String>> planToday(Iterable<String> taskIds) async {
-    final ids = taskIds.toSet();
-    if (ids.isEmpty) return <String>{};
-    final userId = await ensureUserId();
-    final now = DateTime.now();
-    final date =
-        '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
-    // One update for the selected Inbox rows. Never overwrite another plan,
-    // resurrect a completed task, or modify another user's work.
-    final rows = await _client
-        .from('tasks')
-        .update({'scheduled_date': date})
-        .eq('user_id', userId)
-        .inFilter('id', ids.toList())
-        .isFilter('scheduled_date', null)
-        .eq('is_archived', false)
-        .inFilter('status', ['TODO', 'IN_PROGRESS'])
-        .select('id');
-    return rows.map((row) => row['id'] as String).toSet();
-  }
-
   Future<InboxTask> add(String title) async {
     final trimmed = title.trim();
     if (trimmed.isEmpty || trimmed.runes.length > 200) {

@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../app/widgets/main_navigation.dart';
 import '../../../tasks/presentation/inbox_page.dart';
+import '../../../tasks/presentation/daily_plan_page.dart';
 import '../../data/dashboard_provider.dart';
 import '../widgets/dashboard_sections.dart';
 
@@ -19,6 +20,7 @@ class _HomePageState extends ConsumerState<HomePage>
     with WidgetsBindingObserver {
   Timer? _midnight;
   bool _inboxOpen = false;
+  bool _planOpen = false;
 
   @override
   void initState() {
@@ -56,7 +58,7 @@ class _HomePageState extends ConsumerState<HomePage>
   }
 
   Future<void> _openInbox() async {
-    if (_inboxOpen) return;
+    if (_inboxOpen || _planOpen) return;
     _inboxOpen = true;
     try {
       await Navigator.of(context)
@@ -73,6 +75,18 @@ class _HomePageState extends ConsumerState<HomePage>
       await ref.read(dashboardProvider.future);
     } catch (_) {
       // The dashboard renders its error state; refresh does not hide failures.
+    }
+  }
+
+  Future<void> _openPlan() async {
+    if (_planOpen || _inboxOpen) return;
+    _planOpen = true;
+    try {
+      await Navigator.of(context)
+          .push<bool>(MaterialPageRoute(builder: (_) => const DailyPlanPage()));
+    } finally {
+      _planOpen = false;
+      if (mounted) ref.invalidate(dashboardProvider);
     }
   }
 
@@ -216,6 +230,7 @@ class _HomePageState extends ConsumerState<HomePage>
                             DashboardPriorities(
                               data: data,
                               onInbox: _openInbox,
+                              onPlan: _openPlan,
                             ),
                             const SizedBox(height: 20),
                             Material(
