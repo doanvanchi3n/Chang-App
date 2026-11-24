@@ -1,5 +1,5 @@
 import 'package:chang_app/bootstrap.dart';
-import 'package:chang_app/core/constants/app_constants.dart';
+import 'package:chang_app/features/home/presentation/pages/home_page.dart';
 import 'package:chang_app/data/remote/supabase_client_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -17,9 +17,9 @@ void main() {
     addTearDown(supabase.dispose);
     expect(supabase.isInitialized, isTrue);
     expect(supabase.client.auth.currentSession, isNull);
-    expect(find.text(AppConstants.name), findsOneWidget);
+    expect(find.byType(HomePage), findsOneWidget);
     final container = ProviderScope.containerOf(
-      tester.element(find.text(AppConstants.name)),
+      tester.element(find.byType(HomePage)),
     );
     expect(container.read(supabaseClientProvider), same(supabase.client));
     expect(tester.takeException(), isNull);

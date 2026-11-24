@@ -1,0 +1,10 @@
+{
+  "dart.flutterHotReloadOnSave": "all",
+  "files.exclude": {
+    "**/.dart_tool": true,
+    "**/build": true,
+    "**/.flutter-plugins-dependencies": true,
+    "**/.idea": true,
+    "**/*.iml": true
+  }
+}
