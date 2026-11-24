@@ -5,6 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../app/widgets/main_navigation.dart';
 import '../../../tasks/presentation/inbox_page.dart';
+import '../../../tasks/presentation/create_task_page.dart';
+import '../../../tasks/presentation/task_detail_page.dart';
 import '../../../tasks/presentation/daily_plan_page.dart';
 import '../../data/dashboard_provider.dart';
 import '../widgets/dashboard_sections.dart';
@@ -21,6 +23,7 @@ class _HomePageState extends ConsumerState<HomePage>
   Timer? _midnight;
   bool _inboxOpen = false;
   bool _planOpen = false;
+  bool _taskOpen = false;
 
   @override
   void initState() {
@@ -58,7 +61,7 @@ class _HomePageState extends ConsumerState<HomePage>
   }
 
   Future<void> _openInbox() async {
-    if (_inboxOpen || _planOpen) return;
+    if (_inboxOpen || _planOpen || _taskOpen) return;
     _inboxOpen = true;
     try {
       await Navigator.of(context)
@@ -79,13 +82,25 @@ class _HomePageState extends ConsumerState<HomePage>
   }
 
   Future<void> _openPlan() async {
-    if (_planOpen || _inboxOpen) return;
+    if (_planOpen || _inboxOpen || _taskOpen) return;
     _planOpen = true;
     try {
       await Navigator.of(context)
           .push<bool>(MaterialPageRoute(builder: (_) => const DailyPlanPage()));
     } finally {
       _planOpen = false;
+      if (mounted) ref.invalidate(dashboardProvider);
+    }
+  }
+
+  Future<void> _openTaskPage(Widget page) async {
+    if (_taskOpen || _inboxOpen || _planOpen) return;
+    _taskOpen = true;
+    try {
+      await Navigator.of(context)
+          .push(MaterialPageRoute<void>(builder: (_) => page));
+    } finally {
+      _taskOpen = false;
       if (mounted) ref.invalidate(dashboardProvider);
     }
   }
@@ -229,7 +244,10 @@ class _HomePageState extends ConsumerState<HomePage>
                             const SizedBox(height: 24),
                             DashboardPriorities(
                               data: data,
-                              onInbox: _openInbox,
+                              onCreate: () =>
+                                  _openTaskPage(const CreateTaskPage()),
+                              onTask: (id) =>
+                                  _openTaskPage(TaskDetailPage(taskId: id)),
                               onPlan: _openPlan,
                             ),
                             const SizedBox(height: 20),

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'daily_plan_page.dart';
+import 'create_task_page.dart';
+import 'task_detail_page.dart';
 import 'inbox_provider.dart';
 import 'widgets/inbox_widgets.dart';
 
@@ -18,6 +20,7 @@ class _InboxPageState extends ConsumerState<InboxPage> {
   final _selected = <String>{};
   bool _saving = false;
   bool _planning = false;
+  bool _taskOpen = false;
   String? _saveError;
 
   @override
@@ -83,6 +86,18 @@ class _InboxPageState extends ConsumerState<InboxPage> {
       }
     } finally {
       if (mounted) setState(() => _planning = false);
+    }
+  }
+
+  Future<void> _openTaskPage(Widget page) async {
+    if (_saving || _planning || _taskOpen) return;
+    _taskOpen = true;
+    try {
+      await Navigator.of(context)
+          .push(MaterialPageRoute<void>(builder: (_) => page));
+    } finally {
+      _taskOpen = false;
+      if (mounted) ref.invalidate(inboxProvider);
     }
   }
 
@@ -268,6 +283,19 @@ class _InboxPageState extends ConsumerState<InboxPage> {
                                 ),
                               ),
                             const SizedBox(height: 20),
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: TextButton.icon(
+                                onPressed: _saving || _planning
+                                    ? null
+                                    : () =>
+                                          _openTaskPage(const CreateTaskPage()),
+                                icon: const Icon(Icons.playlist_add),
+                                label: const Text(
+                                  'Tạo công việc và chia bước nhỏ',
+                                ),
+                              ),
+                            ),
                             const InboxMascotMessage(),
                             const SizedBox(height: 24),
                             Text(
@@ -346,6 +374,9 @@ class _InboxPageState extends ConsumerState<InboxPage> {
                                   : InboxTaskList(
                                       items: items,
                                       selected: _selected,
+                                      onOpen: (id) => _openTaskPage(
+                                        TaskDetailPage(taskId: id),
+                                      ),
                                       onToggle: (id) => setState(() {
                                         if (!_selected.add(id)) {
                                           _selected.remove(id);

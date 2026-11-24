@@ -137,11 +137,13 @@ class InboxTaskList extends StatelessWidget {
     required this.selected,
     required this.onToggle,
     required this.onToggleAll,
+    required this.onOpen,
   });
   final List<InboxTask> items;
   final Set<String> selected;
   final ValueChanged<String> onToggle;
   final VoidCallback onToggleAll;
+  final ValueChanged<String> onOpen;
 
   @override
   Widget build(BuildContext context) {
@@ -219,30 +221,7 @@ class InboxTaskList extends StatelessWidget {
                       child: Text('Xem thông tin'),
                     ),
                   ],
-                  onSelected: (_) => showModalBottomSheet<void>(
-                    context: context,
-                    showDragHandle: true,
-                    isScrollControlled: true,
-                    builder: (context) => SafeArea(
-                      child: SingleChildScrollView(
-                        padding: const EdgeInsets.all(24),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              items[i].title,
-                              style: Theme.of(context).textTheme.titleLarge,
-                            ),
-                            const SizedBox(height: 12),
-                            Text(inboxRecordedDate(items[i].createdAt)),
-                            const SizedBox(height: 8),
-                            const Text('Chưa lên lịch'),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
+                  onSelected: (_) => onOpen(items[i].id),
                 ),
               ),
             ],

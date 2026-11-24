@@ -86,11 +86,13 @@ class DashboardPriorities extends StatelessWidget {
   const DashboardPriorities({
     super.key,
     required this.data,
-    required this.onInbox,
+    required this.onCreate,
+    required this.onTask,
     required this.onPlan,
   });
   final DashboardData data;
-  final VoidCallback onInbox;
+  final VoidCallback onCreate;
+  final ValueChanged<String> onTask;
   final VoidCallback onPlan;
 
   @override
@@ -112,7 +114,7 @@ class DashboardPriorities extends StatelessWidget {
             ),
           ),
           FilledButton.icon(
-            onPressed: onInbox,
+            onPressed: onCreate,
             icon: const Icon(Icons.add),
             label: const Text('Thêm việc'),
             style: FilledButton.styleFrom(
@@ -226,6 +228,11 @@ class DashboardPriorities extends StatelessWidget {
                                     ),
                                   ),
                                 ),
+                              TextButton.icon(
+                                onPressed: () => onTask(data.tasks[i].id),
+                                icon: const Icon(Icons.arrow_forward, size: 18),
+                                label: const Text('Chi tiết và tập trung'),
+                              ),
                               const SizedBox(height: 10),
                               if (data.tasks[i].estimatedMinutes != null)
                                 Padding(
