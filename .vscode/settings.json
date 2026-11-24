@@ -6,5 +6,6 @@
     "**/.flutter-plugins-dependencies": true,
     "**/.idea": true,
     "**/*.iml": true
-  }
+  },
+  "cmake.sourceDirectory": "D:/Work2/Coding_stuff/Cross_platform_projects/Chang-App/linux"
 }
