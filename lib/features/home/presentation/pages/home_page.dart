@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../app/widgets/main_navigation.dart';
 import '../../../tasks/presentation/inbox_page.dart';
 import '../../../tasks/presentation/daily_plan_page.dart';
+import '../../../tasks/presentation/task_detail_page.dart';
 import '../../data/dashboard_provider.dart';
 import '../widgets/dashboard_sections.dart';
 
@@ -88,6 +89,13 @@ class _HomePageState extends ConsumerState<HomePage>
       _planOpen = false;
       if (mounted) ref.invalidate(dashboardProvider);
     }
+  }
+
+  Future<void> _openTaskDetail(String taskId) async {
+    await Navigator.of(context).push<void>(
+      MaterialPageRoute(builder: (_) => TaskDetailPage(taskId: taskId)),
+    );
+    if (mounted) ref.invalidate(dashboardProvider);
   }
 
   @override
@@ -231,6 +239,7 @@ class _HomePageState extends ConsumerState<HomePage>
                               data: data,
                               onInbox: _openInbox,
                               onPlan: _openPlan,
+                              onOpenTask: _openTaskDetail,
                             ),
                             const SizedBox(height: 20),
                             Material(

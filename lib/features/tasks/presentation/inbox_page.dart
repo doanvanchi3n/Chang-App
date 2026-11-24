@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'daily_plan_page.dart';
 import 'inbox_provider.dart';
+import 'task_detail_page.dart';
 import 'widgets/inbox_widgets.dart';
 
 class InboxPage extends ConsumerStatefulWidget {
@@ -59,6 +60,14 @@ class _InboxPageState extends ConsumerState<InboxPage> {
     } catch (_) {
       // The list displays the provider error and its retry action.
     }
+  }
+
+  Future<void> _openTaskDetail(String taskId) async {
+    if (_planning || _saving) return;
+    await Navigator.of(context).push<void>(
+      MaterialPageRoute(builder: (_) => TaskDetailPage(taskId: taskId)),
+    );
+    if (mounted) ref.invalidate(inboxProvider);
   }
 
   Future<void> _planToday() async {
@@ -362,6 +371,7 @@ class _InboxPageState extends ConsumerState<InboxPage> {
                                           );
                                         }
                                       }),
+                                      onOpenDetail: _openTaskDetail,
                                     ),
                             ),
                           ],

@@ -88,10 +88,12 @@ class DashboardPriorities extends StatelessWidget {
     required this.data,
     required this.onInbox,
     required this.onPlan,
+    this.onOpenTask,
   });
   final DashboardData data;
   final VoidCallback onInbox;
   final VoidCallback onPlan;
+  final ValueChanged<String>? onOpenTask;
 
   @override
   Widget build(BuildContext context) => Column(
@@ -186,76 +188,86 @@ class DashboardPriorities extends StatelessWidget {
                       ),
                       const SizedBox(width: 12),
                       Expanded(
-                        child: Container(
-                          padding: const EdgeInsets.all(16),
-                          decoration: BoxDecoration(
-                            color: i == 0
-                                ? const Color(0xFFEAF5FD)
-                                : Colors.white,
-                            border: Border.all(color: const Color(0xFFDCEAF6)),
+                        child: Material(
+                          color: i == 0
+                              ? const Color(0xFFEAF5FD)
+                              : Colors.white,
+                          shape: RoundedRectangleBorder(
+                            side: const BorderSide(color: Color(0xFFDCEAF6)),
                             borderRadius: BorderRadius.circular(18),
                           ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                data.tasks[i].title,
-                                style: const TextStyle(
-                                  color: dashboardInk,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w700,
-                                ),
+                          clipBehavior: Clip.antiAlias,
+                          child: InkWell(
+                            onTap: onOpenTask == null
+                                ? null
+                                : () => onOpenTask!(data.tasks[i].id),
+                            child: Padding(
+                              padding: const EdgeInsets.all(16),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    data.tasks[i].title,
+                                    style: const TextStyle(
+                                      color: dashboardInk,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ),
+                                  if (data.tasks[i].project != null)
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 6),
+                                      child: Text(
+                                        data.tasks[i].project!,
+                                        style: const TextStyle(
+                                          color: dashboardMuted,
+                                        ),
+                                      ),
+                                    ),
+                                  if (data.tasks[i].dueDate != null)
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 6),
+                                      child: Text(
+                                        'Hạn ${dashboardDate(data.tasks[i].dueDate!.toLocal())}',
+                                        style: const TextStyle(
+                                          color: dashboardMuted,
+                                        ),
+                                      ),
+                                    ),
+                                  const SizedBox(height: 10),
+                                  if (data.tasks[i].estimatedMinutes != null)
+                                    Padding(
+                                      padding: const EdgeInsets.only(bottom: 8),
+                                      child: Text(
+                                        'Dự kiến ${data.tasks[i].estimatedMinutes} phút',
+                                        style: const TextStyle(
+                                          color: dashboardMuted,
+                                        ),
+                                      ),
+                                    ),
+                                  if (data.tasks[i].steps > 0) ...[
+                                    LinearProgressIndicator(
+                                      value:
+                                          data.tasks[i].completedSteps /
+                                          data.tasks[i].steps,
+                                      color: dashboardBlue,
+                                      backgroundColor: const Color(0xFFCEE1ED),
+                                    ),
+                                    const SizedBox(height: 6),
+                                    Text(
+                                      '${data.tasks[i].completedSteps}/${data.tasks[i].steps} bước',
+                                      style: const TextStyle(
+                                        color: dashboardMuted,
+                                      ),
+                                    ),
+                                  ] else
+                                    const Text(
+                                      'Chưa chia bước nhỏ',
+                                      style: TextStyle(color: dashboardMuted),
+                                    ),
+                                ],
                               ),
-                              if (data.tasks[i].project != null)
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 6),
-                                  child: Text(
-                                    data.tasks[i].project!,
-                                    style: const TextStyle(
-                                      color: dashboardMuted,
-                                    ),
-                                  ),
-                                ),
-                              if (data.tasks[i].dueDate != null)
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 6),
-                                  child: Text(
-                                    'Hạn ${dashboardDate(data.tasks[i].dueDate!.toLocal())}',
-                                    style: const TextStyle(
-                                      color: dashboardMuted,
-                                    ),
-                                  ),
-                                ),
-                              const SizedBox(height: 10),
-                              if (data.tasks[i].estimatedMinutes != null)
-                                Padding(
-                                  padding: const EdgeInsets.only(bottom: 8),
-                                  child: Text(
-                                    'Dự kiến ${data.tasks[i].estimatedMinutes} phút',
-                                    style: const TextStyle(
-                                      color: dashboardMuted,
-                                    ),
-                                  ),
-                                ),
-                              if (data.tasks[i].steps > 0) ...[
-                                LinearProgressIndicator(
-                                  value:
-                                      data.tasks[i].completedSteps /
-                                      data.tasks[i].steps,
-                                  color: dashboardBlue,
-                                  backgroundColor: const Color(0xFFCEE1ED),
-                                ),
-                                const SizedBox(height: 6),
-                                Text(
-                                  '${data.tasks[i].completedSteps}/${data.tasks[i].steps} bước',
-                                  style: const TextStyle(color: dashboardMuted),
-                                ),
-                              ] else
-                                const Text(
-                                  'Chưa chia bước nhỏ',
-                                  style: TextStyle(color: dashboardMuted),
-                                ),
-                            ],
+                            ),
                           ),
                         ),
                       ),
