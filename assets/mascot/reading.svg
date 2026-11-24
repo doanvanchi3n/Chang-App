@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="900" viewBox="210 35 880 900" fill="none" role="img" aria-labelledby="title description">
+  <title id="title">Chặng – Mascot chim cánh cụt đang đọc sách</title>
+  <desc id="description">Minh họa vector chim cánh cụt màu xanh đậm đội mũ nồi xanh, đeo túi vàng và đang đọc sách. Nền trong suốt, các phần có thể chỉnh sửa.</desc>
+  <defs>
+    <linearGradient id="bodyGradient" x1="378" y1="280" x2="915" y2="729" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#103D69"/><stop offset="0.54" stop-color="#194570"/><stop offset="1" stop-color="#0D3156"/>
+    </linearGradient>
+    <linearGradient id="wingGradient" x1="277" y1="535" x2="425" y2="695" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#174674"/><stop offset="1" stop-color="#10365F"/>
+    </linearGradient>
+    <linearGradient id="faceGradient" x1="614" y1="290" x2="703" y2="863" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFFDF9"/><stop offset="0.7" stop-color="#FFFFFF"/><stop offset="1" stop-color="#FFFDF7"/>
+    </linearGradient>
+    <linearGradient id="hatTop" x1="491" y1="124" x2="775" y2="273" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#377DC0"/><stop offset="0.56" stop-color="#4E99DE"/><stop offset="1" stop-color="#3983C7"/>
+    </linearGradient>
+    <linearGradient id="hatBrim" x1="490" y1="244" x2="821" y2="167" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#75B3F0"/><stop offset="0.56" stop-color="#67ABED"/><stop offset="1" stop-color="#327CC6"/>
+    </linearGradient>
+    <linearGradient id="strapGradient" x1="376" y1="492" x2="699" y2="714" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFDA6C"/><stop offset="0.55" stop-color="#FFC94A"/><stop offset="1" stop-color="#FFBB2F"/>
+    </linearGradient>
+    <linearGradient id="bagGradient" x1="676" y1="681" x2="863" y2="819" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFC447"/><stop offset="0.57" stop-color="#FFCD5B"/><stop offset="1" stop-color="#FBC954"/>
+    </linearGradient>
+    <linearGradient id="bagFlapGradient" x1="686" y1="700" x2="834" y2="763" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFDD76"/><stop offset="1" stop-color="#FEC34C"/>
+    </linearGradient>
+    <linearGradient id="leftPage" x1="701" y1="512" x2="865" y2="733" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFF8E6"/><stop offset="1" stop-color="#FFF0CF"/>
+    </linearGradient>
+    <linearGradient id="rightPage" x1="859" y1="510" x2="1026" y2="738" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFF9E6"/><stop offset="0.95" stop-color="#FFF0CB"/>
+    </linearGradient>
+    <linearGradient id="beakGradient" x1="702" y1="395" x2="739" y2="465" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFCE38"/><stop offset="1" stop-color="#FFAB00"/>
+    </linearGradient>
+    <linearGradient id="footGradient" x1="401" y1="829" x2="805" y2="886" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFB900"/><stop offset="0.5" stop-color="#FFA900"/><stop offset="1" stop-color="#FFBB1D"/>
+    </linearGradient>
+    <filter id="subtleShadow" x="-20%" y="-30%" width="140%" height="180%"><feGaussianBlur stdDeviation="5"/></filter>
+  </defs>
+
+  <!-- Mỗi nhóm là một thành phần độc lập để biên tập trong Figma/Illustrator. -->
+  <g id="ground-shadow" opacity="0.36">
+    <ellipse cx="659" cy="870" rx="306" ry="21" fill="#A9C1CB" filter="url(#subtleShadow)"/>
+    <ellipse cx="629" cy="865" rx="245" ry="15" fill="#B4C5C0" opacity="0.48"/>
+  </g>
+
+  <g id="attention-rays" stroke="#FFAC0A" stroke-width="19" stroke-linecap="round">
+    <path d="M337 247L298 234"/><path d="M363 206L331 178"/><path d="M408 169L392 129"/>
+  </g>
+
+  <g id="feet" fill="url(#footGradient)">
+    <path id="left-foot" d="M434 820C411 821 390 832 383 848C377 865 386 873 402 874C412 876 423 871 429 866C428 881 437 885 453 883C469 883 479 875 484 868C490 882 507 887 522 879C536 873 536 857 520 846C494 827 464 818 434 820Z"/>
+    <path d="M430 861C433 846 437 836 445 830" stroke="#E89B0B" stroke-width="4" stroke-linecap="round" opacity="0.5"/>
+    <path id="right-foot" d="M696 821C678 822 665 836 668 854C670 871 689 878 707 875C722 885 739 882 748 870C759 883 774 881 783 869C798 876 814 865 816 854C815 835 789 820 765 819Z"/>
+    <path d="M730 844L733 869M768 845L769 864" stroke="#E89B0B" stroke-width="4" stroke-linecap="round" opacity="0.42"/>
+  </g>
+
+  <!-- Cánh trái nằm phía sau thân -->
+  <g id="left-flipper">
+    <path d="M383 476C351 506 315 563 291 619C277 655 275 675 294 688C314 702 345 691 378 673C406 657 426 624 433 592L414 519Z" fill="url(#wingGradient)"/>
+  </g>
+
+  <g id="penguin-body">
+    <path d="M475 251C516 208 590 184 669 184C765 183 840 232 884 309C914 364 916 435 899 492C897 534 917 592 911 667C906 751 874 808 823 831C778 855 667 855 556 852C457 851 402 822 371 764C336 693 356 617 365 560C376 492 373 432 390 366C407 314 435 274 475 251Z" fill="url(#bodyGradient)"/>
+    <path d="M846 283C886 355 892 439 872 516C902 616 908 746 840 814C874 792 903 737 910 674C917 597 899 545 899 492C916 435 913 363 883 309C871 287 856 269 846 283Z" fill="#092F56" opacity="0.15"/>
+  </g>
+
+  <g id="white-face-and-tummy">
+    <path d="M607 290C556 288 510 329 490 393C470 458 490 507 540 529C492 562 455 627 441 699C423 767 432 822 473 838C517 855 690 856 749 842C805 826 829 780 824 713C821 641 806 576 779 526C843 525 876 480 872 418C868 354 841 305 801 307C751 300 723 340 716 418C708 365 677 290 607 290Z" fill="url(#faceGradient)"/>
+  </g>
+
+  <g id="face-details">
+    <ellipse id="left-eye" cx="620" cy="378" rx="22" ry="27" fill="#082958"/>
+    <ellipse id="right-eye" cx="792" cy="394" rx="21" ry="26" fill="#082958"/>
+    <circle id="left-cheek" cx="569" cy="436" r="33" fill="#F8C8BB" opacity="0.91"/>
+    <circle id="right-cheek" cx="818" cy="451" r="31" fill="#F7C8BC" opacity="0.91"/>
+    <path id="beak" d="M711 386C686 388 672 412 666 426C661 448 682 466 710 467C735 467 755 451 757 433C757 411 735 386 711 386Z" fill="url(#beakGradient)"/>
+    <path id="beak-smile" d="M675 429C699 434 728 438 749 430" stroke="#E88C03" stroke-width="5" stroke-linecap="round" opacity="0.8"/>
+  </g>
+
+  <g id="beret">
+    <path id="beret-tip" d="M585 117C585 98 615 99 625 120L617 135L588 132Z" fill="#1C568D"/>
+    <path id="beret-dome" d="M484 253C481 211 509 162 549 142C585 120 650 112 694 120C740 127 766 152 777 189C739 185 691 208 637 232C581 256 524 266 484 253Z" fill="url(#hatTop)"/>
+    <path id="beret-brim" d="M478 252C522 263 588 243 654 209C710 181 760 165 792 166C812 168 828 184 829 201C830 217 819 229 808 229C789 229 779 217 762 221C734 225 693 248 658 260C588 291 522 281 482 263C478 261 476 256 478 252Z" fill="url(#hatBrim)"/>
+    <path d="M493 262C552 272 615 241 656 221" stroke="#BCE3FF" stroke-width="3" opacity="0.15" stroke-linecap="round"/>
+  </g>
+
+  <!-- Quai túi nằm phía trước ngực và phía sau quyển sách -->
+  <g id="shoulder-strap">
+    <path d="M380 488C452 563 552 633 690 707" stroke="url(#strapGradient)" stroke-width="29" stroke-linecap="round"/>
+    <path d="M383 489C459 562 562 643 679 698" stroke="#FFE297" stroke-width="4" stroke-linecap="round" opacity="0.16"/>
+  </g>
+
+  <g id="crossbody-bag">
+    <path id="bag-body" d="M683 653C716 650 768 656 811 660C838 661 861 676 868 707L867 796C867 813 854 824 837 830C802 842 728 838 700 830C680 823 670 811 670 788L669 680C669 667 674 656 683 653Z" fill="url(#bagGradient)"/>
+    <path d="M684 665L683 790C684 809 690 815 703 823" stroke="#F5A919" stroke-width="6" opacity="0.35" stroke-linecap="round"/>
+    <path id="bag-flap" d="M683 675C718 663 766 672 811 682C835 688 855 708 859 726C860 746 855 756 840 766C809 784 748 784 715 769C695 759 683 731 683 675Z" fill="url(#bagFlapGradient)"/>
+    <path id="bag-seam" d="M684 701C690 735 700 759 721 765C745 772 814 783 843 758" stroke="#F0A82C" stroke-width="8" stroke-linecap="round" opacity="0.85"/>
+    <rect id="bag-buckle" x="778" y="746" width="38" height="51" rx="16" fill="#123A65"/>
+    <ellipse id="bag-buckle-hole" cx="797" cy="771" rx="8" ry="11" fill="#FFEFBD"/>
+  </g>
+
+  <!-- Cánh phải nằm phía sau sách -->
+  <g id="right-flipper-back">
+    <path d="M861 536C893 547 933 567 958 606C972 628 972 665 958 683C942 700 913 697 893 685L844 643Z" fill="#123A66"/>
+  </g>
+
+  <g id="open-book">
+    <path id="book-left-side-shadow" d="M679 482C700 483 707 495 711 517L744 707C778 719 823 734 856 755L849 766C804 751 751 739 719 724C703 698 677 539 676 500C675 490 676 484 679 482Z" fill="#BFAF89" opacity="0.21"/>
+    <path id="book-left-page" d="M687 475C737 490 810 517 857 528L852 755C802 744 755 727 723 711C701 635 682 525 687 475Z" fill="url(#leftPage)"/>
+    <path id="book-right-page" d="M857 528C914 504 980 467 1025 440C1018 523 1009 630 997 710C955 730 907 744 852 755Z" fill="url(#rightPage)"/>
+    <path id="book-spine" d="M857 529C856 603 852 677 852 755" stroke="#ECDAB8" stroke-width="8" stroke-linecap="round" opacity="0.75"/>
+    <path id="book-left-page-highlight" d="M693 484C741 502 800 524 846 535" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" opacity="0.29"/>
+    <path id="book-right-page-highlight" d="M867 533C910 516 967 482 1013 455" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" opacity="0.26"/>
+  </g>
+
+  <!-- Hai cánh giữ trang sách -->
+  <g id="book-holding-flippers">
+    <path id="left-flipper-on-book" d="M718 626C742 629 763 650 765 674C768 702 751 728 727 731C705 734 682 719 679 690C674 666 690 632 718 626Z" fill="#16436D"/>
+    <path id="right-flipper-on-book" d="M981 594C1005 594 1017 615 1016 641C1015 668 999 681 981 683C963 681 946 664 946 643C946 619 956 595 981 594Z" fill="#15416A"/>
+  </g>
+</svg>

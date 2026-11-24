@@ -134,3 +134,30 @@ Tham khảo công cụ: [Flutter CLI](https://docs.flutter.dev/reference/create-
 [Riverpod](https://pub.dev/packages/flutter_riverpod),
 [go_router](https://pub.dev/packages/go_router),
 [khởi tạo Supabase Flutter](https://supabase.com/docs/reference/dart/initializing).
+
+## FEAT-03 — Hộp việc dùng Supabase
+
+1. Chạy `supabase/migrations/20261123000000_feat03_guest_inbox.sql` trong SQL Editor.
+   Script cho phép `profiles.email` rỗng đối với khách và cấp quyền SELECT/INSERT
+   trên `tasks` cho `authenticated`, giữ nguyên chính sách RLS của dự án.
+2. Bật **Authentication → Sign In / Providers → Allow anonymous sign-ins**.
+3. Chạy `flutter pub get`, rồi mở **Hộp việc chưa lên lịch** từ Home.
+   Phiên khách được tạo khi mở Inbox lần đầu và lưu trên thiết bị bởi Supabase SDK.
+4. Thêm việc, đóng/mở app để kiểm tra dữ liệu; dùng nút Làm mới hoặc kéo xuống
+   để đọc lại Supabase. Không có dữ liệu mẫu dự phòng khi mất kết nối.
+
+Inbox chỉ lấy `tasks` của người dùng hiện tại với `scheduled_date IS NULL`,
+`is_archived = false`, trạng thái `TODO` hoặc `IN_PROGRESS`. Quick Add ghi tên
+việc tối đa 200 ký tự; chỉ xóa nội dung nhập sau khi Supabase xác nhận thành công.
+`seed.sql` không còn tạo dữ liệu mẫu. Không tự xóa các bản ghi đã tồn tại trên
+Supabase vì schema chưa có cột phân biệt bản ghi thử nghiệm và dữ liệu thật.
+
+Phiên khách chưa gắn email/mật khẩu: xóa dữ liệu ứng dụng hoặc đổi thiết bị
+sẽ mất quyền truy cập phiên cũ. Khi triển khai đăng nhập sau này, cần liên kết
+phiên khách với tài khoản để giữ các công việc đã lưu.
+
+Kiểm thử (HTTP giả lập trong test, không ghi dữ liệu lên Supabase):
+
+```bash
+flutter test test/features/tasks
+```

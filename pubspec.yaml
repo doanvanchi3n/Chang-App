@@ -21,13 +21,12 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0
+  http: ^1.6.0
 
 flutter:
   uses-material-design: true
   assets:
-    - assets/mascot/Onboarding.svg
-    - assets/mascot/onboarding_body.svg
-    - assets/mascot/onboarding_wave.svg
+    - assets/mascot/
   fonts:
     - family: Inter
       fonts:

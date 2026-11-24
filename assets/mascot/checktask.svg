@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+     width="550" height="490" viewBox="0 0 550 490" role="img"
+     aria-labelledby="title description">
+  <title id="title">Mascot Chặng – Chim cánh cụt ghi chú</title>
+  <desc id="description">Chim cánh cụt xanh đen đáng yêu, má hồng, mang ba lô vàng, cầm bút và bảng ghi chú. Nền trong suốt, đồ họa vector SVG.</desc>
+  <defs>
+    <linearGradient id="penguin-navy" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#07244E"/>
+      <stop offset="0.62" stop-color="#0B2F61"/>
+      <stop offset="1" stop-color="#062653"/>
+    </linearGradient>
+    <linearGradient id="belly" x1="0" y1="0" x2="0.9" y2="1">
+      <stop offset="0" stop-color="#FFFFFF"/>
+      <stop offset="0.85" stop-color="#FFFFFF"/>
+      <stop offset="1" stop-color="#F5F8FD"/>
+    </linearGradient>
+    <linearGradient id="backpack" x1="0" y1="0" x2="1" y2="0.8">
+      <stop offset="0" stop-color="#FFD52A"/>
+      <stop offset="0.55" stop-color="#FFC000"/>
+      <stop offset="1" stop-color="#FEA500"/>
+    </linearGradient>
+    <linearGradient id="backpack-flap" x1="0" y1="0" x2="0.7" y2="1">
+      <stop offset="0" stop-color="#FFD523"/>
+      <stop offset="1" stop-color="#FFB600"/>
+    </linearGradient>
+    <linearGradient id="feet-yellow" x1="0" y1="0" x2="0.1" y2="1">
+      <stop offset="0" stop-color="#FFD429"/>
+      <stop offset="1" stop-color="#FFB300"/>
+    </linearGradient>
+    <linearGradient id="beak" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFCB1C"/>
+      <stop offset="0.55" stop-color="#FFB900"/>
+      <stop offset="1" stop-color="#F8A900"/>
+    </linearGradient>
+    <linearGradient id="clipboard-edge" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0874DA"/>
+      <stop offset="1" stop-color="#1466BE"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Bóng đổ có thể ẩn riêng trong Figma -->
+  <g id="ground-shadow">
+    <ellipse cx="280" cy="446" rx="234" ry="35" fill="#C8E1FF" opacity="0.88"/>
+  </g>
+
+  <!-- Tia sáng biểu thị ý tưởng / ghi chú -->
+  <g id="sparkles" fill="#FFBE00" stroke="#FFBE00" stroke-linecap="round">
+    <path d="M86 133 L96 151" fill="none" stroke-width="12"/>
+    <path d="M47 166 L68 180" fill="none" stroke-width="12"/>
+    <path d="M36 202 L62 200" fill="none" stroke-width="12"/>
+  </g>
+
+  <!-- Thân / đầu: hai phần tách biệt với nền trong suốt -->
+  <g id="penguin-body">
+    <path id="navy-silhouette"
+          d="M163 239
+             C145 218 143 182 147 152
+             C154 87 196 40 257 31
+             C322 19 391 38 432 90
+             C467 132 469 184 455 223
+             C464 260 470 307 454 356
+             C443 397 420 425 380 435
+             C326 453 250 448 206 437
+             C162 429 142 405 130 370
+             C117 335 126 278 163 239 Z"
+          fill="url(#penguin-navy)" stroke="#092651" stroke-width="2.3"/>
+
+    <!-- Mảng mặt trái, có đường lõm nhọn đặc trưng của mascot -->
+    <path id="left-face"
+          d="M323 170
+             C325 137 309 106 285 95
+             C251 79 221 99 210 127
+             C194 168 202 208 226 230
+             C245 247 276 257 299 260
+             C305 261 303 265 296 269
+             C276 281 257 288 245 309
+             C236 321 234 334 233 347
+             C252 334 273 316 295 301
+             C318 284 348 272 367 247
+             L365 181 Z"
+          fill="url(#belly)"/>
+
+    <!-- Mảng mặt phải -->
+    <path id="right-face"
+          d="M355 156
+             C351 117 365 89 387 86
+             C412 83 432 104 439 141
+             C448 176 439 211 421 226
+             C403 238 378 235 360 227 Z"
+          fill="#FFFFFF"/>
+
+    <!-- Ngực / bụng -->
+    <path id="white-belly"
+          d="M252 309
+             C288 272 361 252 413 274
+             C438 289 446 316 439 353
+             C428 408 386 429 332 430
+             C284 430 246 414 230 377
+             C217 347 225 328 252 309 Z"
+          fill="url(#belly)"/>
+  </g>
+
+  <g id="face-details">
+    <!-- Mắt cười – các nét có thể sửa trong Figma -->
+    <path id="eye-left" d="M260 170 C259 158 265 150 275 150 C285 150 292 157 292 166"
+          fill="none" stroke="#0C2E60" stroke-width="9" stroke-linecap="round"/>
+    <path id="eye-right" d="M388 155 C385 143 392 134 400 133 C411 133 414 141 416 148"
+          fill="none" stroke="#0C2E60" stroke-width="9" stroke-linecap="round"/>
+    <ellipse id="blush-left" cx="250" cy="192" rx="21" ry="14" fill="#FFD4DC" opacity="0.93"/>
+    <ellipse id="blush-right" cx="426" cy="177" rx="17" ry="13" fill="#FFD4DC" opacity="0.91"/>
+    <g id="beak">
+      <path d="M327 160 C340 151 360 156 375 172 C381 180 370 197 357 202
+               C340 209 323 199 317 187 C312 177 317 166 327 160 Z"
+            fill="url(#beak)"/>
+      <path d="M324 181 C339 187 350 190 365 179 C371 175 374 176 370 182
+               C361 195 349 197 340 193 C331 190 324 186 324 181 Z"
+            fill="#F28A00"/>
+    </g>
+  </g>
+
+  <!-- Quai và thân ba lô, nằm trước cánh trái nhưng không dính vào thân -->
+  <g id="yellow-backpack" stroke="#0A2C5E" stroke-linejoin="round">
+    <path id="backpack-strap" d="M137 267 C136 253 145 242 160 238
+             L175 258 L161 286 Z"
+          fill="#FF9E00" stroke-width="3.1"/>
+    <!-- Cánh nhỏ khuất sau ba lô -->
+    <path id="left-flipper-back" d="M115 292 C94 307 90 342 103 364 L128 351 L145 304 Z"
+          fill="#0A2E61" stroke-width="2.1"/>
+    <path id="backpack-body"
+          d="M133 263 C160 261 205 285 217 310
+             C225 331 216 371 209 385
+             C200 405 180 408 153 400
+             C125 392 94 375 93 354
+             C91 329 101 288 118 273
+             C123 268 128 265 133 263 Z"
+          fill="url(#backpack)" stroke-width="3.5"/>
+    <path id="backpack-side" d="M193 298 C212 307 222 319 221 341
+             C220 366 215 388 204 397 C190 406 172 406 156 401
+             C173 395 177 380 182 360 C186 343 196 316 193 298 Z"
+          fill="#F39800" stroke="none" opacity="0.75"/>
+    <path id="backpack-flap"
+          d="M119 275 C139 265 172 282 208 308
+             C220 317 221 331 212 343
+             C204 354 185 353 171 345
+             L124 321 C114 316 110 301 114 289 C115 282 117 278 119 275 Z"
+          fill="url(#backpack-flap)" stroke="#D67F00" stroke-width="3"/>
+    <path d="M112 315 C117 332 136 334 157 346 C183 362 198 356 211 344"
+          fill="none" stroke="#E69C00" stroke-width="5.5" stroke-linecap="round"/>
+    <rect id="backpack-button" x="123" y="326" width="14" height="17" rx="6"
+          transform="rotate(20 130 334)" fill="#FFFFFF" stroke="none"/>
+  </g>
+
+  <!-- Cánh trái và cây bút màu vàng -->
+  <g id="writing-flipper">
+    <path id="left-flipper" d="M213 325 C220 306 244 298 260 294
+             C270 290 277 293 281 300 C287 310 274 323 260 331
+             C240 344 223 348 211 346 Z"
+          fill="#0A2C5C"/>
+    <path id="yellow-pencil" d="M270 306 L343 262 L350 275 L278 319 Z"
+          fill="#FFCB20" stroke="#092C5A" stroke-width="3.7" stroke-linejoin="round"/>
+    <path d="M277 306 L287 300 L293 311 L282 317 Z"
+          fill="#FFA400"/>
+    <path id="fingers" d="M254 300 C264 296 272 299 275 307 C279 315 269 321 260 327
+             C252 332 241 330 237 324 C232 318 244 305 254 300 Z"
+          fill="#0A2C5C"/>
+  </g>
+
+  <!-- Chân vàng -->
+  <g id="feet" fill="url(#feet-yellow)" stroke="#0A2D5E" stroke-width="4" stroke-linejoin="round">
+    <path id="foot-left" d="M209 426
+             C223 415 249 413 266 423
+             C280 431 284 441 278 451
+             C273 460 262 461 255 457
+             C249 465 235 462 229 456
+             C217 462 200 458 196 450
+             C190 441 197 432 209 426 Z"/>
+    <path id="foot-right" d="M375 425
+             C392 416 405 415 418 422
+             C431 429 432 443 426 451
+             C421 457 411 454 405 458
+             C395 465 381 462 374 458
+             C362 463 348 454 349 443
+             C350 434 362 430 375 425 Z"/>
+  </g>
+
+  <!-- Tờ ghi chú đặt phía trước cánh và bút -->
+  <g id="clipboard" transform="rotate(1.1 396 283)">
+    <path id="clipboard-body"
+          d="M354 213 L464 213
+             C471 213 476 218 475 226
+             L450 337 C448 347 443 350 435 350
+             L330 350 C322 350 317 345 320 336
+             L343 228 C345 219 347 214 354 213 Z"
+          fill="#FFFFFF" stroke="url(#clipboard-edge)" stroke-width="7.7" stroke-linejoin="round"/>
+    <path d="M351 225 L462 225" fill="none" stroke="#DCEBFF" stroke-width="2" opacity="0.65"/>
+    <g id="note-lines" fill="none" stroke="#A7D1FF" stroke-width="6" stroke-linecap="round">
+      <path d="M367 244 L436 246"/>
+      <path d="M364 270 L402 271"/>
+      <path d="M359 295 L418 296"/>
+    </g>
+    <circle id="note-bullet" cx="367" cy="244" r="6" fill="#7FB8F6"/>
+  </g>
+
+  <!-- Cánh phải ôm cạnh clipboard -->
+  <g id="holding-flipper">
+    <path id="right-flipper" d="M468 260
+            C485 265 492 285 489 302
+            C487 321 477 331 461 333
+            C441 337 430 321 430 302
+            C430 281 443 260 461 260 C464 260 466 260 468 260 Z"
+          fill="url(#penguin-navy)"/>
+  </g>
+</svg>

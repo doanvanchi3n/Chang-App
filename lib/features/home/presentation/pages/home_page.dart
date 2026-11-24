@@ -1,80 +1,309 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../core/constants/app_constants.dart';
-import '../../../../theme/app_dimensions.dart';
-import '../../../onboarding/data/onboarding_store.dart';
-import '../../../onboarding/presentation/pages/onboarding_page.dart';
+import '../../../../app/widgets/main_navigation.dart';
+import '../../../tasks/presentation/inbox_page.dart';
+import '../../data/dashboard_provider.dart';
+import '../widgets/dashboard_sections.dart';
 
-class HomePage extends ConsumerWidget {
+class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final theme = Theme.of(context);
+  ConsumerState<HomePage> createState() => _HomePageState();
+}
 
+class _HomePageState extends ConsumerState<HomePage>
+    with WidgetsBindingObserver {
+  Timer? _midnight;
+  bool _inboxOpen = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    _scheduleMidnight();
+  }
+
+  void _scheduleMidnight() {
+    _midnight?.cancel();
+    final now = DateTime.now();
+    _midnight = Timer(
+      DateTime(now.year, now.month, now.day + 1).difference(now),
+      () {
+        if (!mounted) return;
+        ref.invalidate(dashboardProvider);
+        _scheduleMidnight();
+      },
+    );
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      ref.invalidate(dashboardProvider);
+      _scheduleMidnight();
+    }
+  }
+
+  @override
+  void dispose() {
+    _midnight?.cancel();
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  Future<void> _openInbox() async {
+    if (_inboxOpen) return;
+    _inboxOpen = true;
+    try {
+      await Navigator.of(context)
+          .push(MaterialPageRoute<void>(builder: (_) => const InboxPage()));
+    } finally {
+      _inboxOpen = false;
+      if (mounted) ref.invalidate(dashboardProvider);
+    }
+  }
+
+  Future<void> _refresh() async {
+    ref.invalidate(dashboardProvider);
+    try {
+      await ref.read(dashboardProvider.future);
+    } catch (_) {
+      // The dashboard renders its error state; refresh does not hide failures.
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final dashboard = ref.watch(dashboardProvider);
+    final name = dashboard.asData?.value.name;
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(AppConstants.name),
-        actions: [
-          IconButton(
-            tooltip: 'Xem màn hình Onboarding (Ảnh UI)',
-            icon: const Icon(Icons.preview_rounded),
-            onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (_) => const OnboardingPage(autoForward: false),
-                ),
-              );
-            },
-          ),
-        ],
+      backgroundColor: Colors.white,
+      bottomNavigationBar: MainNavigation(
+        inboxActive: false,
+        onInbox: _openInbox,
       ),
       body: SafeArea(
-        child: Center(
+        child: RefreshIndicator(
+          onRefresh: _refresh,
           child: SingleChildScrollView(
-            padding: const EdgeInsets.all(AppSpacing.s24),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  Icons.route_rounded,
-                  size: AppSpacing.s64,
-                  color: theme.colorScheme.primary,
-                ),
-                const SizedBox(height: AppSpacing.s24),
-                Text(
-                  AppConstants.tagline,
-                  style: theme.textTheme.headlineSmall,
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: AppSpacing.s16),
-                const Text(
-                  'Lên kế hoạch · Tập trung · Nhìn lại',
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: AppSpacing.s32),
-                FilledButton.icon(
-                  onPressed: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => const OnboardingPage(autoForward: false),
+            physics: const AlwaysScrollableScrollPhysics(),
+            child: Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 560),
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: FittedBox(
+                              fit: BoxFit.scaleDown,
+                              alignment: Alignment.centerLeft,
+                              child: Row(
+                                children: [
+                                  const Text(
+                                    'chặng',
+                                    style: TextStyle(
+                                      color: dashboardInk,
+                                      fontSize: 34,
+                                      fontWeight: FontWeight.w800,
+                                      letterSpacing: -1.5,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  for (final color in const [
+                                    Color(0xFF9DCDEE),
+                                    Color(0xFFFFD060),
+                                    dashboardBlue,
+                                  ])
+                                    Container(
+                                      width: 11,
+                                      height: 11,
+                                      margin: const EdgeInsets.only(left: 4),
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: color,
+                                      ),
+                                    ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          IconButton(
+                            onPressed: _refresh,
+                            tooltip: 'Làm mới Dashboard',
+                            icon: const Icon(
+                              Icons.refresh,
+                              color: dashboardInk,
+                            ),
+                          ),
+                          const Tooltip(
+                            message: 'Thông báo chưa khả dụng',
+                            child: IconButton(
+                              onPressed: null,
+                              icon: Icon(Icons.notifications_none),
+                            ),
+                          ),
+                          const CircleAvatar(
+                            backgroundColor: Color(0xFFFFB6A5),
+                            child: Icon(
+                              Icons.person_outline,
+                              color: dashboardInk,
+                            ),
+                          ),
+                        ],
                       ),
-                    );
-                  },
-                  icon: const Icon(Icons.image_outlined),
-                  label: const Text('Xem màn hình Onboarding (Mobile_005)'),
+                      const SizedBox(height: 28),
+                      Text(
+                        name == null
+                            ? 'Chào bạn, đi từng chặng nhé.'
+                            : 'Chào $name, đi từng chặng nhé.',
+                        style: const TextStyle(
+                          color: dashboardInk,
+                          fontSize: 27,
+                          fontWeight: FontWeight.w800,
+                          height: 1.25,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        dashboardDate(DateTime.now()),
+                        style: const TextStyle(
+                          color: dashboardMuted,
+                          fontSize: 18,
+                        ),
+                      ),
+                      const SizedBox(height: 24),
+                      dashboard.when(
+                        skipLoadingOnRefresh: false,
+                        loading: () => const Padding(
+                          padding: EdgeInsets.all(40),
+                          child: Center(
+                            child: CircularProgressIndicator(
+                              semanticsLabel: 'Đang tải Dashboard',
+                            ),
+                          ),
+                        ),
+                        error: (error, stack) => Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              'Chưa tải được Dashboard. Kiểm tra kết nối rồi thử lại.',
+                              style: TextStyle(color: dashboardMuted),
+                            ),
+                            TextButton(
+                              onPressed: _refresh,
+                              child: const Text('Thử lại'),
+                            ),
+                            OutlinedButton.icon(
+                              onPressed: _openInbox,
+                              icon: const Icon(Icons.inbox_outlined),
+                              label: const Text('Mở Hộp việc'),
+                            ),
+                          ],
+                        ),
+                        data: (data) => Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            DashboardSchedule(event: data.nextEvent),
+                            const SizedBox(height: 24),
+                            DashboardPriorities(
+                              data: data,
+                              onInbox: _openInbox,
+                            ),
+                            const SizedBox(height: 20),
+                            Material(
+                              color: const Color(0xFFF2F7FD),
+                              borderRadius: BorderRadius.circular(16),
+                              child: ListTile(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(16),
+                                ),
+                                leading: const Icon(
+                                  Icons.inbox_outlined,
+                                  color: dashboardBlue,
+                                ),
+                                title: const Text(
+                                  'Hộp việc',
+                                  style: TextStyle(
+                                    color: dashboardInk,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                                subtitle: Text(
+                                  '${data.inboxCount} việc chưa lên lịch · Ghi lại trước, chọn lúc làm sau.',
+                                ),
+                                trailing: const Icon(
+                                  Icons.chevron_right,
+                                  color: dashboardBlue,
+                                ),
+                                onTap: _openInbox,
+                              ),
+                            ),
+                            const SizedBox(height: 20),
+                            DashboardWeek(data: data),
+                            const SizedBox(height: 20),
+                            Container(
+                              padding: const EdgeInsets.all(18),
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: const Color(0xFFDCEAF6),
+                                ),
+                                borderRadius: BorderRadius.circular(18),
+                              ),
+                              child: Row(
+                                children: [
+                                  const CircleAvatar(
+                                    backgroundColor: Color(0xFFFFF1CB),
+                                    child: Icon(
+                                      Icons.history,
+                                      color: Color(0xFFCE8A1A),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 14),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          data.overdueCount == 0
+                                              ? 'Không có việc quá hạn'
+                                              : '${data.overdueCount} việc cần rà soát',
+                                          style: const TextStyle(
+                                            color: dashboardInk,
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.w700,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 4),
+                                        Text(
+                                          data.overdueCount == 0
+                                              ? 'Giữ nhịp học vừa sức với bạn nhé.'
+                                              : 'Các việc đã qua hạn và chưa hoàn thành.',
+                                          style: const TextStyle(
+                                            color: dashboardMuted,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-                const SizedBox(height: AppSpacing.s12),
-                OutlinedButton.icon(
-                  onPressed: () async {
-                    await ref.read(onboardingStoreProvider).reset();
-                    ref.invalidate(onboardingCompletedProvider);
-                  },
-                  icon: const Icon(Icons.restart_alt_rounded),
-                  label: const Text('Đặt lại Onboarding (Chạy lại từ đầu)'),
-                ),
-              ],
+              ),
             ),
           ),
         ),
