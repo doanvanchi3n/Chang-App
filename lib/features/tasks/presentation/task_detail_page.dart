@@ -1,4 +1,5 @@
 import '../../../app/widgets/app_layout.dart';
+import '../../../app/widgets/desktop_top_bar.dart';
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -7,6 +8,7 @@ import '../../focus/presentation/focus_prep_page.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'create_task_page.dart';
 import 'edit_task_page.dart';
 import 'manage_steps_page.dart';
 import 'widgets/task_draft_helpers.dart';
@@ -320,71 +322,289 @@ class _TaskDetailPageState extends ConsumerState<TaskDetailPage> {
   Widget build(BuildContext context) {
     final asyncTask = ref.watch(taskDetailProvider(widget.taskId));
     final resolvedTask = _localOverride ?? asyncTask.asData?.value;
-    return ColoredBox(
-      color: Colors.white,
-      child: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(
-            maxWidth: AppLayout.maxContentWidth,
-          ),
-          child: Scaffold(
-            backgroundColor: Colors.white,
-            appBar: AppBar(
-              backgroundColor: Colors.white,
-              surfaceTintColor: Colors.transparent,
-              leading: IconButton(
-                tooltip: 'Quay lại',
-                onPressed: _navigateBack,
-                icon: const Icon(Icons.chevron_left),
-              ),
-              title: const Text(
-                'Chi tiết công việc',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
-              ),
-              actions: [
-                if (resolvedTask != null)
-                  _buildMoreMenu(resolvedTask, includeEdit: true),
-              ],
-            ),
-            bottomNavigationBar:
-                resolvedTask != null &&
-                    MediaQuery.viewInsetsOf(context).bottom == 0
-                ? _MobileBottomActions(
-                    task: resolvedTask,
-                    focusStep: resolvedTask.resolveFocusStep(_selectedStepId),
-                    onStartFocus: () => _handleStartFocus(
-                      resolvedTask,
-                      resolvedTask.resolveFocusStep(_selectedStepId),
-                    ),
-                    onSchedule: () => _handleSchedule(
-                      resolvedTask,
-                      resolvedTask.resolveFocusStep(_selectedStepId),
-                    ),
-                  )
-                : null,
-            body: asyncTask.when(
-              skipLoadingOnRefresh: false,
-              loading: () => const Center(
-                child: CircularProgressIndicator(
-                  semanticsLabel: 'Đang tải chi tiết công việc',
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final isDesktop = AppLayout.isDesktopWidth(constraints.maxWidth);
+        return Scaffold(
+          backgroundColor: isDesktop ? AppColors.page : Colors.white,
+          appBar: isDesktop
+              ? null
+              : AppBar(
+                  backgroundColor: Colors.white,
+                  surfaceTintColor: Colors.transparent,
+                  elevation: 0,
+                  bottom: const PreferredSize(
+                    preferredSize: Size.fromHeight(1),
+                    child: Divider(height: 1, color: AppColors.borderSubtle),
+                  ),
+                  leading: IconButton(
+                    tooltip: 'Quay lại',
+                    onPressed: _navigateBack,
+                    icon: const Icon(Icons.chevron_left),
+                  ),
+                  title: const Text(
+                    'Chi tiết công việc',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+                  ),
+                  actions: [
+                    if (resolvedTask != null)
+                      _buildMoreMenu(resolvedTask, includeEdit: true),
+                  ],
                 ),
-              ),
-              error: (_, _) => _ErrorView(onRetry: _refresh),
-              data: (fetched) {
-                final task = _localOverride ?? fetched;
-                if (task == null) return _NotFoundView(onBack: _navigateBack);
-                return RefreshIndicator(
+          bottomNavigationBar: !isDesktop &&
+                  resolvedTask != null &&
+                  MediaQuery.viewInsetsOf(context).bottom == 0
+              ? _MobileBottomActions(
+                  task: resolvedTask,
+                  focusStep: resolvedTask.resolveFocusStep(_selectedStepId),
+                  onStartFocus: () => _handleStartFocus(
+                    resolvedTask,
+                    resolvedTask.resolveFocusStep(_selectedStepId),
+                  ),
+                  onSchedule: () => _handleSchedule(
+                    resolvedTask,
+                    resolvedTask.resolveFocusStep(_selectedStepId),
+                  ),
+                )
+              : null,
+          body: Column(
+            children: [
+              if (isDesktop)
+                DesktopTopBar(
+                  activeTab: DesktopNavTab.tasks,
+                  onTapHome: () {
+                    if (Navigator.of(context).canPop()) {
+                      Navigator.of(context).popUntil((route) => route.isFirst);
+                    } else {
+                      context.go('/');
+                    }
+                  },
+                  onTapTasks: _navigateBack,
+                  onTapAddTask: () async {
+                    await Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) => const CreateTaskPage(),
+                      ),
+                    );
+                    if (mounted) await _refresh();
+                  },
                   onRefresh: _refresh,
-                  child: SingleChildScrollView(
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    child: _buildMobileBody(
-                      task,
-                      task.resolveFocusStep(_selectedStepId),
+                ),
+              Expanded(
+                child: asyncTask.when(
+                  skipLoadingOnRefresh: false,
+                  loading: () => const Center(
+                    child: CircularProgressIndicator(
+                      semanticsLabel: 'Đang tải chi tiết công việc',
                     ),
                   ),
-                );
-              },
-            ),
+                  error: (_, _) => _ErrorView(onRetry: _refresh),
+                  data: (fetched) {
+                    final task = _localOverride ?? fetched;
+                    if (task == null) return _NotFoundView(onBack: _navigateBack);
+                    final focusStep = task.resolveFocusStep(_selectedStepId);
+                    return RefreshIndicator(
+                      onRefresh: _refresh,
+                      child: SingleChildScrollView(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        child: isDesktop
+                            ? _buildDesktopBody(task, focusStep)
+                            : _buildMobileBody(task, focusStep),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildDesktopBody(TaskDetail task, TaskSubtask? focusStep) {
+    final breadcrumbTail = task.project != null
+        ? 'Dự án ${task.project!.name}'
+        : task.scheduledDate == null
+        ? 'Hộp việc'
+        : 'Kế hoạch hôm nay';
+
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: AppLayout.maxDesktopWidth),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(
+            AppSpacing.s24,
+            AppSpacing.s24,
+            AppSpacing.s24,
+            AppSpacing.s40,
+          ),
+          child: Column(
+            key: const ValueKey('task-detail-desktop-layout'),
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Wrap(
+                crossAxisAlignment: WrapCrossAlignment.center,
+                spacing: AppSpacing.s8,
+                children: [
+                  InkWell(
+                    onTap: _navigateBack,
+                    borderRadius: BorderRadius.circular(AppRadius.r4),
+                    child: const Text(
+                      'Công việc',
+                      style: TextStyle(
+                        color: AppColors.textLink,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                  const Text(
+                    '/',
+                    style: TextStyle(color: AppColors.textMuted, fontSize: 14),
+                  ),
+                  Text(
+                    breadcrumbTail,
+                    style: const TextStyle(
+                      color: AppColors.textSecondary,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: AppSpacing.s12),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: Wrap(
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      spacing: AppSpacing.s12,
+                      runSpacing: AppSpacing.s8,
+                      children: [
+                        Text(
+                          task.title,
+                          style: const TextStyle(
+                            color: AppColors.textPrimary,
+                            fontSize: 28,
+                            fontWeight: FontWeight.w800,
+                            letterSpacing: -0.5,
+                            height: 1.2,
+                          ),
+                        ),
+                        TaskStatusBadge(status: task.status),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: AppSpacing.s16),
+                  TextButton.icon(
+                    onPressed: () => _manageSteps(task),
+                    icon: const Icon(Icons.checklist, size: 18),
+                    label: Text('Quản lý ${task.subtasks.length} bước'),
+                  ),
+                  const SizedBox(width: AppSpacing.s8),
+                  OutlinedButton(
+                    key: const ValueKey('edit-task-button'),
+                    onPressed: () => _handleEdit(task),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: AppColors.textPrimary,
+                      backgroundColor: AppColors.surface,
+                      side: const BorderSide(color: AppColors.borderSubtle),
+                      minimumSize: const Size(48, 44),
+                      padding: const EdgeInsets.symmetric(horizontal: 18),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(AppRadius.r12),
+                      ),
+                    ),
+                    child: const Text(
+                      'Chỉnh sửa',
+                      style: TextStyle(fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                  const SizedBox(width: AppSpacing.s8),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: AppColors.surface,
+                      borderRadius: BorderRadius.circular(AppRadius.r12),
+                      border: Border.all(color: AppColors.borderSubtle),
+                    ),
+                    child: _buildMoreMenu(task, includeEdit: false),
+                  ),
+                ],
+              ),
+              const SizedBox(height: AppSpacing.s24),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    flex: 15,
+                    child: Container(
+                      padding: const EdgeInsets.all(AppSpacing.s24),
+                      decoration: BoxDecoration(
+                        color: AppColors.surface,
+                        borderRadius: BorderRadius.circular(AppRadius.r16),
+                        border: Border.all(color: AppColors.borderSubtle),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _DescriptionSection(description: task.description),
+                          const SizedBox(height: AppSpacing.s24),
+                          SubtaskListSection(
+                            task: task,
+                            isWide: true,
+                            focusStep: focusStep,
+                            busySubtaskIds: _busySubtaskIds,
+                            addingStep: _addingStep,
+                            showAddForm: _showAddStepForm,
+                            addTitleController: _addTitleController,
+                            addMinutesController: _addMinutesController,
+                            addFormKey: _addFormKey,
+                            onToggleSubtask: (step) =>
+                                _toggleSubtask(task, step),
+                            onSelectFocusStep: (step) =>
+                                setState(() => _selectedStepId = step.id),
+                            onOpenAddForm: () =>
+                                setState(() => _showAddStepForm = true),
+                            onCancelAddForm: () {
+                              _addTitleController.clear();
+                              _addMinutesController.text = '25';
+                              setState(() => _showAddStepForm = false);
+                            },
+                            onSubmitNewSubtask: () => _submitNewSubtask(task),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: AppSpacing.s24),
+                  SizedBox(
+                    width: 356,
+                    child: TaskInfoSidebarCard(
+                      task: task,
+                      focusStep: focusStep,
+                      onStartFocus: () => _handleStartFocus(task, focusStep),
+                      onSchedule: () => _handleSchedule(task, focusStep),
+                      onAskAssistant: () {
+                        if (widget.onAskAssistant != null) {
+                          widget.onAskAssistant!(task);
+                          return;
+                        }
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text(
+                              'Trợ lý AI gợi ý chia nhỏ bước (M41) sẽ sớm ra mắt.',
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ),
         ),
       ),

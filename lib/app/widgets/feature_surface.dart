@@ -83,14 +83,14 @@ class FeatureCard extends StatelessWidget {
   final Widget child;
   final Color color;
   @override
-  Widget build(BuildContext context) => Container(
-    padding: const EdgeInsets.all(20),
-    decoration: BoxDecoration(
-      color: color,
-      border: Border.all(color: changBorder),
+  Widget build(BuildContext context) => Material(
+    color: color,
+    shape: RoundedRectangleBorder(
+      side: const BorderSide(color: changBorder),
       borderRadius: BorderRadius.circular(20),
     ),
-    child: child,
+    clipBehavior: Clip.antiAlias,
+    child: Padding(padding: const EdgeInsets.all(20), child: child),
   );
 }
 

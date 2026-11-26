@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../features/focus/presentation/focus_session_page.dart';
 import '../../features/onboarding/presentation/pages/startup_page.dart';
 import '../../features/tasks/presentation/task_detail_page.dart';
 import '../../features/tasks/presentation/task_list_page.dart';
@@ -19,6 +20,10 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         path: '/tasks/:taskId',
         builder: (context, state) =>
             TaskDetailPage(taskId: state.pathParameters['taskId']!),
+      ),
+      GoRoute(
+        path: '/focus',
+        builder: (context, state) => const FocusSessionPage(),
       ),
     ],
   );

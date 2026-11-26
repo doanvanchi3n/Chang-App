@@ -195,20 +195,27 @@ void main() {
   }
 
   testWidgets(
-    'M13 trên laptop giữ khung 560 dp, tiến độ và nút tập trung bước 3',
+    'W13 (Desktop 1280px) hiển thị full-width 2 cột, tiến độ 40% và nút tập trung bước 3',
     (tester) async {
       await pumpDetail(tester, size: const Size(1280, 900));
 
+      expect(tester.getSize(find.byType(Scaffold)).width, 1280);
+      expect(
+        find.byKey(const ValueKey('task-detail-desktop-layout')),
+        findsOneWidget,
+      );
+      expect(find.byKey(const ValueKey('desktop-top-bar')), findsOneWidget);
       expect(find.text('Phác thảo luồng đăng ký'), findsOneWidget);
       expect(find.text('Đang làm'), findsOneWidget);
-      expect(find.text('· 2/5 hoàn thành'), findsOneWidget);
+      expect(find.text('Các bước thực hiện'), findsOneWidget);
+      expect(find.text('2/5 bước hoàn thành'), findsOneWidget);
       expect(find.text('40%'), findsOneWidget);
+      expect(find.text('Thông tin công việc'), findsOneWidget);
       expect(find.text('UI/UX'), findsOneWidget);
       expect(find.text('Cao'), findsOneWidget);
       expect(find.text('Tập trung vào bước 3'), findsOneWidget);
       expect(find.text('Xếp vào lịch'), findsOneWidget);
       expect(find.text('Quản lý 5 bước'), findsOneWidget);
-      expect(tester.getSize(find.byType(Scaffold)).width, 560);
 
       // Đủ 5 bước -> nút Thêm bước bị vô hiệu hóa theo quy tắc 5 bước.
       final addButton = tester.widget<TextButton>(
@@ -292,7 +299,7 @@ void main() {
       repository.task = _designSampleTask(subtaskCount: 3);
       await pumpDetail(tester, size: const Size(1280, 900));
 
-      expect(find.text('· 2/3 hoàn thành'), findsOneWidget);
+      expect(find.text('2/3 bước hoàn thành'), findsOneWidget);
       expect(find.text('67%'), findsOneWidget);
 
       await tester.ensureVisible(
@@ -314,7 +321,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Bổ sung trạng thái lỗi'), findsOneWidget);
-      expect(find.text('· 2/4 hoàn thành'), findsOneWidget);
+      expect(find.text('2/4 bước hoàn thành'), findsOneWidget);
       expect(find.text('50%'), findsOneWidget);
     },
   );

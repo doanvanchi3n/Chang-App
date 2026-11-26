@@ -8,6 +8,24 @@ import '../../../app/widgets/feature_surface.dart';
 import '../data/audio/audio_library.dart';
 import '../data/audio/local_sound.dart';
 
+/// Opens the shared ambient audio selection and device-import sheet.
+Future<String?> showBackgroundAudioSheet(
+  BuildContext context, {
+  required String current,
+  String? protectedCode,
+}) => showModalBottomSheet<String>(
+  context: context,
+  isScrollControlled: true,
+  useSafeArea: true,
+  showDragHandle: true,
+  backgroundColor: Colors.white,
+  constraints: const BoxConstraints(maxWidth: AppLayout.maxContentWidth),
+  shape: const RoundedRectangleBorder(
+    borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+  ),
+  builder: (_) => _AudioSheet(current: current, protectedCode: protectedCode),
+);
+
 class BackgroundAudioPanel extends ConsumerStatefulWidget {
   const BackgroundAudioPanel({
     super.key,
@@ -109,24 +127,10 @@ class _BackgroundAudioPanelState extends ConsumerState<BackgroundAudioPanel> {
                   : () async {
                       setState(() => _choosing = true);
                       try {
-                        final value = await showModalBottomSheet<String>(
-                          context: context,
-                          isScrollControlled: true,
-                          useSafeArea: true,
-                          showDragHandle: true,
-                          backgroundColor: Colors.white,
-                          constraints: const BoxConstraints(
-                            maxWidth: AppLayout.maxContentWidth,
-                          ),
-                          shape: const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.vertical(
-                              top: Radius.circular(28),
-                            ),
-                          ),
-                          builder: (_) => _AudioSheet(
-                            current: widget.code,
-                            protectedCode: widget.protectedCode,
-                          ),
+                        final value = await showBackgroundAudioSheet(
+                          context,
+                          current: widget.code,
+                          protectedCode: widget.protectedCode,
                         );
                         if (mounted && value != null) widget.onChanged(value);
                       } finally {

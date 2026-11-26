@@ -1,237 +1,420 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../app/widgets/feature_surface.dart';
+import '../../../theme/app_colors.dart';
+import '../../../theme/app_dimensions.dart';
 import '../application/focus_controller.dart';
+import '../domain/focus_session.dart';
 import 'focus_summary.dart';
-import 'background_audio_panel.dart';
+import 'widgets/focus_session_widgets.dart';
 
 class FocusSessionPage extends ConsumerWidget {
   const FocusSessionPage({super.key});
+
+  void _minimize(BuildContext context, FocusController controller) {
+    if (Navigator.of(context).canPop()) {
+      Navigator.of(context).pop();
+      return;
+    }
+    controller.expanded(false);
+    context.go('/');
+  }
+
+  Future<void> _confirmFinish(
+    BuildContext context,
+    FocusController controller,
+  ) async {
+    final end = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('Kết thúc phiên tại đây?'),
+        content: const Text(
+          'Thời gian đã tập trung sẽ được giữ nguyên để bạn xem và xác nhận tiến độ ở phần tổng kết.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, false),
+            child: const Text('Tiếp tục phiên'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(dialogContext, true),
+            child: const Text('Kết thúc'),
+          ),
+        ],
+      ),
+    );
+    if (end == true) {
+      await controller.command('FINISH');
+    }
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(focusControllerProvider);
     final controller = ref.read(focusControllerProvider.notifier);
     final session = state.session;
-    return FeatureSurface(
-      title: session?.reviewing == true || session?.saved == true
-          ? 'Tổng kết phiên'
-          : 'Tập trung',
-      onBack: () => Navigator.of(context).pop(),
-      trailing: TextButton(
-        onPressed: () => Navigator.of(context).pop(),
-        child: const Text('Thu gọn'),
-      ),
-      child: session == null
-          ? Column(
-              children: [
-                Text(
-                  state.pending
-                      ? 'Phiên học đang chờ xác nhận.'
-                      : 'Chưa có phiên học đang mở.',
-                  style: const TextStyle(color: changMuted),
+    final isSummary = session?.reviewing == true || session?.saved == true;
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final isDesktop = isFocusDesktopWidth(constraints.maxWidth);
+        final modeTitle = isSummary
+            ? 'Tổng kết phiên'
+            : isDesktop
+            ? 'Chế độ tập trung'
+            : 'Tập trung';
+
+        return Scaffold(
+          backgroundColor: AppColors.page,
+          body: Column(
+            children: [
+              if (isDesktop)
+                FocusWebTopBar(
+                  modeLabel: modeTitle,
+                  onMinimize: () => _minimize(context, controller),
+                )
+              else
+                FocusMobileTopBar(
+                  title: modeTitle,
+                  onMinimize: () => _minimize(context, controller),
                 ),
-                if (state.error != null) Text(state.error!),
-                const SizedBox(height: 16),
-                FeatureButton(
-                  'Đồng bộ lại',
-                  onPressed: state.busy ? null : controller.reconcile,
-                ),
-              ],
-            )
-          : session.reviewing || session.saved
-          ? FocusSummary(key: ValueKey(session.id), session: session)
-          : Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                if (session.project != null)
-                  Center(
-                    child: Chip(
-                      label: Text(session.project!),
-                      backgroundColor: changSoft,
-                    ),
-                  ),
-                const SizedBox(height: 12),
-                Text(
-                  session.title,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    color: changInk,
-                    fontSize: 25,
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
-                if (session.stepTitle != null)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 8),
-                    child: Text(
-                      'Bước ${session.stepOrder} · ${session.stepTitle}',
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(color: changMuted, fontSize: 17),
-                    ),
-                  ),
-                const SizedBox(height: 12),
-                Center(
-                  child: Chip(
-                    label: Text(
-                      'Phiên học · ${session.targetSeconds ~/ 60} phút',
-                    ),
-                    backgroundColor: changSoft,
-                  ),
-                ),
-                const SizedBox(height: 20),
-                Center(
-                  child: Chip(
-                    avatar: Icon(
-                      session.paused ? Icons.pause : Icons.play_arrow,
-                      color: session.paused
-                          ? const Color(0xFFA96B00)
-                          : changBlue,
-                      size: 18,
-                    ),
-                    label: Text(
-                      state.pending
-                          ? 'Đang chờ đồng bộ'
-                          : session.paused
-                          ? 'Đang tạm dừng'
-                          : 'Đang tập trung',
-                    ),
-                    backgroundColor: session.paused
-                        ? const Color(0xFFFFEDBD)
-                        : changSoft,
-                  ),
-                ),
-                const SizedBox(height: 10),
-                FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: Text(
-                    clockDuration(controller.remainingSeconds),
-                    style: const TextStyle(
-                      color: changInk,
-                      fontSize: 84,
-                      fontWeight: FontWeight.w800,
-                      height: 1.15,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 18),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(20),
-                  child: LinearProgressIndicator(
-                    minHeight: 10,
-                    value:
-                        (controller.elapsedMs / (session.targetSeconds * 1000))
-                            .clamp(0, 1),
-                    color: changBlue,
-                    backgroundColor: changSoft,
-                    semanticsLabel: 'Tiến độ phiên học',
-                  ),
-                ),
-                const SizedBox(height: 12),
-                Text(
-                  'Đã tập trung ${preciseDuration(controller.elapsedSeconds)}',
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(color: changMuted),
-                ),
-                if (session.paused)
-                  const Padding(
-                    padding: EdgeInsets.only(top: 6),
-                    child: Text(
-                      'Thời gian tạm dừng không được tính.',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: changMuted),
-                    ),
-                  ),
-                const SizedBox(height: 20),
-                SvgPicture.asset(
-                  session.paused
-                      ? 'assets/mascot/mascot-M29.svg'
-                      : 'assets/mascot/mascot-M27.svg',
-                  height: 170,
-                  semanticsLabel: session.paused
-                      ? 'Chặng nghỉ ngơi'
-                      : 'Chặng đang học',
-                ),
-                const SizedBox(height: 20),
-                if (state.error != null) ...[
-                  Text(
-                    state.error!,
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.error,
-                    ),
-                  ),
-                  TextButton(
-                    onPressed: state.busy ? null : controller.reconcile,
-                    child: const Text('Đồng bộ lại'),
-                  ),
-                ],
-                FeatureButton(
-                  session.paused ? 'Tiếp tục học' : 'Tạm dừng',
-                  onPressed:
-                      state.busy ||
-                          state.pending ||
-                          controller.remainingSeconds == 0
-                      ? null
-                      : () => controller.command(
-                          session.paused ? 'RESUME' : 'PAUSE',
+              Expanded(
+                child: LayoutBuilder(
+                  builder: (context, bodyConstraints) {
+                    return SingleChildScrollView(
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(
+                          minHeight: bodyConstraints.maxHeight,
                         ),
-                ),
-                const SizedBox(height: 10),
-                FeatureButton(
-                  'Kết thúc phiên',
-                  secondary: true,
-                  onPressed: state.busy || state.pending
-                      ? null
-                      : () async {
-                          final end = await showDialog<bool>(
-                            context: context,
-                            builder: (context) => AlertDialog(
-                              title: const Text('Kết thúc phiên tại đây?'),
-                              content: const Text(
-                                'Thời gian đã tập trung sẽ được giữ để bạn xem và lưu ở phần tổng kết.',
-                              ),
-                              actions: [
-                                TextButton(
-                                  onPressed: () =>
-                                      Navigator.pop(context, false),
-                                  child: const Text('Tiếp tục phiên'),
+                        child: Center(
+                          child: session == null
+                              ? _buildEmptyState(context, state, controller)
+                              : isSummary
+                              ? _buildSummaryBody(
+                                  context,
+                                  session,
+                                  isDesktop: isDesktop,
+                                )
+                              : _buildActiveBody(
+                                  context,
+                                  state,
+                                  controller,
+                                  session,
+                                  isDesktop: isDesktop,
                                 ),
-                                FilledButton(
-                                  onPressed: () => Navigator.pop(context, true),
-                                  child: const Text('Kết thúc'),
-                                ),
-                              ],
-                            ),
-                          );
-                          if (end == true) await controller.command('FINISH');
-                        },
+                        ),
+                      ),
+                    );
+                  },
                 ),
-                const SizedBox(height: 12),
-                BackgroundAudioPanel(
-                  code: session.soundCode,
-                  paused: session.paused,
-                  enabled: !state.busy && !state.pending,
-                  onChanged: (value) =>
-                      controller.command('SOUND', sound: value),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildEmptyState(
+    BuildContext context,
+    FocusState state,
+    FocusController controller,
+  ) {
+    return ConstrainedBox(
+      constraints: const BoxConstraints(maxWidth: 460),
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacing.s24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const Icon(Icons.timer_outlined, size: 44, color: focusPrimaryBlue),
+            const SizedBox(height: AppSpacing.s12),
+            Text(
+              state.pending
+                  ? 'Phiên học đang chờ xác nhận.'
+                  : 'Chưa có phiên học đang mở.',
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                color: AppColors.textSecondary,
+                fontSize: 16,
+                height: 1.5,
+              ),
+            ),
+            if (state.error != null) ...[
+              const SizedBox(height: AppSpacing.s8),
+              Text(
+                state.error!,
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Theme.of(context).colorScheme.error),
+              ),
+            ],
+            const SizedBox(height: AppSpacing.s16),
+            FeatureButton(
+              'Đồng bộ lại',
+              onPressed: state.busy ? null : controller.reconcile,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSummaryBody(
+    BuildContext context,
+    FocusSession session, {
+    required bool isDesktop,
+  }) {
+    return ConstrainedBox(
+      constraints: BoxConstraints(maxWidth: isDesktop ? 640 : 560),
+      child: Padding(
+        padding: EdgeInsets.fromLTRB(
+          isDesktop ? AppSpacing.s32 : 20,
+          AppSpacing.s16,
+          isDesktop ? AppSpacing.s32 : 20,
+          AppSpacing.s32,
+        ),
+        child: isDesktop
+            ? Material(
+                color: AppColors.surface,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(AppRadius.r24),
+                  side: const BorderSide(color: AppColors.borderSubtle),
                 ),
-                if (state.audioError != null)
-                  Text(
-                    state.audioError!,
+                clipBehavior: Clip.antiAlias,
+                child: Padding(
+                  padding: const EdgeInsets.all(AppSpacing.s32),
+                  child: FocusSummary(
+                    key: ValueKey(session.id),
+                    session: session,
+                  ),
+                ),
+              )
+            : FocusSummary(key: ValueKey(session.id), session: session),
+      ),
+    );
+  }
+
+  Widget _buildActiveBody(
+    BuildContext context,
+    FocusState state,
+    FocusController controller,
+    FocusSession session, {
+    required bool isDesktop,
+  }) {
+    final remaining = controller.remainingSeconds;
+    final elapsed = controller.elapsedSeconds;
+    final progress = computeFocusProgress(
+      controller.elapsedMs,
+      session.targetSeconds,
+    );
+    final targetMinutes = (session.targetSeconds / 60).round().clamp(1, 180);
+
+    return ConstrainedBox(
+      constraints: BoxConstraints(maxWidth: isDesktop ? 680 : 520),
+      child: Padding(
+        padding: EdgeInsets.fromLTRB(
+          isDesktop ? AppSpacing.s32 : 20,
+          isDesktop ? AppSpacing.s24 : AppSpacing.s8,
+          isDesktop ? AppSpacing.s32 : 20,
+          isDesktop ? AppSpacing.s32 : AppSpacing.s24,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            if (session.project != null) ...[
+              FocusPillBadge(label: session.project!),
+              SizedBox(height: isDesktop ? 14 : 10),
+            ],
+            Text(
+              session.title,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: focusInk,
+                fontSize: isDesktop ? 30 : 23,
+                fontWeight: FontWeight.w800,
+                letterSpacing: -0.4,
+                height: 1.22,
+              ),
+            ),
+            if (session.stepTitle != null) ...[
+              const SizedBox(height: 6),
+              Text(
+                'Bước ${session.stepOrder} · ${session.stepTitle}',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: AppColors.textSecondary,
+                  fontSize: isDesktop ? 16 : 14.5,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+            SizedBox(height: isDesktop ? 14 : 10),
+            Wrap(
+              alignment: WrapAlignment.center,
+              spacing: AppSpacing.s8,
+              runSpacing: AppSpacing.s8,
+              children: [
+                FocusPillBadge(label: 'Phiên học · $targetMinutes phút'),
+                if (session.paused)
+                  const FocusPillBadge(
+                    label: 'Đang tạm dừng',
+                    icon: Icons.pause_rounded,
+                    backgroundColor: AppColors.honeySoft,
+                    foregroundColor: AppColors.warning,
+                  ),
+                if (state.pending)
+                  const FocusPillBadge(
+                    label: 'Đang chờ đồng bộ',
+                    icon: Icons.sync,
+                    backgroundColor: AppColors.subtle,
+                    foregroundColor: AppColors.textSecondary,
+                  ),
+              ],
+            ),
+            SizedBox(height: isDesktop ? 14 : 10),
+            Semantics(
+              label: 'Thời gian còn lại ${formatFocusClock(remaining)}',
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  formatFocusClock(remaining),
+                  key: const ValueKey('focus-countdown-text'),
+                  style: TextStyle(
+                    color: focusInk,
+                    fontSize: isDesktop ? 84 : 62,
+                    fontWeight: FontWeight.w800,
+                    height: 1.1,
+                    letterSpacing: -2,
+                    fontFeatures: const [FontFeature.tabularFigures()],
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(height: isDesktop ? 14 : 10),
+            ConstrainedBox(
+              constraints: BoxConstraints(
+                maxWidth: isDesktop ? 520 : double.infinity,
+              ),
+              child: FocusProgressTrack(
+                progress: progress,
+                paused: session.paused,
+              ),
+            ),
+            const SizedBox(height: AppSpacing.s8),
+            Text(
+              session.paused
+                  ? 'Đã tập trung ${formatElapsedDuration(elapsed)} · Thời gian tạm dừng không được tính.'
+                  : 'Đã trôi qua ${formatElapsedDuration(elapsed)} · Còn lại ${formatFocusClock(remaining)}',
+              key: const ValueKey('focus-elapsed-caption'),
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                color: AppColors.textSecondary,
+                fontSize: 13.5,
+                height: 1.4,
+              ),
+            ),
+            SizedBox(height: isDesktop ? 22 : 16),
+            // Static mascot pose (no looping animation during focus per FEAT-18 ADHD-friendly spec).
+            SvgPicture.asset(
+              session.paused
+                  ? 'assets/mascot/mascot-M29.svg'
+                  : 'assets/mascot/mascot-M27.svg',
+              key: ValueKey(session.paused ? 'mascot-paused' : 'mascot-active'),
+              height: isDesktop ? 164 : 136,
+              semanticsLabel: session.paused
+                  ? 'Linh vật Chặng đang nghỉ ngơi'
+                  : 'Linh vật Chặng đang tập trung học cùng bạn',
+            ),
+            const SizedBox(height: AppSpacing.s8),
+            Text(
+              session.paused
+                  ? 'Bạn có thể tiếp tục khi sẵn sàng.'
+                  : 'Cứ làm từng bước thôi.',
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                color: AppColors.textSecondary,
+                fontSize: 14.5,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            if (state.error != null) ...[
+              const SizedBox(height: AppSpacing.s12),
+              Text(
+                state.error!,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.error,
+                  fontSize: 13.5,
+                ),
+              ),
+              TextButton(
+                onPressed: state.busy ? null : controller.reconcile,
+                child: const Text('Đồng bộ lại'),
+              ),
+            ],
+            SizedBox(height: isDesktop ? 22 : 18),
+            FocusActionControls(
+              isDesktop: isDesktop,
+              paused: session.paused,
+              pauseEnabled: !state.busy && !state.pending && remaining > 0,
+              finishEnabled: !state.busy && !state.pending,
+              onPauseResume: () =>
+                  controller.command(session.paused ? 'RESUME' : 'PAUSE'),
+              onFinish: () => _confirmFinish(context, controller),
+            ),
+            SizedBox(height: isDesktop ? 16 : 12),
+            FocusInlineAudioControl(
+              code: session.soundCode,
+              paused: session.paused,
+              enabled: !state.busy && !state.pending,
+              onChanged: (value) => controller.command('SOUND', sound: value),
+            ),
+            if (state.audioError != null) ...[
+              const SizedBox(height: 6),
+              Text(
+                state.audioError!,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.error,
+                  fontSize: 13,
+                ),
+              ),
+            ],
+            const SizedBox(height: AppSpacing.s12),
+            const Row(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: EdgeInsets.only(top: 2),
+                  child: Icon(
+                    Icons.info_outline,
+                    size: 16,
+                    color: AppColors.textMuted,
+                  ),
+                ),
+                SizedBox(width: 6),
+                Flexible(
+                  child: Text(
+                    'Kết thúc phiên không tự đánh dấu công việc hoàn thành.',
+                    textAlign: TextAlign.center,
                     style: TextStyle(
-                      color: Theme.of(context).colorScheme.error,
+                      color: AppColors.textMuted,
+                      fontSize: 13,
+                      height: 1.4,
                     ),
                   ),
-                const SizedBox(height: 12),
-                Text(
-                  session.paused
-                      ? 'Bạn có thể tiếp tục khi sẵn sàng.'
-                      : 'Thu gọn để quay lại công việc; đồng hồ vẫn tiếp tục.',
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(color: changMuted, height: 1.5),
                 ),
               ],
             ),
+          ],
+        ),
+      ),
     );
   }
 }
