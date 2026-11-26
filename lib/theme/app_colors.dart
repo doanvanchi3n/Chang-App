@@ -10,7 +10,7 @@ abstract final class AppColors {
   static const honeySoft = Color(0xFFFFF5D6);
   static const peach = Color(0xFFDF967E);
   static const peachSoft = Color(0xFFFBECE5);
-  static const page = Color(0xFFFFFCF5);
+  static const page = Color(0xFFFAFBFD);
   static const surface = Color(0xFFFFFFFF);
   static const subtle = Color(0xFFF3F5F7);
   static const disabled = Color(0xFFE8EDF1);

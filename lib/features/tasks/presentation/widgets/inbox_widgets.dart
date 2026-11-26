@@ -142,6 +142,10 @@ class InboxTaskList extends StatelessWidget {
     required this.onToggleAll,
     this.onOpenDetail,
     this.onOpen,
+    this.isDesktop = false,
+    this.planning = false,
+    this.onPlanToday,
+    this.onClearSelection,
   });
   final List<InboxTask> items;
   final Set<String> selected;
@@ -149,120 +153,260 @@ class InboxTaskList extends StatelessWidget {
   final VoidCallback onToggleAll;
   final ValueChanged<String>? onOpenDetail;
   final ValueChanged<String>? onOpen;
+  final bool isDesktop;
+  final bool planning;
+  final VoidCallback? onPlanToday;
+  final VoidCallback? onClearSelection;
 
   @override
   Widget build(BuildContext context) {
     final count = items.where((task) => selected.contains(task.id)).length;
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(16),
-      child: Container(
-        decoration: BoxDecoration(
-          border: Border.all(color: inboxBorder),
-          borderRadius: BorderRadius.circular(16),
-        ),
-        child: Column(
-          children: [
-            ColoredBox(
-              color: inboxSoft,
-              child: CheckboxListTile(
-                value: count == 0
-                    ? false
-                    : count == items.length
-                    ? true
-                    : null,
-                tristate: true,
-                activeColor: inboxBlue,
-                controlAffinity: ListTileControlAffinity.leading,
-                onChanged: (_) => onToggleAll(),
-                title: Text(
-                  'Đã chọn $count việc',
-                  style: const TextStyle(
-                    color: inboxInk,
-                    fontWeight: FontWeight.w700,
+    return Material(
+      color: Colors.white,
+      shape: RoundedRectangleBorder(
+        side: const BorderSide(color: inboxBorder),
+        borderRadius: BorderRadius.circular(16),
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: Column(
+        children: [
+          ColoredBox(
+            color: isDesktop ? const Color(0xFFF5F8FC) : inboxSoft,
+            child: isDesktop
+                ? Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 10,
+                    ),
+                    child: Wrap(
+                      spacing: 12,
+                      runSpacing: 8,
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      children: [
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Checkbox(
+                              value: count == 0
+                                  ? false
+                                  : count == items.length
+                                  ? true
+                                  : null,
+                              tristate: true,
+                              activeColor: inboxBlue,
+                              onChanged: (_) => onToggleAll(),
+                            ),
+                            Text(
+                              'Đã chọn $count việc',
+                              style: const TextStyle(
+                                color: inboxInk,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ],
+                        ),
+                        FilledButton.icon(
+                          key: const ValueKey('inbox-desktop-plan-button'),
+                          onPressed: planning || count == 0
+                              ? null
+                              : onPlanToday,
+                          style: FilledButton.styleFrom(
+                            backgroundColor: inboxBlue,
+                            foregroundColor: Colors.white,
+                            minimumSize: const Size(48, 42),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                          icon: planning
+                              ? const SizedBox(
+                                  width: 16,
+                                  height: 16,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: Colors.white,
+                                  ),
+                                )
+                              : const Icon(
+                                  Icons.event_available_outlined,
+                                  size: 18,
+                                ),
+                          label: Text(
+                            planning ? 'Đang lưu…' : 'Lên kế hoạch hôm nay',
+                          ),
+                        ),
+                        if (count > 0 && onClearSelection != null)
+                          OutlinedButton.icon(
+                            onPressed: planning ? null : onClearSelection,
+                            style: OutlinedButton.styleFrom(
+                              foregroundColor: inboxInk,
+                              backgroundColor: Colors.white,
+                              side: const BorderSide(color: inboxBorder),
+                              minimumSize: const Size(48, 42),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                            icon: const Icon(Icons.close, size: 18),
+                            label: const Text('Bỏ chọn'),
+                          ),
+                      ],
+                    ),
+                  )
+                : CheckboxListTile(
+                    value: count == 0
+                        ? false
+                        : count == items.length
+                        ? true
+                        : null,
+                    tristate: true,
+                    activeColor: inboxBlue,
+                    controlAffinity: ListTileControlAffinity.leading,
+                    onChanged: (_) => onToggleAll(),
+                    title: Text(
+                      'Đã chọn $count việc',
+                      style: const TextStyle(
+                        color: inboxInk,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
                   ),
+          ),
+          for (var i = 0; i < items.length; i++) ...[
+            if (i > 0 || isDesktop)
+              const Divider(height: 1, color: inboxBorder),
+            if (isDesktop)
+              _buildDesktopRow(context, items[i])
+            else
+              _buildMobileRow(context, items[i]),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDesktopRow(BuildContext context, InboxTask item) {
+    final isSelected = selected.contains(item.id);
+    return InkWell(
+      key: ValueKey(item.id),
+      onTap: () => onToggle(item.id),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+        child: Row(
+          children: [
+            Checkbox(
+              value: isSelected,
+              activeColor: inboxBlue,
+              semanticLabel: 'Chọn ${item.title}',
+              onChanged: (_) => onToggle(item.id),
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              flex: 3,
+              child: Text(
+                item.title,
+                style: TextStyle(
+                  color: isSelected ? inboxBlue : inboxInk,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
             ),
-            for (var i = 0; i < items.length; i++) ...[
-              if (i > 0)
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16),
-                  child: Divider(height: 1, color: inboxBorder),
-                ),
-              ListTile(
-                key: ValueKey(items[i].id),
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 8,
-                  vertical: 6,
-                ),
-                leading: Checkbox(
-                  value: selected.contains(items[i].id),
-                  activeColor: inboxBlue,
-                  semanticLabel: 'Chọn ${items[i].title}',
-                  onChanged: (_) => onToggle(items[i].id),
-                ),
-                title: Text(
-                  items[i].title,
-                  style: const TextStyle(
-                    color: inboxInk,
-                    fontSize: 17,
-                    fontWeight: FontWeight.w600,
+            const SizedBox(width: 16),
+            Expanded(
+              flex: 2,
+              child: Row(
+                children: [
+                  const Icon(
+                    Icons.event_note_outlined,
+                    size: 16,
+                    color: inboxMuted,
                   ),
-                ),
-                subtitle: Padding(
-                  padding: const EdgeInsets.only(top: 6),
-                  child: Text(
-                    inboxRecordedDate(items[i].createdAt),
-                    style: const TextStyle(color: inboxMuted),
-                  ),
-                ),
-                onTap: () => onToggle(items[i].id),
-                trailing: PopupMenuButton<String>(
-                  tooltip: 'Tùy chọn công việc',
-                  icon: const Icon(Icons.more_horiz, color: inboxInk),
-                  itemBuilder: (_) => const [
-                    PopupMenuItem(
-                      value: 'details',
-                      child: Text('Xem chi tiết'),
+                  const SizedBox(width: 6),
+                  Flexible(
+                    child: Text(
+                      inboxRecordedDate(item.createdAt),
+                      style: const TextStyle(color: inboxMuted, fontSize: 14),
                     ),
-                  ],
-                  onSelected: (_) {
-                    final openCb = onOpenDetail ?? onOpen;
-                    if (openCb != null) {
-                      openCb(items[i].id);
-                      return;
-                    }
-                    showModalBottomSheet<void>(
-                      context: context,
-                      showDragHandle: true,
-                      isScrollControlled: true,
-                      builder: (context) => SafeArea(
-                        child: SingleChildScrollView(
-                          padding: const EdgeInsets.all(24),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                items[i].title,
-                                style: Theme.of(context).textTheme.titleLarge,
-                              ),
-                              const SizedBox(height: 12),
-                              Text(inboxRecordedDate(items[i].createdAt)),
-                              const SizedBox(height: 8),
-                              const Text('Chưa lên lịch'),
-                            ],
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                ),
+                  ),
+                ],
               ),
-            ],
+            ),
+            _buildMenu(context, item),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildMobileRow(BuildContext context, InboxTask item) {
+    return ListTile(
+      key: ValueKey(item.id),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+      leading: Checkbox(
+        value: selected.contains(item.id),
+        activeColor: inboxBlue,
+        semanticLabel: 'Chọn ${item.title}',
+        onChanged: (_) => onToggle(item.id),
+      ),
+      title: Text(
+        item.title,
+        style: const TextStyle(
+          color: inboxInk,
+          fontSize: 17,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+      subtitle: Padding(
+        padding: const EdgeInsets.only(top: 6),
+        child: Text(
+          inboxRecordedDate(item.createdAt),
+          style: const TextStyle(color: inboxMuted),
+        ),
+      ),
+      onTap: () => onToggle(item.id),
+      trailing: _buildMenu(context, item),
+    );
+  }
+
+  Widget _buildMenu(BuildContext context, InboxTask item) {
+    return PopupMenuButton<String>(
+      tooltip: 'Tùy chọn công việc',
+      icon: const Icon(Icons.more_horiz, color: inboxInk),
+      itemBuilder: (_) => const [
+        PopupMenuItem(value: 'details', child: Text('Xem chi tiết')),
+      ],
+      onSelected: (_) {
+        final openCb = onOpenDetail ?? onOpen;
+        if (openCb != null) {
+          openCb(item.id);
+          return;
+        }
+        showModalBottomSheet<void>(
+          context: context,
+          showDragHandle: true,
+          isScrollControlled: true,
+          builder: (context) => SafeArea(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(24),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    item.title,
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                  const SizedBox(height: 12),
+                  Text(inboxRecordedDate(item.createdAt)),
+                  const SizedBox(height: 8),
+                  const Text('Chưa lên lịch'),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }
