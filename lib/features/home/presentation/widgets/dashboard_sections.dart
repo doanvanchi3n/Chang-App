@@ -86,12 +86,14 @@ class DashboardPriorities extends StatelessWidget {
   const DashboardPriorities({
     super.key,
     required this.data,
-    required this.onInbox,
+    required this.onCreate,
+    required this.onTask,
     required this.onPlan,
     this.onOpenTask,
   });
   final DashboardData data;
-  final VoidCallback onInbox;
+  final VoidCallback onCreate;
+  final ValueChanged<String> onTask;
   final VoidCallback onPlan;
   final ValueChanged<String>? onOpenTask;
 
@@ -114,7 +116,7 @@ class DashboardPriorities extends StatelessWidget {
             ),
           ),
           FilledButton.icon(
-            onPressed: onInbox,
+            onPressed: onCreate,
             icon: const Icon(Icons.add),
             label: const Text('Thêm việc'),
             style: FilledButton.styleFrom(
@@ -142,8 +144,8 @@ class DashboardPriorities extends StatelessWidget {
             : (data.todayDone / data.todayCount).clamp(0.0, 1.0),
         color: dashboardBlue,
         backgroundColor: const Color(0xFFE4EFF7),
-        semanticsLabel: 'Tiến độ công việc hôm nay',
-        semanticsValue: '${data.todayDone} trên ${data.todayCount} việc',
+        semanticsLabel:
+            'Tiến độ công việc hôm nay: ${data.todayDone} trên ${data.todayCount} việc',
       ),
       const SizedBox(height: 16),
       if (data.tasks.isEmpty)
@@ -198,9 +200,13 @@ class DashboardPriorities extends StatelessWidget {
                           ),
                           clipBehavior: Clip.antiAlias,
                           child: InkWell(
-                            onTap: onOpenTask == null
-                                ? null
-                                : () => onOpenTask!(data.tasks[i].id),
+                            onTap: () {
+                              if (onOpenTask != null) {
+                                onOpenTask!(data.tasks[i].id);
+                              } else {
+                                onTask(data.tasks[i].id);
+                              }
+                            },
                             child: Padding(
                               padding: const EdgeInsets.all(16),
                               child: Column(
@@ -265,6 +271,26 @@ class DashboardPriorities extends StatelessWidget {
                                       'Chưa chia bước nhỏ',
                                       style: TextStyle(color: dashboardMuted),
                                     ),
+                                  const SizedBox(height: 6),
+                                  Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: TextButton.icon(
+                                      onPressed: () {
+                                        if (onOpenTask != null) {
+                                          onOpenTask!(data.tasks[i].id);
+                                        } else {
+                                          onTask(data.tasks[i].id);
+                                        }
+                                      },
+                                      icon: const Icon(
+                                        Icons.arrow_forward,
+                                        size: 18,
+                                      ),
+                                      label: const Text(
+                                        'Chi tiết và tập trung',
+                                      ),
+                                    ),
+                                  ),
                                 ],
                               ),
                             ),

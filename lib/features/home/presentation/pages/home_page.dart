@@ -1,3 +1,5 @@
+import '../../../../app/widgets/app_layout.dart';
+
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -5,6 +7,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../app/widgets/main_navigation.dart';
 import '../../../tasks/presentation/inbox_page.dart';
+import '../../../tasks/presentation/task_list_page.dart';
+import '../../../tasks/presentation/create_task_page.dart';
 import '../../../tasks/presentation/daily_plan_page.dart';
 import '../../../tasks/presentation/task_detail_page.dart';
 import '../../data/dashboard_provider.dart';
@@ -22,6 +26,7 @@ class _HomePageState extends ConsumerState<HomePage>
   Timer? _midnight;
   bool _inboxOpen = false;
   bool _planOpen = false;
+  bool _taskOpen = false;
 
   @override
   void initState() {
@@ -59,7 +64,7 @@ class _HomePageState extends ConsumerState<HomePage>
   }
 
   Future<void> _openInbox() async {
-    if (_inboxOpen || _planOpen) return;
+    if (_inboxOpen || _planOpen || _taskOpen) return;
     _inboxOpen = true;
     try {
       await Navigator.of(context)
@@ -80,7 +85,7 @@ class _HomePageState extends ConsumerState<HomePage>
   }
 
   Future<void> _openPlan() async {
-    if (_planOpen || _inboxOpen) return;
+    if (_planOpen || _inboxOpen || _taskOpen) return;
     _planOpen = true;
     try {
       await Navigator.of(context)
@@ -91,11 +96,20 @@ class _HomePageState extends ConsumerState<HomePage>
     }
   }
 
+  Future<void> _openTaskPage(Widget page) async {
+    if (_taskOpen || _inboxOpen || _planOpen) return;
+    _taskOpen = true;
+    try {
+      await Navigator.of(context)
+          .push(MaterialPageRoute<void>(builder: (_) => page));
+    } finally {
+      _taskOpen = false;
+      if (mounted) ref.invalidate(dashboardProvider);
+    }
+  }
+
   Future<void> _openTaskDetail(String taskId) async {
-    await Navigator.of(context).push<void>(
-      MaterialPageRoute(builder: (_) => TaskDetailPage(taskId: taskId)),
-    );
-    if (mounted) ref.invalidate(dashboardProvider);
+    await _openTaskPage(TaskDetailPage(taskId: taskId));
   }
 
   @override
@@ -106,7 +120,7 @@ class _HomePageState extends ConsumerState<HomePage>
       backgroundColor: Colors.white,
       bottomNavigationBar: MainNavigation(
         inboxActive: false,
-        onInbox: _openInbox,
+        onInbox: () => _openTaskPage(const TaskListPage()),
       ),
       body: SafeArea(
         child: RefreshIndicator(
@@ -115,9 +129,11 @@ class _HomePageState extends ConsumerState<HomePage>
             physics: const AlwaysScrollableScrollPhysics(),
             child: Center(
               child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 560),
+                constraints: const BoxConstraints(
+                  maxWidth: AppLayout.maxContentWidth,
+                ),
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
+                  padding: AppLayout.pagePadding(context),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -237,7 +253,10 @@ class _HomePageState extends ConsumerState<HomePage>
                             const SizedBox(height: 24),
                             DashboardPriorities(
                               data: data,
-                              onInbox: _openInbox,
+                              onCreate: () =>
+                                  _openTaskPage(const CreateTaskPage()),
+                              onTask: (id) =>
+                                  _openTaskPage(TaskDetailPage(taskId: id)),
                               onPlan: _openPlan,
                               onOpenTask: _openTaskDetail,
                             ),

@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../core/constants/app_constants.dart';
 import '../theme/app_theme.dart';
+import '../features/focus/presentation/focus_host.dart';
 import 'router/app_router.dart';
 
 class ChangApp extends ConsumerWidget {
@@ -19,6 +20,7 @@ class ChangApp extends ConsumerWidget {
       supportedLocales: const [Locale('vi')],
       localizationsDelegates: GlobalMaterialLocalizations.delegates,
       routerConfig: ref.watch(appRouterProvider),
+      builder: (context, child) => FocusHost(child: child!),
     );
   }
 }

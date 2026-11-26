@@ -4,12 +4,13 @@
 
 ## Trạng thái
 
-Bộ khung Flutter, phát triển trực tiếp trên **Linux hoặc web/Firefox**; vẫn giữ
-project Android/iOS cho phát triển mobile. Đã có Riverpod, go_router, giao diện khởi động tiếng Việt,
-theme cơ bản, Supabase SDK và widget test. App khởi tạo Supabase trước khi mở
-giao diện, dùng client chung qua Riverpod. Các màn hình nghiệp vụ M01–M50,
-đăng nhập và đồng bộ offline chưa triển khai. Trang `/` hiện là trang chào,
-chưa phải dashboard M05 hoàn chỉnh.
+Ứng dụng Flutter dùng Riverpod, go_router và Supabase. Đã có onboarding,
+Home, Hộp việc, kế hoạch hôm nay và luồng tạo công việc → chi tiết → chuẩn bị →
+tập trung/tạm dừng → tổng kết. Dữ liệu nghiệp vụ lấy từ Supabase, hiện dùng
+phiên đăng nhập ẩn danh; chưa có màn đăng nhập/đăng ký.
+
+Xem [hướng dẫn SQL và luồng công việc/phiên học](docs/08_TASK_AND_FOCUS_FLOW.md)
+trước khi chạy các màn mới. Phần giao diện/runtime của đợt bổ sung này chưa được chạy thử.
 
 ## Chạy dự án
 
@@ -46,7 +47,7 @@ Android cần SDK và thiết bị phù hợp; iOS cần macOS/Xcode.
 
 App dùng Project URL và publishable key mặc định trong
 [`SupabaseConfig`](lib/core/config/supabase_config.dart), không cần `.env` để chạy.
-Trang chào chưa yêu cầu đăng nhập và chưa tải dữ liệu công việc.
+Onboarding không yêu cầu nhập tài khoản; các màn nghiệp vụ dùng phiên ẩn danh để áp dụng RLS.
 
 ```bash
 dart format --output=none --set-exit-if-changed lib test
@@ -81,7 +82,7 @@ Chang-app/
 │   ├── core/                 # Hằng số và cấu hình Supabase public
 │   ├── theme/                # Design tokens và ThemeData
 │   ├── data/remote/          # Supabase client provider dùng chung
-│   └── features/home/        # Trang chào hiện có
+│   └── features/             # Onboarding, home, tasks, focus
 ├── assets/                   # Hướng dẫn thêm tài nguyên khi cần
 ├── test/                     # Unit/widget tests; đã có test khởi động
 ├── supabase/
@@ -115,8 +116,8 @@ Kết quả ghi vào `docs/` theo vị trí project, không phụ thuộc thư m
   `--dart-define=SUPABASE_URL=...` và `--dart-define=SUPABASE_PUBLISHABLE_KEY=...`.
   `.env.example` còn chứa các biến dành cho backend/MCP; không đóng gói toàn bộ
   `.env` vào Flutter. Xem [quy ước cấu hình](lib/core/config/README.md).
-- Chưa nạp font Inter hoặc asset thương hiệu. Thêm file có giấy phép phù hợp
-  vào `assets/`, rồi khai báo trong `pubspec.yaml` theo [hướng dẫn](assets/README.md).
+- Font Inter, mascot SVG và âm thanh đã được khai báo trong `pubspec.yaml`.
+  Tài nguyên bổ sung đặt trong `assets/` với giấy phép phù hợp.
 - Bundle/application ID đang là `com.example.chang_app` từ template. Cần đặt ID
   chính thức và cấu hình ký ứng dụng trước khi phát hành.
 

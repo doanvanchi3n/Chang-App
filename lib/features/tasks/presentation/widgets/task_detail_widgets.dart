@@ -496,9 +496,7 @@ class _AddStepTrigger extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final button = Tooltip(
-      message: canAdd
-          ? 'Thêm bước nhỏ cho công việc'
-          : 'Mỗi công việc chỉ nên chia tối đa 5 bước để chống quá tải. Hãy tạo công việc mới nếu cần.',
+      message: canAdd ? 'Thêm bước nhỏ cho công việc' : 'Mỗi công việc chỉ nên chia tối đa 5 bước để chống quá tải. Hãy tạo công việc mới nếu cần.',
       child: TextButton(
         key: const ValueKey('add-subtask-button'),
         onPressed: onPressed,

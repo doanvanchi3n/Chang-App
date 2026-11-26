@@ -14,6 +14,7 @@ final taskDetailRepositoryProvider = Provider<TaskDetailRepository>((ref) {
 
 final taskDetailProvider = FutureProvider.autoDispose
     .family<TaskDetail?, String>(
-      (ref, taskId) => ref.watch(taskDetailRepositoryProvider).fetchById(taskId),
+      (ref, taskId) =>
+          ref.watch(taskDetailRepositoryProvider).fetchById(taskId),
       retry: (retryCount, error) => null,
     );

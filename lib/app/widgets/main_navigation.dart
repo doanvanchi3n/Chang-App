@@ -1,3 +1,5 @@
+import 'app_layout.dart';
+
 import 'package:flutter/material.dart';
 
 import '../../features/onboarding/presentation/pages/onboarding_page.dart';
@@ -26,7 +28,9 @@ class MainNavigation extends StatelessWidget {
         child: Center(
           heightFactor: 1,
           child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 560),
+            constraints: const BoxConstraints(
+              maxWidth: AppLayout.maxContentWidth,
+            ),
             child: Row(
               children: [
                 _item(Icons.home_rounded, 'Hôm nay', !inboxActive, onHome),

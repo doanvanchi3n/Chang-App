@@ -1,3 +1,5 @@
+import '../../../../app/widgets/app_layout.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -19,7 +21,7 @@ Future<Set<String>?> showPlanTaskPicker(
     side: BorderSide(color: inboxBorder),
   ),
   clipBehavior: Clip.antiAlias,
-  constraints: const BoxConstraints(maxWidth: 560),
+  constraints: const BoxConstraints(maxWidth: AppLayout.maxContentWidth),
   builder: (_) => _TaskPicker(tasks: tasks, today: today),
 );
 

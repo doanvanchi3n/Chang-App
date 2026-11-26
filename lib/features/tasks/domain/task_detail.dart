@@ -75,10 +75,14 @@ class TaskSubtask {
   final bool isCompleted;
   final DateTime? completedAt;
 
+  int get order => orderIndex;
+  int get minutes => estimatedMinutes;
+  bool get completed => isCompleted;
+
   factory TaskSubtask.fromJson(Map<String, dynamic> json) {
     return TaskSubtask(
       id: json['id'] as String,
-      taskId: json['task_id'] as String,
+      taskId: (json['task_id'] as String?) ?? '',
       title: json['title'] as String,
       orderIndex: json['order_index'] as int,
       estimatedMinutes: (json['estimated_minutes'] as int?) ?? 25,
@@ -176,6 +180,11 @@ class TaskDetail {
 
   int get completedSubtaskCount =>
       subtasks.where((step) => step.isCompleted).length;
+
+  List<TaskSubtask> get steps => subtasks;
+  int get completedSteps => completedSubtaskCount;
+  bool get archived => isArchived;
+  int? get minutes => estimatedMinutes;
 
   bool get canAddSubtask => subtasks.length < maxSubtasks;
 
@@ -294,4 +303,11 @@ class TaskDetail {
       updatedAt: (now ?? DateTime.now()).toUtc(),
     );
   }
+}
+
+class TaskProject {
+  TaskProject.fromJson(Map<String, dynamic> json)
+    : id = json['id'] as String,
+      name = json['name'] as String;
+  final String id, name;
 }

@@ -1,7 +1,10 @@
+import '../../../app/widgets/app_layout.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'daily_plan_page.dart';
+import 'create_task_page.dart';
 import 'inbox_provider.dart';
 import 'task_detail_page.dart';
 import 'widgets/inbox_widgets.dart';
@@ -19,6 +22,7 @@ class _InboxPageState extends ConsumerState<InboxPage> {
   final _selected = <String>{};
   bool _saving = false;
   bool _planning = false;
+  bool _taskOpen = false;
   String? _saveError;
 
   @override
@@ -95,6 +99,18 @@ class _InboxPageState extends ConsumerState<InboxPage> {
     }
   }
 
+  Future<void> _openTaskPage(Widget page) async {
+    if (_saving || _planning || _taskOpen) return;
+    _taskOpen = true;
+    try {
+      await Navigator.of(context)
+          .push(MaterialPageRoute<void>(builder: (_) => page));
+    } finally {
+      _taskOpen = false;
+      if (mounted) ref.invalidate(inboxProvider);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final tasks = ref.watch(inboxProvider);
@@ -126,9 +142,11 @@ class _InboxPageState extends ConsumerState<InboxPage> {
                   physics: const AlwaysScrollableScrollPhysics(),
                   child: Center(
                     child: ConstrainedBox(
-                      constraints: const BoxConstraints(maxWidth: 560),
+                      constraints: const BoxConstraints(
+                        maxWidth: AppLayout.maxContentWidth,
+                      ),
                       child: Padding(
-                        padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
+                        padding: AppLayout.pagePadding(context),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -277,6 +295,19 @@ class _InboxPageState extends ConsumerState<InboxPage> {
                                 ),
                               ),
                             const SizedBox(height: 20),
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: TextButton.icon(
+                                onPressed: _saving || _planning
+                                    ? null
+                                    : () =>
+                                          _openTaskPage(const CreateTaskPage()),
+                                icon: const Icon(Icons.playlist_add),
+                                label: const Text(
+                                  'Tạo công việc và chia bước nhỏ',
+                                ),
+                              ),
+                            ),
                             const InboxMascotMessage(),
                             const SizedBox(height: 24),
                             Text(
@@ -355,6 +386,9 @@ class _InboxPageState extends ConsumerState<InboxPage> {
                                   : InboxTaskList(
                                       items: items,
                                       selected: _selected,
+                                      onOpen: (id) => _openTaskPage(
+                                        TaskDetailPage(taskId: id),
+                                      ),
                                       onToggle: (id) => setState(() {
                                         if (!_selected.add(id)) {
                                           _selected.remove(id);

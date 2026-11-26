@@ -1,3 +1,6 @@
+import '../task_list_page.dart';
+import '../../../../app/widgets/app_layout.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -138,12 +141,14 @@ class InboxTaskList extends StatelessWidget {
     required this.onToggle,
     required this.onToggleAll,
     this.onOpenDetail,
+    this.onOpen,
   });
   final List<InboxTask> items;
   final Set<String> selected;
   final ValueChanged<String> onToggle;
   final VoidCallback onToggleAll;
   final ValueChanged<String>? onOpenDetail;
+  final ValueChanged<String>? onOpen;
 
   @override
   Widget build(BuildContext context) {
@@ -222,8 +227,9 @@ class InboxTaskList extends StatelessWidget {
                     ),
                   ],
                   onSelected: (_) {
-                    if (onOpenDetail != null) {
-                      onOpenDetail!(items[i].id);
+                    final openCb = onOpenDetail ?? onOpen;
+                    if (openCb != null) {
+                      openCb(items[i].id);
                       return;
                     }
                     showModalBottomSheet<void>(
@@ -285,7 +291,9 @@ class InboxBottomBar extends StatelessWidget {
           child: Center(
             heightFactor: 1,
             child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 560),
+              constraints: const BoxConstraints(
+                maxWidth: AppLayout.maxContentWidth,
+              ),
               child: Padding(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 24,
@@ -349,8 +357,11 @@ class InboxBottomBar extends StatelessWidget {
         ),
         MainNavigation(
           inboxActive: true,
+          onInbox: () => Navigator.of(context).pushReplacement(
+            MaterialPageRoute<void>(builder: (_) => const TaskListPage()),
+          ),
           onHome: Navigator.of(context).canPop()
-              ? () => Navigator.of(context).pop()
+              ? () => Navigator.of(context).popUntil((route) => route.isFirst)
               : null,
         ),
       ],

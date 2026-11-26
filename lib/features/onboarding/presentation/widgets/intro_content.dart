@@ -1,3 +1,5 @@
+import '../../../../app/widgets/app_layout.dart';
+
 import 'package:flutter/material.dart';
 
 import '../../../../theme/app_colors.dart';
@@ -33,11 +35,11 @@ class IntroContent extends StatelessWidget {
               child: Center(
                 child: ConstrainedBox(
                   constraints: BoxConstraints(
-                    maxWidth: 560,
+                    maxWidth: AppLayout.maxContentWidth,
                     minHeight: constraints.maxHeight,
                   ),
                   child: Padding(
-                    padding: const EdgeInsets.fromLTRB(24, 16, 24, 56),
+                    padding: AppLayout.pagePadding(context, bottom: 56),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
