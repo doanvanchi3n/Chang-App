@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../app/widgets/feature_surface.dart';
 
@@ -40,7 +39,14 @@ class _RestPageState extends State<RestPage> {
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        SvgPicture.asset('assets/mascot/mascot-M29.svg', height: 200),
+        Image.asset(
+          'assets/mascot/mascot_m29.png',
+          height: 200,
+          fit: BoxFit.contain,
+          gaplessPlayback: true,
+          filterQuality: FilterQuality.medium,
+          semanticLabel: 'Chặng đang nghỉ ngơi',
+        ),
         const SizedBox(height: 24),
         Text(
           clockDuration(_remaining),

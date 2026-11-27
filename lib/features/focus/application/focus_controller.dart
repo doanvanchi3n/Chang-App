@@ -9,6 +9,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../data/remote/supabase_client_provider.dart';
 import '../../home/data/dashboard_provider.dart';
+import '../../tasks/data/task_management_repository.dart';
 import '../../tasks/data/task_repository.dart';
 import '../../tasks/presentation/inbox_provider.dart';
 import '../data/focus_repository.dart';
@@ -384,6 +385,8 @@ class FocusController extends Notifier<FocusState> {
     if (state.session!.saved) {
       ref.invalidate(dashboardProvider);
       ref.invalidate(inboxProvider);
+      ref.invalidate(taskListProvider);
+      ref.invalidate(focusTaskChoicesProvider);
       if (state.session!.taskId != null) {
         ref.invalidate(taskDetailProvider(state.session!.taskId!));
       }

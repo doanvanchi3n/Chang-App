@@ -31,3 +31,27 @@ class FocusSession {
         )
       : elapsedMs;
 }
+
+/// Formats remaining/countdown seconds as `MM:SS` (supports durations > 60m).
+String formatFocusClock(int seconds) {
+  final safe = seconds < 0 ? 0 : seconds;
+  final minutes = safe ~/ 60;
+  final remainder = safe % 60;
+  return '${minutes.toString().padLeft(2, '0')}:${remainder.toString().padLeft(2, '0')}';
+}
+
+/// Formats elapsed seconds cleanly for the focus progress caption:
+/// `< 60s` -> `22 giây`, exact minutes -> `5 phút`, mixed -> `5 phút 12 giây`.
+String formatElapsedDuration(int seconds) {
+  final safe = seconds < 0 ? 0 : seconds;
+  if (safe < 60) return '$safe giây';
+  final minutes = safe ~/ 60;
+  final remainder = safe % 60;
+  return remainder == 0 ? '$minutes phút' : '$minutes phút $remainder giây';
+}
+
+/// Computes clamped [0.0..1.0] progress for a focus session.
+double computeFocusProgress(int elapsedMs, int targetSeconds) {
+  if (targetSeconds <= 0) return 0;
+  return (elapsedMs / (targetSeconds * 1000)).clamp(0.0, 1.0);
+}

@@ -73,3 +73,5 @@ docs/.obsidian/workspace.json
 # ==============================================================================
 bao_docs/
 ref_images/
+# Widget Preview related
+.widget_preview/
