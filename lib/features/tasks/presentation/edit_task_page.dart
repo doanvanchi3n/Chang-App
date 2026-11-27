@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+
+import '../../../app/widgets/confirmation_dialog.dart';
+
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
@@ -174,24 +177,13 @@ class _EditTaskPageState extends ConsumerState<EditTaskPage> {
   }
 
   Future<void> _delete() async {
-    final yes = await showDialog<bool>(
-      context: context,
-      builder: (c) => AlertDialog(
-        title: const Text('Xóa công việc?'),
-        content: const Text(
-          'Công việc và các bước nhỏ sẽ bị xóa. Không thể hoàn tác.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(c, false),
-            child: const Text('Giữ lại'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(c, true),
-            child: const Text('Xóa công việc'),
-          ),
-        ],
-      ),
+    final yes = await showChangConfirmation(
+      context,
+      title: 'Xóa công việc?',
+      message: 'Công việc và các bước nhỏ sẽ bị xóa. Không thể hoàn tác.',
+      cancelLabel: 'Giữ lại',
+      confirmLabel: 'Xóa công việc',
+      destructive: true,
     );
     if (!mounted || yes != true) return;
     setState(() => _saving = true);

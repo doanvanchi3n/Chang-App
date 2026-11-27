@@ -1,6 +1,9 @@
 import '../../../app/widgets/app_layout.dart';
 
 import 'package:flutter/material.dart';
+
+import '../../../app/widgets/confirmation_dialog.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -105,24 +108,12 @@ class _DailyPlanPageState extends ConsumerState<DailyPlanPage> {
   Future<void> _reload() async {
     if (_saving || _loading) return;
     if (_dirty) {
-      final discard = await showDialog<bool>(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: const Text('Tải lại kế hoạch?'),
-          content: const Text(
-            'Các chỉnh sửa chưa lưu sẽ được thay bằng dữ liệu đã lưu.',
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context, false),
-              child: const Text('Giữ chỉnh sửa'),
-            ),
-            FilledButton(
-              onPressed: () => Navigator.pop(context, true),
-              child: const Text('Tải lại'),
-            ),
-          ],
-        ),
+      final discard = await showChangConfirmation(
+        context,
+        title: 'Tải lại kế hoạch?',
+        message: 'Các chỉnh sửa chưa lưu sẽ được thay bằng dữ liệu đã lưu.',
+        cancelLabel: 'Giữ chỉnh sửa',
+        confirmLabel: 'Tải lại',
       );
       if (discard != true || !mounted) return;
     }
@@ -223,24 +214,12 @@ class _DailyPlanPageState extends ConsumerState<DailyPlanPage> {
   Future<void> _back() async {
     if (_saving) return;
     if (_dirty) {
-      final leave = await showDialog<bool>(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: const Text('Bỏ chỉnh sửa chưa lưu?'),
-          content: const Text(
-            'Kế hoạch đã lưu và công việc của bạn vẫn được giữ nguyên.',
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context, false),
-              child: const Text('Ở lại'),
-            ),
-            FilledButton(
-              onPressed: () => Navigator.pop(context, true),
-              child: const Text('Quay lại'),
-            ),
-          ],
-        ),
+      final leave = await showChangConfirmation(
+        context,
+        title: 'Bỏ chỉnh sửa chưa lưu?',
+        message: 'Kế hoạch đã lưu và công việc của bạn vẫn được giữ nguyên.',
+        cancelLabel: 'Ở lại',
+        confirmLabel: 'Quay lại',
       );
       if (leave != true || !mounted) return;
     }

@@ -1,6 +1,10 @@
 import 'package:chang_app/app/widgets/main_navigation.dart';
 import 'package:chang_app/features/home/data/dashboard_provider.dart';
 import 'package:chang_app/features/home/presentation/pages/home_page.dart';
+import 'package:chang_app/features/notifications/data/notification_repository.dart';
+import 'package:chang_app/features/notifications/domain/app_notification.dart';
+import 'package:chang_app/features/notifications/presentation/notifications_page.dart';
+import 'package:chang_app/features/notifications/presentation/notification_bell.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -48,6 +52,18 @@ void main() {
       ProviderScope(
         overrides: [
           dashboardProvider.overrideWith((ref) async => _sampleDashboard()),
+          notificationListProvider.overrideWith(
+            (ref) async => [
+              AppNotification(
+                id: 'n1',
+                title: 'Sẵn sàng học cùng Chặng',
+                body: 'Một chặng học mới.',
+                kind: NotificationKind.system,
+                isRead: false,
+                createdAt: DateTime(2026, 11, 27),
+              ),
+            ],
+          ),
         ],
         child: const MaterialApp(home: HomePage()),
       ),
@@ -87,4 +103,24 @@ void main() {
       expect(tester.takeException(), isNull);
     },
   );
+
+  for (final width in [390.0, 840.0, 1920.0]) {
+    testWidgets('Chuông thông báo mở danh sách ở chiều rộng $width', (
+      tester,
+    ) async {
+      await pumpHome(tester, Size(width, 1080));
+      expect(
+        find.descendant(
+          of: find.byType(NotificationBell),
+          matching: find.text('1'),
+        ),
+        findsOneWidget,
+      );
+      await tester.tap(find.byTooltip('Thông báo'));
+      await tester.pumpAndSettle();
+      expect(find.byType(NotificationsPage), findsOneWidget);
+      expect(find.text('Sẵn sàng học cùng Chặng'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    });
+  }
 }

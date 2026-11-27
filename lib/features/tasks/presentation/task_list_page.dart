@@ -8,12 +8,14 @@ import '../../../app/widgets/app_layout.dart';
 import '../../../app/widgets/desktop_top_bar.dart';
 import '../../../app/widgets/feature_surface.dart';
 import '../../../app/widgets/main_navigation.dart';
+import '../../../app/widgets/work_section_tabs.dart';
 import '../../../theme/app_colors.dart';
 import '../../../theme/app_dimensions.dart';
 import '../data/task_management_repository.dart';
 import '../domain/task_detail.dart';
 import '../domain/task_filters.dart';
 import 'create_task_page.dart';
+import 'completed_tasks_page.dart';
 import 'edit_task_page.dart';
 import 'inbox_page.dart';
 import 'manage_steps_page.dart';
@@ -110,9 +112,7 @@ class _TaskListPageState extends ConsumerState<TaskListPage>
           bottomNavigationBar: isDesktop
               ? null
               : MainNavigation(inboxActive: true, onHome: _goHome),
-          body: isDesktop
-              ? _buildDesktopBody(tasks)
-              : _buildMobileBody(tasks),
+          body: isDesktop ? _buildDesktopBody(tasks) : _buildMobileBody(tasks),
         );
       },
     );
@@ -170,6 +170,18 @@ class _TaskListPageState extends ConsumerState<TaskListPage>
                           ],
                         ),
                         const SizedBox(height: 16),
+                        WorkSectionTabs(
+                          projects: false,
+                          onChanged: (value) {
+                            if (value) context.go('/projects');
+                          },
+                        ),
+                        const SizedBox(height: 12),
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: _completedTasksLink(),
+                        ),
+                        const SizedBox(height: 12),
                         Row(
                           children: [
                             Expanded(
@@ -204,7 +216,8 @@ class _TaskListPageState extends ConsumerState<TaskListPage>
                               child: OutlinedButton.icon(
                                 onPressed: tasks.asData == null
                                     ? null
-                                    : () => _openFilterSheet(tasks.requireValue),
+                                    : () =>
+                                          _openFilterSheet(tasks.requireValue),
                                 style: OutlinedButton.styleFrom(
                                   foregroundColor: changInk,
                                   backgroundColor: Colors.white,
@@ -594,6 +607,12 @@ class _TaskListPageState extends ConsumerState<TaskListPage>
     );
   }
 
+  Widget _completedTasksLink() => TextButton.icon(
+    onPressed: () => _open(const CompletedTasksPage()),
+    icon: const Icon(Icons.inventory_2_outlined),
+    label: const Text('Đã hoàn thành · Mở lại công việc'),
+  );
+
   Widget _buildMobileBody(AsyncValue<List<TaskDetail>> tasks) {
     return SafeArea(
       child: Center(
@@ -640,6 +659,13 @@ class _TaskListPageState extends ConsumerState<TaskListPage>
                           ],
                         ),
                         const SizedBox(height: 24),
+                        WorkSectionTabs(
+                          projects: false,
+                          onChanged: (value) {
+                            if (value) context.go('/projects');
+                          },
+                        ),
+                        const SizedBox(height: 16),
                         Row(
                           children: [
                             Expanded(
@@ -689,6 +715,7 @@ class _TaskListPageState extends ConsumerState<TaskListPage>
                         ),
                         const SizedBox(height: 14),
                         if (_filters.count > 0) _buildActiveFilterChips(tasks),
+                        _completedTasksLink(),
                         TextButton.icon(
                           onPressed: () => _open(const InboxPage()),
                           icon: const Icon(Icons.inbox_outlined),

@@ -131,6 +131,7 @@ class TaskDetail {
     this.project,
     required List<TaskSubtask> subtasks,
     required this.updatedAt,
+    this.completedAt,
   }) : subtasks = List.unmodifiable(
          List<TaskSubtask>.from(subtasks)
            ..sort((a, b) => a.orderIndex.compareTo(b.orderIndex)),
@@ -149,6 +150,7 @@ class TaskDetail {
   final TaskProjectSummary? project;
   final List<TaskSubtask> subtasks;
   final DateTime updatedAt;
+  final DateTime? completedAt;
 
   factory TaskDetail.fromJson(Map<String, dynamic> json) {
     final projectRaw = json['projects'] as Map<String, dynamic>?;
@@ -173,6 +175,7 @@ class TaskDetail {
       updatedAt:
           DateTime.tryParse(json['updated_at'] as String? ?? '') ??
           DateTime.fromMillisecondsSinceEpoch(0, isUtc: true),
+      completedAt: DateTime.tryParse(json['completed_at'] as String? ?? ''),
     );
   }
 
@@ -280,6 +283,9 @@ class TaskDetail {
       project: project,
       subtasks: updatedSubtasks,
       updatedAt: timestamp,
+      completedAt: nextStatus == TaskStatus.completed
+          ? completedAt ?? timestamp
+          : null,
     );
   }
 
@@ -301,6 +307,9 @@ class TaskDetail {
       project: project,
       subtasks: subtasks,
       updatedAt: (now ?? DateTime.now()).toUtc(),
+      completedAt: newStatus == TaskStatus.completed
+          ? completedAt ?? (now ?? DateTime.now()).toUtc()
+          : null,
     );
   }
 }

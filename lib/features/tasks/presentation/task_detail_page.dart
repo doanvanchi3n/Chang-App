@@ -12,6 +12,7 @@ import 'create_task_page.dart';
 import 'edit_task_page.dart';
 import 'manage_steps_page.dart';
 import 'widgets/task_draft_helpers.dart';
+import 'widgets/reopen_task_sheet.dart';
 import '../../../theme/app_colors.dart';
 import '../../../theme/app_dimensions.dart';
 import '../domain/task_detail.dart';
@@ -161,11 +162,13 @@ class _TaskDetailPageState extends ConsumerState<TaskDetailPage> {
 
   Future<void> _toggleTaskCompletion(TaskDetail current) async {
     if (_updatingStatus || _busySubtaskIds.isNotEmpty || _addingStep) return;
-    final nextStatus = current.status == TaskStatus.completed
-        ? (current.completedSubtaskCount > 0
-              ? TaskStatus.inProgress
-              : TaskStatus.todo)
-        : TaskStatus.completed;
+    if (current.status == TaskStatus.completed) {
+      if (await showReopenTaskSheet(context, current) && mounted) {
+        await _refresh();
+      }
+      return;
+    }
+    const nextStatus = TaskStatus.completed;
     final previous = current;
     setState(() {
       _updatingStatus = true;

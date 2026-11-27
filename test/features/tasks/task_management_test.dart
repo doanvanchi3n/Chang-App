@@ -255,8 +255,14 @@ void main() {
         width: width,
         scale: width == 320 ? 1.3 : 1,
       );
+      await tester.scrollUntilVisible(
+        find.text('Chuẩn bị bài thuyết trình'),
+        120,
+        scrollable: find.byType(Scrollable).first,
+      );
       expect(find.text('Chuẩn bị bài thuyết trình'), findsOneWidget);
       expect(tester.takeException(), isNull);
+      await tester.ensureVisible(find.byTooltip('Tìm và lọc'));
       await tester.tap(find.byTooltip('Tìm và lọc'));
       await tester.pumpAndSettle();
       expect(find.text('Bộ lọc'), findsOneWidget);

@@ -7,6 +7,7 @@ import 'package:uuid/uuid.dart';
 
 import '../../../app/widgets/app_layout.dart';
 import '../../../app/widgets/choice_sheet.dart';
+import '../../../app/widgets/confirmation_dialog.dart';
 import '../../../app/widgets/deadline_picker.dart';
 import '../../../app/widgets/desktop_top_bar.dart';
 import '../../../app/widgets/feature_surface.dart';
@@ -20,7 +21,8 @@ import 'inbox_provider.dart';
 import 'task_detail_page.dart';
 
 class CreateTaskPage extends ConsumerStatefulWidget {
-  const CreateTaskPage({super.key});
+  const CreateTaskPage({super.key, this.initialProject});
+  final TaskProjectSummary? initialProject;
   @override
   ConsumerState<CreateTaskPage> createState() => _CreateTaskPageState();
 }
@@ -35,8 +37,14 @@ class _CreateTaskPageState extends ConsumerState<CreateTaskPage> {
   String? _project, _error;
   String _priority = 'MEDIUM';
   DateTime? _due;
-  bool _saving = false, _dirty = false;
+  bool _saving = false, _dirty = false, _confirmingExit = false;
   Map<String, dynamic>? _pending;
+
+  @override
+  void initState() {
+    super.initState();
+    _project = widget.initialProject?.id;
+  }
 
   @override
   void dispose() {
@@ -55,31 +63,30 @@ class _CreateTaskPageState extends ConsumerState<CreateTaskPage> {
     });
   }
 
-  Future<void> _back() async {
-    if (_saving) return;
+  Future<void> _back({bool toHome = false}) async {
+    if (_saving || _confirmingExit) return;
     if (_dirty || _pending != null) {
-      final leave = await showDialog<bool>(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: const Text('Rời form tạo việc?'),
-          content: Text(
-            _pending == null
-                ? 'Các thông tin chưa lưu sẽ bị bỏ.'
-                : 'Kết quả lưu chưa được xác nhận. Hãy kiểm tra Hộp việc trước khi tạo lại.',
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context, false),
-              child: const Text('Ở lại'),
-            ),
-            TextButton(
-              onPressed: () => Navigator.pop(context, true),
-              child: const Text('Rời form'),
-            ),
-          ],
-        ),
-      );
-      if (leave != true || !mounted) return;
+      _confirmingExit = true;
+      try {
+        final leave = await showChangConfirmation(
+          context,
+          title: 'Rời form tạo việc?',
+          message: _pending == null ? 'Các thông tin chưa lưu sẽ bị bỏ.' : 'Kết quả lưu chưa được xác nhận. Hãy kiểm tra Hộp việc trước khi tạo lại.',
+          cancelLabel: 'Ở lại',
+          confirmLabel: 'Rời form',
+        );
+        if (!leave || !mounted) return;
+      } finally {
+        _confirmingExit = false;
+      }
+    }
+    if (toHome) {
+      if (Navigator.of(context).canPop()) {
+        Navigator.of(context).popUntil((route) => route.isFirst);
+      } else {
+        context.go('/');
+      }
+      return;
     }
     if (Navigator.of(context).canPop()) {
       Navigator.of(context).pop();
@@ -126,8 +133,7 @@ class _CreateTaskPageState extends ConsumerState<CreateTaskPage> {
           if (['22023', '42501'].contains(error.code)) {
             _pending = null;
             if (error.code == '42501') _project = null;
-            _error =
-                'Chưa lưu công việc. Kiểm tra hạn hoàn thành, dự án và các bước rồi thử lại.';
+            _error = 'Chưa lưu công việc. Kiểm tra hạn hoàn thành, dự án và các bước rồi thử lại.';
             ref.invalidate(taskProjectsProvider);
           } else {
             _error = 'Chưa lưu được công việc. Kiểm tra kết nối rồi thử lại.';
@@ -137,8 +143,7 @@ class _CreateTaskPageState extends ConsumerState<CreateTaskPage> {
     } catch (_) {
       if (mounted) {
         setState(
-          () => _error =
-              'Chưa xác nhận được công việc đã lưu. Thử lại sẽ dùng cùng yêu cầu, không tạo việc trùng.',
+          () => _error = 'Chưa xác nhận được công việc đã lưu. Thử lại sẽ dùng cùng yêu cầu, không tạo việc trùng.',
         );
       }
     } finally {
@@ -153,9 +158,8 @@ class _CreateTaskPageState extends ConsumerState<CreateTaskPage> {
         TextFormField(
           controller: _title,
           maxLength: 200,
-          decoration: changInput(
-            'Tên công việc *',
-          ).copyWith(filled: true, fillColor: Colors.white),
+          decoration: changInput('Tên công việc *')
+              .copyWith(filled: true, fillColor: Colors.white),
           validator: (v) =>
               v == null || v.trim().isEmpty ? 'Nhập tên công việc.' : null,
         ),
@@ -164,9 +168,8 @@ class _CreateTaskPageState extends ConsumerState<CreateTaskPage> {
           controller: _description,
           maxLines: 3,
           maxLength: 4000,
-          decoration: changInput(
-            'Mô tả',
-          ).copyWith(filled: true, fillColor: Colors.white),
+          decoration: changInput('Mô tả')
+              .copyWith(filled: true, fillColor: Colors.white),
         ),
       ],
     );
@@ -201,9 +204,8 @@ class _CreateTaskPageState extends ConsumerState<CreateTaskPage> {
                     key: ObjectKey(_steps[i]),
                     controller: _steps[i],
                     maxLength: 200,
-                    decoration: changInput(
-                      'Bước ${i + 1}',
-                    ).copyWith(filled: true, fillColor: Colors.white),
+                    decoration: changInput('Bước ${i + 1}')
+                        .copyWith(filled: true, fillColor: Colors.white),
                     validator: (v) => v == null || v.trim().isEmpty
                         ? 'Nhập nội dung bước.'
                         : null,
@@ -266,6 +268,9 @@ class _CreateTaskPageState extends ConsumerState<CreateTaskPage> {
             icon: Icons.folder_outlined,
             value:
                 items.where((p) => p.id == _project).firstOrNull?.name ??
+                (_project == widget.initialProject?.id
+                    ? widget.initialProject?.name
+                    : null) ??
                 'Không gắn dự án',
             onTap: () async {
               final value = await showChangChoices(
@@ -294,8 +299,10 @@ class _CreateTaskPageState extends ConsumerState<CreateTaskPage> {
           loading: () => const LinearProgressIndicator(),
           error: (_, _) => Column(
             children: [
-              const Text(
-                'Chưa tải được dự án. Bạn vẫn có thể tạo việc không gắn dự án.',
+              Text(
+                _project == null
+                    ? 'Chưa tải được dự án. Bạn vẫn có thể tạo việc không gắn dự án.'
+                    : 'Dự án: ${widget.initialProject?.name ?? 'Đã chọn'}. Chưa tải được danh sách dự án.',
               ),
               TextButton(
                 onPressed: () => ref.invalidate(taskProjectsProvider),
@@ -372,9 +379,8 @@ class _CreateTaskPageState extends ConsumerState<CreateTaskPage> {
             FilteringTextInputFormatter.digitsOnly,
             LengthLimitingTextInputFormatter(4),
           ],
-          decoration: changInput(
-            'Thời lượng dự kiến (phút)',
-          ).copyWith(filled: true, fillColor: Colors.white),
+          decoration: changInput('Thời lượng dự kiến (phút)')
+              .copyWith(filled: true, fillColor: Colors.white),
           validator: (v) {
             final n = int.tryParse(v ?? '');
             return n == null || n < _steps.length || n > 1440
@@ -482,13 +488,7 @@ class _CreateTaskPageState extends ConsumerState<CreateTaskPage> {
               children: [
                 DesktopTopBar(
                   activeTab: DesktopNavTab.tasks,
-                  onTapHome: () {
-                    if (Navigator.of(context).canPop()) {
-                      Navigator.of(context).popUntil((route) => route.isFirst);
-                    } else {
-                      context.go('/');
-                    }
-                  },
+                  onTapHome: () => _back(toHome: true),
                   onTapTasks: _back,
                 ),
                 Expanded(
@@ -624,9 +624,9 @@ class _CreateTaskPageState extends ConsumerState<CreateTaskPage> {
                                                 child: Text(
                                                   _error!,
                                                   style: TextStyle(
-                                                    color: Theme.of(
-                                                      context,
-                                                    ).colorScheme.error,
+                                                    color: Theme.of(context)
+                                                        .colorScheme
+                                                        .error,
                                                   ),
                                                 ),
                                               ),

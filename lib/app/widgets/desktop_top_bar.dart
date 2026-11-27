@@ -19,6 +19,7 @@ class DesktopTopBar extends StatelessWidget {
     this.onTapTasks,
     this.onTapAddTask,
     this.onRefresh,
+    this.notificationAction,
     this.avatarLetter = 'C',
   });
 
@@ -27,6 +28,7 @@ class DesktopTopBar extends StatelessWidget {
   final VoidCallback? onTapTasks;
   final VoidCallback? onTapAddTask;
   final VoidCallback? onRefresh;
+  final Widget? notificationAction;
   final String avatarLetter;
 
   @override
@@ -86,16 +88,12 @@ class DesktopTopBar extends StatelessWidget {
                           _NavTabItem(
                             label: 'Hôm nay',
                             active: activeTab == DesktopNavTab.home,
-                            onTap: activeTab == DesktopNavTab.home
-                                ? null
-                                : onTapHome,
+                            onTap: onTapHome,
                           ),
                           _NavTabItem(
                             label: 'Công việc',
                             active: activeTab == DesktopNavTab.tasks,
-                            onTap: activeTab == DesktopNavTab.tasks
-                                ? null
-                                : onTapTasks,
+                            onTap: onTapTasks,
                           ),
                           const _NavTabItem(
                             label: 'Lịch',
@@ -123,6 +121,7 @@ class DesktopTopBar extends StatelessWidget {
                       tooltip: 'Làm mới',
                       icon: const Icon(Icons.refresh, color: _topBarInk),
                     ),
+                  ?notificationAction,
                   if (onTapAddTask != null) ...[
                     const SizedBox(width: AppSpacing.s8),
                     FilledButton.icon(

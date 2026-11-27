@@ -312,9 +312,11 @@ class DashboardPriorities extends StatelessWidget {
           children: [
             Icon(Icons.info_outline, size: 16, color: AppColors.textMuted),
             SizedBox(width: 6),
-            Text(
-              'Bạn có thể bắt đầu ở bất kỳ chặng nào.',
-              style: TextStyle(color: AppColors.textMuted, fontSize: 13),
+            Expanded(
+              child: Text(
+                'Bạn có thể bắt đầu ở bất kỳ chặng nào.',
+                style: TextStyle(color: AppColors.textMuted, fontSize: 13),
+              ),
             ),
           ],
         ),
@@ -323,10 +325,36 @@ class DashboardPriorities extends StatelessWidget {
   );
 
   Widget _buildDesktopTaskRow(DashboardTask task, bool primary) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        if (constraints.maxWidth >= 520) {
+          return _buildWideDesktopTaskRow(task, primary);
+        }
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            _buildMobileTaskColumn(task),
+            const SizedBox(height: 12),
+            FilledButton(
+              onPressed: () => onFocusTask != null
+                  ? onFocusTask!(task.id)
+                  : _openTask(task.id),
+              child: Text(
+                task.estimatedMinutes != null
+                    ? 'Bắt đầu ${task.estimatedMinutes} phút'
+                    : 'Bắt đầu',
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildWideDesktopTaskRow(DashboardTask task, bool primary) {
     final subtitleParts = <String>[
       if (task.project != null) task.project!,
-      if (task.dueDate != null)
-        'Hạn ${dashboardDate(task.dueDate!.toLocal())}',
+      if (task.dueDate != null) 'Hạn ${dashboardDate(task.dueDate!.toLocal())}',
       if (task.estimatedMinutes != null) '${task.estimatedMinutes} phút',
     ];
     final startLabel = task.estimatedMinutes != null

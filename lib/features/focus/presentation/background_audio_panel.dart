@@ -1,6 +1,9 @@
 import '../../../app/widgets/app_layout.dart';
 
 import 'package:flutter/material.dart';
+
+import '../../../app/widgets/confirmation_dialog.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/widgets/choice_sheet.dart';
@@ -183,24 +186,14 @@ class _AudioSheetState extends ConsumerState<_AudioSheet> {
   }
 
   Future<void> _remove(LocalSound sound) async {
-    final remove = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Bỏ âm thanh khỏi Chặng?'),
-        content: Text(
+    final remove = await showChangConfirmation(
+      context,
+      title: 'Bỏ âm thanh khỏi Chặng?',
+      message:
           'Bỏ “${sound.name}” khỏi thư viện trong app. File gốc của bạn được giữ nguyên.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: const Text('Giữ lại'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: const Text('Bỏ âm thanh'),
-          ),
-        ],
-      ),
+      cancelLabel: 'Giữ lại',
+      confirmLabel: 'Bỏ âm thanh',
+      destructive: true,
     );
     if (remove != true || !mounted) return;
     setState(() {

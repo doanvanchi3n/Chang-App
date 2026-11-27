@@ -9,6 +9,9 @@ import '../../../../app/widgets/main_navigation.dart';
 import '../../../../theme/app_colors.dart';
 import '../../../../theme/app_dimensions.dart';
 import '../../../focus/presentation/focus_prep_page.dart';
+import '../../../notifications/data/notification_repository.dart';
+import '../../../notifications/presentation/notification_bell.dart';
+import '../../../notifications/presentation/notifications_page.dart';
 import '../../../tasks/presentation/create_task_page.dart';
 import '../../../tasks/presentation/daily_plan_page.dart';
 import '../../../tasks/presentation/inbox_page.dart';
@@ -55,6 +58,7 @@ class _HomePageState extends ConsumerState<HomePage>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
       ref.invalidate(dashboardProvider);
+      ref.invalidate(notificationListProvider);
       _scheduleMidnight();
     }
   }
@@ -70,9 +74,8 @@ class _HomePageState extends ConsumerState<HomePage>
     if (_inboxOpen || _planOpen || _taskOpen) return;
     _inboxOpen = true;
     try {
-      await Navigator.of(
-        context,
-      ).push(MaterialPageRoute<void>(builder: (_) => const InboxPage()));
+      await Navigator.of(context)
+          .push(MaterialPageRoute<void>(builder: (_) => const InboxPage()));
     } finally {
       _inboxOpen = false;
       if (mounted) ref.invalidate(dashboardProvider);
@@ -81,6 +84,7 @@ class _HomePageState extends ConsumerState<HomePage>
 
   Future<void> _refresh() async {
     ref.invalidate(dashboardProvider);
+    ref.invalidate(notificationListProvider);
     try {
       await ref.read(dashboardProvider.future);
     } catch (_) {
@@ -92,9 +96,8 @@ class _HomePageState extends ConsumerState<HomePage>
     if (_planOpen || _inboxOpen || _taskOpen) return;
     _planOpen = true;
     try {
-      await Navigator.of(
-        context,
-      ).push<bool>(MaterialPageRoute(builder: (_) => const DailyPlanPage()));
+      await Navigator.of(context)
+          .push<bool>(MaterialPageRoute(builder: (_) => const DailyPlanPage()));
     } finally {
       _planOpen = false;
       if (mounted) ref.invalidate(dashboardProvider);
@@ -105,9 +108,8 @@ class _HomePageState extends ConsumerState<HomePage>
     if (_taskOpen || _inboxOpen || _planOpen) return;
     _taskOpen = true;
     try {
-      await Navigator.of(
-        context,
-      ).push(MaterialPageRoute<void>(builder: (_) => page));
+      await Navigator.of(context)
+          .push(MaterialPageRoute<void>(builder: (_) => page));
     } finally {
       _taskOpen = false;
       if (mounted) ref.invalidate(dashboardProvider);
@@ -171,6 +173,9 @@ class _HomePageState extends ConsumerState<HomePage>
           onTapTasks: () => _openTaskPage(const TaskListPage()),
           onTapAddTask: () => _openTaskPage(const CreateTaskPage()),
           onRefresh: _refresh,
+          notificationAction: NotificationBell(
+            onPressed: () => _openTaskPage(const NotificationsPage()),
+          ),
           avatarLetter: avatarLetter,
         ),
         Expanded(
@@ -341,12 +346,9 @@ class _HomePageState extends ConsumerState<HomePage>
                           tooltip: 'Làm mới Dashboard',
                           icon: const Icon(Icons.refresh, color: dashboardInk),
                         ),
-                        const Tooltip(
-                          message: 'Thông báo chưa khả dụng',
-                          child: IconButton(
-                            onPressed: null,
-                            icon: Icon(Icons.notifications_none),
-                          ),
+                        NotificationBell(
+                          onPressed: () =>
+                              _openTaskPage(const NotificationsPage()),
                         ),
                         const CircleAvatar(
                           backgroundColor: Color(0xFFFFB6A5),
@@ -484,10 +486,7 @@ class _HomePageState extends ConsumerState<HomePage>
       ),
       clipBehavior: Clip.antiAlias,
       child: ListTile(
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: 16,
-          vertical: 6,
-        ),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
         leading: const Icon(Icons.inbox_outlined, color: dashboardBlue),
         title: const Text(
           'Hộp việc',

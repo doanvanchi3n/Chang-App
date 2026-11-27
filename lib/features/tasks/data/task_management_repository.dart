@@ -28,7 +28,7 @@ class TaskManagementRepository {
       final rows = await client
           .from('tasks')
           .select(
-            'id,title,description,priority,due_date,scheduled_date,status,is_archived,progress_percentage,estimated_minutes,updated_at,'
+            'id,title,description,priority,due_date,scheduled_date,status,is_archived,progress_percentage,estimated_minutes,updated_at,completed_at,'
             'projects(id,name,color_hex),subtasks(id,task_id,title,order_index,estimated_minutes,is_completed,completed_at)',
           )
           .eq('user_id', user)

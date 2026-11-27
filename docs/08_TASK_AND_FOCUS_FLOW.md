@@ -1,4 +1,4 @@
-# FEAT-05, 17, 19, 20 — công việc và phiên tập trung
+# FEAT-05, 17–20 — công việc và phiên tập trung
 
 ## Chuẩn bị Supabase
 
@@ -23,8 +23,23 @@ Không cần service-role key trong app.
 - M30: thời gian thực tế, xác nhận bước độc lập, ghi chú, lưu về Home hoặc nghỉ 5 phút.
 
 Khung tham chiếu 390 × 844 dp; chiều cao theo thiết bị và cuộn theo nội dung.
-Chiều ngang tối đa 560 dp; lề 20 dp trên mobile, 24 dp trên màn rộng.
+Mobile giữ chiều ngang nội dung tối đa 560 dp. Home, Hộp việc và công việc
+có bố cục desktop từ 840 dp, khung tối đa 1180 dp; lề 20 dp trên mobile,
+24 dp trên màn rộng. Phiên tập trung có bố cục riêng cho mobile và desktop.
 Mascot M27, M29, M30 lấy từ asset được cung cấp. M13 nối tiếp sang M14/M15; xem `09_TASK_MANAGEMENT_AND_LAYOUT.md`.
+
+## Tích hợp FEAT-18 với dự án và thông báo
+
+- Giữ đồng hồ toàn màn hình, linh vật PNG tĩnh, tạm dừng/tiếp tục và PiP desktop /
+  mini bar mobile của FEAT-18. Phiên mở qua `openFocusSession` để trạng thái
+  mở rộng và thu gọn luôn đồng bộ, tránh xuất hiện thêm mini bar trên màn phiên.
+- Giữ tab Dự án, danh sách đã hoàn thành/mở lại, dự án điền sẵn trong form
+  và bộ chọn hạn hoàn thành từ `main`. Chuông thông báo hoạt động trên cả hai bố cục Home.
+- Điều hướng desktop rời form có nội dung phải xác nhận; chọn Ở lại giữ nội dung.
+  Thẻ công việc Home tự xếp dọc khi cột desktop hẹp để tránh tràn ở 840 dp.
+- Lưu tổng kết làm mới cả danh sách công việc và lựa chọn phiên kế tiếp,
+  giúp tiến độ dự án và trạng thái hoàn thành phản ánh dữ liệu vừa lưu.
+- Không bổ sung migration hay dependency cho đợt ghép FEAT-18 này.
 
 ## Quy tắc dữ liệu
 
