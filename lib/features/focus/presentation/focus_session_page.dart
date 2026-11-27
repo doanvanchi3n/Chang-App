@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../app/widgets/feature_surface.dart';
@@ -62,7 +61,7 @@ class FocusSessionPage extends ConsumerWidget {
       builder: (context, constraints) {
         final isDesktop = isFocusDesktopWidth(constraints.maxWidth);
         final modeTitle = isSummary
-            ? 'Tổng kết phiên'
+            ? (isDesktop ? 'Tổng kết phiên học' : 'Tổng kết phiên')
             : isDesktop
             ? 'Chế độ tập trung'
             : 'Tập trung';
@@ -74,6 +73,7 @@ class FocusSessionPage extends ConsumerWidget {
               if (isDesktop)
                 FocusWebTopBar(
                   modeLabel: modeTitle,
+                  closeIcon: isSummary,
                   onMinimize: () => _minimize(context, controller),
                 )
               else
@@ -169,31 +169,19 @@ class FocusSessionPage extends ConsumerWidget {
     required bool isDesktop,
   }) {
     return ConstrainedBox(
-      constraints: BoxConstraints(maxWidth: isDesktop ? 640 : 560),
+      constraints: BoxConstraints(maxWidth: isDesktop ? 760 : 520),
       child: Padding(
         padding: EdgeInsets.fromLTRB(
           isDesktop ? AppSpacing.s32 : 20,
-          AppSpacing.s16,
+          isDesktop ? AppSpacing.s24 : AppSpacing.s8,
           isDesktop ? AppSpacing.s32 : 20,
           AppSpacing.s32,
         ),
-        child: isDesktop
-            ? Material(
-                color: AppColors.surface,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(AppRadius.r24),
-                  side: const BorderSide(color: AppColors.borderSubtle),
-                ),
-                clipBehavior: Clip.antiAlias,
-                child: Padding(
-                  padding: const EdgeInsets.all(AppSpacing.s32),
-                  child: FocusSummary(
-                    key: ValueKey(session.id),
-                    session: session,
-                  ),
-                ),
-              )
-            : FocusSummary(key: ValueKey(session.id), session: session),
+        child: FocusSummary(
+          key: ValueKey(session.id),
+          session: session,
+          isDesktop: isDesktop,
+        ),
       ),
     );
   }
@@ -319,14 +307,17 @@ class FocusSessionPage extends ConsumerWidget {
               ),
             ),
             SizedBox(height: isDesktop ? 22 : 16),
-            // Static mascot pose (no looping animation during focus per FEAT-18 ADHD-friendly spec).
-            SvgPicture.asset(
+            // Static PNG mascot pose (no looping animation; native PNG avoids Firefox SVG decode failures).
+            Image.asset(
               session.paused
-                  ? 'assets/mascot/mascot-M29.svg'
-                  : 'assets/mascot/mascot-M27.svg',
+                  ? 'assets/mascot/mascot_m29.png'
+                  : 'assets/mascot/mascot_m27.png',
               key: ValueKey(session.paused ? 'mascot-paused' : 'mascot-active'),
               height: isDesktop ? 164 : 136,
-              semanticsLabel: session.paused
+              fit: BoxFit.contain,
+              gaplessPlayback: true,
+              filterQuality: FilterQuality.medium,
+              semanticLabel: session.paused
                   ? 'Linh vật Chặng đang nghỉ ngơi'
                   : 'Linh vật Chặng đang tập trung học cùng bạn',
             ),

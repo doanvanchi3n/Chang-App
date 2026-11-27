@@ -3,7 +3,6 @@ import '../../../app/widgets/app_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../app/widgets/feature_surface.dart';
 import '../../../app/widgets/choice_sheet.dart';
@@ -236,10 +235,13 @@ class _FocusPrepPageState extends ConsumerState<FocusPrepPage> {
                     child: const Text('Đổi công việc'),
                   ),
                 ),
-                SvgPicture.asset(
-                  'assets/mascot/mascot-M27.svg',
+                Image.asset(
+                  'assets/mascot/mascot_m27.png',
                   height: 155,
-                  semanticsLabel: 'Chặng chuẩn bị đọc sách',
+                  fit: BoxFit.contain,
+                  gaplessPlayback: true,
+                  filterQuality: FilterQuality.medium,
+                  semanticLabel: 'Chặng chuẩn bị đọc sách',
                 ),
                 const SizedBox(height: 10),
                 const Text(

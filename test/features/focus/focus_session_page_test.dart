@@ -4,9 +4,24 @@ import 'package:chang_app/features/focus/data/audio/local_sound.dart';
 import 'package:chang_app/features/focus/domain/focus_session.dart';
 import 'package:chang_app/features/focus/presentation/focus_host.dart';
 import 'package:chang_app/features/focus/presentation/focus_session_page.dart';
+import 'package:chang_app/features/home/data/dashboard_provider.dart';
+import 'package:chang_app/features/tasks/data/task_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+
+DashboardData _sampleDashboard() => const DashboardData(
+  name: 'Chiến',
+  tasks: [],
+  todayCount: 2,
+  todayDone: 1,
+  inboxCount: 1,
+  overdueCount: 0,
+  nextEvent: null,
+  weekSeconds: 4500,
+  weekTargetMinutes: 420,
+  completedSessions: 3,
+);
 
 Map<String, dynamic> _sampleSessionRaw({
   String status = 'IN_PROGRESS',
@@ -120,6 +135,8 @@ void main() {
         overrides: [
           focusControllerProvider.overrideWith(() => controller),
           audioLibraryProvider.overrideWith(_FakeAudioLibrary.new),
+          dashboardProvider.overrideWith((ref) async => _sampleDashboard()),
+          taskDetailProvider.overrideWith((ref, taskId) async => null),
         ],
         child: const MaterialApp(home: FocusSessionPage()),
       ),
@@ -369,4 +386,118 @@ void main() {
     expect(find.text('24:38'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
+
+  testWidgets(
+    'W30 (Desktop 1920x1080) hiển thị bố cục tổng kết desktop, radio ngang, nút ngang và linh vật PNG',
+    (tester) async {
+      final controller = _FakeFocusController(
+        initialState: FocusState(
+          session: FocusSession(
+            _sampleSessionRaw(
+              status: 'AWAITING_REVIEW',
+              elapsedMs: 1500000,
+              targetSeconds: 1500,
+            ),
+          ),
+          expanded: true,
+        ),
+      );
+      await pumpFocusPage(
+        tester,
+        size: const Size(1920, 1080),
+        controller: controller,
+      );
+
+      expect(tester.getSize(find.byType(Scaffold)).width, 1920);
+      expect(find.text('Tổng kết phiên học'), findsOneWidget);
+      expect(find.byIcon(Icons.close), findsOneWidget);
+      expect(
+        find.byKey(const ValueKey('focus-summary-desktop-layout')),
+        findsOneWidget,
+      );
+      expect(
+        find.byKey(const ValueKey('focus-summary-mobile-layout')),
+        findsNothing,
+      );
+      expect(
+        find.byKey(const ValueKey('summary-desktop-radios')),
+        findsOneWidget,
+      );
+      expect(
+        find.byKey(const ValueKey('summary-mobile-radios')),
+        findsNothing,
+      );
+      expect(
+        find.byKey(const ValueKey('summary-desktop-actions-row')),
+        findsOneWidget,
+      );
+      expect(
+        find.byKey(const ValueKey('summary-mobile-actions-column')),
+        findsNothing,
+      );
+
+      final mascot = tester.widget<Image>(
+        find.byKey(const ValueKey('mascot-summary')),
+      );
+      expect(mascot.gaplessPlayback, isTrue);
+
+      await tester.tap(find.text('Đã hoàn thành bước 3'));
+      await tester.pumpAndSettle();
+      expect(controller.reviewComplete, isTrue);
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets(
+    'M30 (Mobile 390x844) hiển thị bố cục tổng kết mobile xếp dọc và linh vật PNG',
+    (tester) async {
+      final controller = _FakeFocusController(
+        initialState: FocusState(
+          session: FocusSession(
+            _sampleSessionRaw(
+              status: 'AWAITING_REVIEW',
+              elapsedMs: 120000,
+              targetSeconds: 1500,
+            ),
+          ),
+          expanded: true,
+        ),
+      );
+      await pumpFocusPage(
+        tester,
+        size: const Size(390, 844),
+        controller: controller,
+      );
+
+      expect(
+        find.byKey(const ValueKey('focus-summary-mobile-layout')),
+        findsOneWidget,
+      );
+      expect(
+        find.byKey(const ValueKey('focus-summary-desktop-layout')),
+        findsNothing,
+      );
+      expect(
+        find.byKey(const ValueKey('summary-mobile-radios')),
+        findsOneWidget,
+      );
+      expect(
+        find.byKey(const ValueKey('summary-desktop-radios')),
+        findsNothing,
+      );
+      expect(
+        find.byKey(const ValueKey('summary-mobile-actions-column')),
+        findsOneWidget,
+      );
+      expect(
+        find.byKey(const ValueKey('summary-desktop-actions-row')),
+        findsNothing,
+      );
+      expect(
+        tester.widget<Image>(find.byKey(const ValueKey('mascot-summary'))),
+        isA<Image>(),
+      );
+      expect(tester.takeException(), isNull);
+    },
+  );
 }

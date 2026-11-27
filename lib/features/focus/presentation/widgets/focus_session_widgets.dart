@@ -21,11 +21,13 @@ class FocusWebTopBar extends StatelessWidget {
     required this.modeLabel,
     required this.onMinimize,
     this.showMinimize = true,
+    this.closeIcon = false,
   });
 
   final String modeLabel;
   final VoidCallback onMinimize;
   final bool showMinimize;
+  final bool closeIcon;
 
   @override
   Widget build(BuildContext context) {
@@ -78,15 +80,30 @@ class FocusWebTopBar extends StatelessWidget {
                         modeLabel,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          color: AppColors.textSecondary,
-                          fontSize: 15,
-                          fontWeight: FontWeight.w500,
+                        style: TextStyle(
+                          color: closeIcon ? focusInk : AppColors.textSecondary,
+                          fontSize: closeIcon ? 16 : 15,
+                          fontWeight: closeIcon
+                              ? FontWeight.w700
+                              : FontWeight.w500,
                         ),
                       ),
                     ),
                   ),
-                  if (showMinimize)
+                  if (showMinimize && closeIcon)
+                    SizedBox(
+                      width: 140,
+                      child: Align(
+                        alignment: Alignment.centerRight,
+                        child: IconButton(
+                          key: const ValueKey('minimize-focus-button'),
+                          tooltip: 'Thu gọn tổng kết phiên',
+                          onPressed: onMinimize,
+                          icon: const Icon(Icons.close, color: focusInk),
+                        ),
+                      ),
+                    )
+                  else if (showMinimize)
                     TextButton.icon(
                       key: const ValueKey('minimize-focus-button'),
                       onPressed: onMinimize,
