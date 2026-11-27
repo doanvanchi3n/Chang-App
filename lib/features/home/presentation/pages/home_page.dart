@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../app/widgets/app_layout.dart';
+import '../../../../app/widgets/adaptive_content.dart';
+import '../../../../app/widgets/adaptive_navigation_frame.dart';
 import '../../../../app/widgets/desktop_top_bar.dart';
 import '../../../../app/widgets/main_navigation.dart';
 import '../../../../theme/app_colors.dart';
@@ -137,7 +139,7 @@ class _HomePageState extends ConsumerState<HomePage>
         final isDesktop = AppLayout.isDesktopWidth(constraints.maxWidth);
         return Scaffold(
           backgroundColor: isDesktop ? AppColors.page : Colors.white,
-          bottomNavigationBar: isDesktop
+          bottomNavigationBar: !AppLayout.isMobileWidth(constraints.maxWidth)
               ? null
               : MainNavigation(
                   inboxActive: false,
@@ -151,7 +153,12 @@ class _HomePageState extends ConsumerState<HomePage>
                   avatarLetter,
                   constraints.maxWidth,
                 )
-              : _buildMobileLayout(context, dashboard, name),
+              : AdaptiveNavigationFrame(
+                  workSelected: false,
+                  onHome: () {},
+                  onWork: () => _openTaskPage(const TaskListPage()),
+                  child: _buildMobileLayout(context, dashboard, name),
+                ),
         );
       },
     );
@@ -297,7 +304,7 @@ class _HomePageState extends ConsumerState<HomePage>
           child: Center(
             child: ConstrainedBox(
               constraints: const BoxConstraints(
-                maxWidth: AppLayout.maxContentWidth,
+                maxWidth: AppLayout.maxDesktopWidth,
               ),
               child: Padding(
                 padding: AppLayout.pagePadding(context),
@@ -408,27 +415,33 @@ class _HomePageState extends ConsumerState<HomePage>
                           ),
                         ],
                       ),
-                      data: (data) => Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          DashboardSchedule(event: data.nextEvent),
-                          const SizedBox(height: 24),
-                          DashboardPriorities(
-                            data: data,
-                            onCreate: () =>
-                                _openTaskPage(const CreateTaskPage()),
-                            onTask: _openTaskDetail,
-                            onOpenTask: _openTaskDetail,
-                            onFocusTask: _openFocusPrep,
-                            onPlan: _openPlan,
-                          ),
-                          const SizedBox(height: 20),
-                          _buildInboxTile(data),
-                          const SizedBox(height: 20),
-                          DashboardWeek(data: data),
-                          const SizedBox(height: 20),
-                          _buildOverdueCard(data),
-                        ],
+                      data: (data) => AdaptiveColumns(
+                        primary: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            DashboardSchedule(event: data.nextEvent),
+                            const SizedBox(height: 24),
+                            DashboardPriorities(
+                              data: data,
+                              onCreate: () =>
+                                  _openTaskPage(const CreateTaskPage()),
+                              onTask: _openTaskDetail,
+                              onOpenTask: _openTaskDetail,
+                              onFocusTask: _openFocusPrep,
+                              onPlan: _openPlan,
+                            ),
+                          ],
+                        ),
+                        secondary: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            _buildInboxTile(data),
+                            const SizedBox(height: 20),
+                            DashboardWeek(data: data),
+                            const SizedBox(height: 20),
+                            _buildOverdueCard(data),
+                          ],
+                        ),
                       ),
                     ),
                   ],

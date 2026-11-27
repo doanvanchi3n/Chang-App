@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../app/widgets/app_layout.dart';
+import '../../../app/widgets/adaptive_content.dart';
 import '../../../app/widgets/choice_sheet.dart';
 import '../../../app/widgets/feature_surface.dart';
 import '../../tasks/presentation/task_detail_page.dart';
@@ -103,7 +104,7 @@ class _NotificationsPageState extends ConsumerState<NotificationsPage>
           showDragHandle: true,
           isScrollControlled: true,
           constraints: const BoxConstraints(
-            maxWidth: AppLayout.maxContentWidth,
+            maxWidth: AppLayout.maxSheetWidth,
           ),
           builder: (context) => SafeArea(
             top: false,
@@ -174,6 +175,7 @@ class _NotificationsPageState extends ConsumerState<NotificationsPage>
   Widget build(BuildContext context) {
     final notifications = ref.watch(notificationListProvider);
     return FeatureSurface(
+      maxWidth: AppLayout.maxDesktopWidth,
       title: 'Thông báo',
       onBack: () {
         if (Navigator.canPop(context)) {
@@ -229,146 +231,154 @@ class _NotificationsPageState extends ConsumerState<NotificationsPage>
                 : 'Trước đó';
             groups.putIfAbsent(label, () => []).add(item);
           }
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: changSoft,
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: Row(
-                  children: [
-                    const Icon(
-                      Icons.notifications_active_outlined,
-                      color: changBlue,
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Text(
-                        unread == 0
-                            ? 'Bạn đã đọc hết thông báo.'
-                            : 'Bạn có $unread thông báo chưa đọc.',
-                        style: const TextStyle(
-                          color: changInk,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 12),
-              Align(
-                alignment: Alignment.centerRight,
-                child: TextButton.icon(
-                  onPressed: unread == 0 || _markingAll || _busy.isNotEmpty
-                      ? null
-                      : _markAll,
-                  icon: const Icon(Icons.done_all),
-                  label: Text(
-                    _markingAll ? 'Đang cập nhật…' : 'Đánh dấu tất cả đã đọc',
+          return AdaptiveColumns(
+            primaryFlex: 1,
+            secondaryFlex: 2,
+            primary: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: changSoft,
+                    borderRadius: BorderRadius.circular(16),
                   ),
-                ),
-              ),
-              Wrap(
-                spacing: 10,
-                runSpacing: 8,
-                children: [
-                  ChoiceChip(
-                    label: const Text('Tất cả'),
-                    selected: !_unreadOnly,
-                    onSelected: (_) => setState(() => _unreadOnly = false),
-                  ),
-                  ChoiceChip(
-                    label: Text('Chưa đọc $unread'),
-                    selected: _unreadOnly,
-                    onSelected: (_) => setState(() => _unreadOnly = true),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 12),
-              ChoiceField(
-                label: 'Loại thông báo',
-                value: _kind?.label ?? 'Tất cả loại',
-                icon: Icons.filter_list,
-                onTap: () async {
-                  final selected = await showChangChoices(
-                    context,
-                    title: 'Loại thông báo',
-                    subtitle: 'Chọn nội dung bạn muốn xem.',
-                    selected: _kind?.dbValue ?? '',
-                    choices: [
-                      const ChangChoice(
-                        '',
-                        'Tất cả loại',
-                        icon: Icons.notifications_outlined,
-                      ),
-                      for (final kind in NotificationKind.values)
-                        ChangChoice(
-                          kind.dbValue,
-                          kind.label,
-                          icon: _kindIcon(kind),
-                        ),
-                    ],
-                  );
-                  if (mounted && selected != null) {
-                    setState(
-                      () => _kind = selected.isEmpty
-                          ? null
-                          : NotificationKind.fromDb(selected),
-                    );
-                  }
-                },
-              ),
-              const SizedBox(height: 20),
-              if (visible.isEmpty)
-                FeatureCard(
-                  child: Column(
+                  child: Row(
                     children: [
                       const Icon(
-                        Icons.notifications_none,
-                        color: changMuted,
-                        size: 48,
+                        Icons.notifications_active_outlined,
+                        color: changBlue,
                       ),
-                      const SizedBox(height: 12),
-                      Text(
-                        items.isEmpty
-                            ? 'Chưa có thông báo'
-                            : 'Không có thông báo phù hợp',
-                        style: const TextStyle(
-                          color: changInk,
-                          fontSize: 18,
-                          fontWeight: FontWeight.w700,
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Text(
+                          unread == 0
+                              ? 'Bạn đã đọc hết thông báo.'
+                              : 'Bạn có $unread thông báo chưa đọc.',
+                          style: const TextStyle(
+                            color: changInk,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                       ),
-                      const SizedBox(height: 8),
-                      const Text(
-                        'Các thông báo mới sẽ xuất hiện tại đây.',
-                        style: TextStyle(color: changMuted),
-                        textAlign: TextAlign.center,
-                      ),
                     ],
-                  ),
-                ),
-              for (final group in groups.entries) ...[
-                Text(
-                  group.key,
-                  style: const TextStyle(
-                    color: changInk,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w700,
                   ),
                 ),
                 const SizedBox(height: 12),
-                for (final item in group.value)
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 12),
-                    child: _card(item),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: TextButton.icon(
+                    onPressed: unread == 0 || _markingAll || _busy.isNotEmpty
+                        ? null
+                        : _markAll,
+                    icon: const Icon(Icons.done_all),
+                    label: Text(
+                      _markingAll ? 'Đang cập nhật…' : 'Đánh dấu tất cả đã đọc',
+                    ),
                   ),
+                ),
+                Wrap(
+                  spacing: 10,
+                  runSpacing: 8,
+                  children: [
+                    ChoiceChip(
+                      label: const Text('Tất cả'),
+                      selected: !_unreadOnly,
+                      onSelected: (_) => setState(() => _unreadOnly = false),
+                    ),
+                    ChoiceChip(
+                      label: Text('Chưa đọc $unread'),
+                      selected: _unreadOnly,
+                      onSelected: (_) => setState(() => _unreadOnly = true),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                ChoiceField(
+                  label: 'Loại thông báo',
+                  value: _kind?.label ?? 'Tất cả loại',
+                  icon: Icons.filter_list,
+                  onTap: () async {
+                    final selected = await showChangChoices(
+                      context,
+                      title: 'Loại thông báo',
+                      subtitle: 'Chọn nội dung bạn muốn xem.',
+                      selected: _kind?.dbValue ?? '',
+                      choices: [
+                        const ChangChoice(
+                          '',
+                          'Tất cả loại',
+                          icon: Icons.notifications_outlined,
+                        ),
+                        for (final kind in NotificationKind.values)
+                          ChangChoice(
+                            kind.dbValue,
+                            kind.label,
+                            icon: _kindIcon(kind),
+                          ),
+                      ],
+                    );
+                    if (mounted && selected != null) {
+                      setState(
+                        () => _kind = selected.isEmpty
+                            ? null
+                            : NotificationKind.fromDb(selected),
+                      );
+                    }
+                  },
+                ),
               ],
-            ],
+            ),
+            secondary: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                if (visible.isEmpty)
+                  FeatureCard(
+                    child: Column(
+                      children: [
+                        const Icon(
+                          Icons.notifications_none,
+                          color: changMuted,
+                          size: 48,
+                        ),
+                        const SizedBox(height: 12),
+                        Text(
+                          items.isEmpty
+                              ? 'Chưa có thông báo'
+                              : 'Không có thông báo phù hợp',
+                          style: const TextStyle(
+                            color: changInk,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        const Text(
+                          'Các thông báo mới sẽ xuất hiện tại đây.',
+                          style: TextStyle(color: changMuted),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
+                  ),
+                for (final group in groups.entries) ...[
+                  Text(
+                    group.key,
+                    style: const TextStyle(
+                      color: changInk,
+                      fontSize: 18,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  for (final item in group.value)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 12),
+                      child: _card(item),
+                    ),
+                ],
+              ],
+            ),
           );
         },
       ),

@@ -46,6 +46,10 @@ void main() {
   tearDown(() => client.dispose());
 
   Future<void> open(WidgetTester tester) async {
+    tester.view.physicalSize = const Size(390, 844);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
     await tester.pumpWidget(
       ProviderScope(
         overrides: [inboxRepositoryProvider.overrideWithValue(repository)],
@@ -61,7 +65,7 @@ void main() {
     await open(tester);
     expect(find.textContaining('Hộp việc đang trống'), findsOneWidget);
     await tester.enterText(find.byType(TextFormField), '  Học chương mới  ');
-    await tester.tap(find.text('Thêm việc'));
+    await tester.tap(find.text('Ghi lại'));
     await tester.pumpAndSettle();
     expect(find.text('Học chương mới'), findsOneWidget);
     expect(find.textContaining('Hộp việc đang trống'), findsNothing);
@@ -77,7 +81,7 @@ void main() {
     repository.failWrite = true;
     await open(tester);
     await tester.enterText(find.byType(TextFormField), 'Giữ lại ý tưởng');
-    await tester.tap(find.text('Thêm việc'));
+    await tester.tap(find.text('Ghi lại'));
     await tester.pumpAndSettle();
     expect(repository.items, isEmpty);
     expect(
@@ -98,7 +102,10 @@ void main() {
     expect(find.text('Thử lại'), findsOneWidget);
     expect(find.textContaining('Hộp việc đang trống'), findsNothing);
     repository.failRead = false;
+    await tester.ensureVisible(find.text('Thử lại'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Thử lại'));
+    await tester.pump();
     await tester.pumpAndSettle();
     expect(find.textContaining('Hộp việc đang trống'), findsOneWidget);
   });

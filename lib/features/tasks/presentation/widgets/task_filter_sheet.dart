@@ -15,7 +15,7 @@ Future<TaskFilters?> showTaskFilters(
   isScrollControlled: true,
   backgroundColor: Colors.white,
   showDragHandle: true,
-  constraints: const BoxConstraints(maxWidth: AppLayout.maxContentWidth),
+  constraints: const BoxConstraints(maxWidth: AppLayout.maxSheetWidth),
   builder: (_) => _FilterSheet(current: current, tasks: tasks),
 );
 

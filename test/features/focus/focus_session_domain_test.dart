@@ -25,38 +25,42 @@ void main() {
     expect(computeFocusProgress(500, 0), 0.0);
   });
 
-  test('FocusSession.elapsedAt cộng thời gian khi chạy và giữ nguyên khi tạm dừng', () {
-    final running = FocusSession({
-      'id': 'sess-1',
-      'status': 'IN_PROGRESS',
-      'target_duration_seconds': 1500,
-      'elapsed_milliseconds': 10000,
-      'revision': 1,
-      'ambient_sound': 'SILENT',
-      'running_since': '2026-11-26T10:00:00Z',
-      'server_now': '2026-11-26T10:00:12Z',
-    });
-    expect(running.elapsedAt(DateTime.utc(2026, 11, 26, 10, 0, 12)), 22000);
-    // Không vượt quá target_duration_seconds.
-    expect(running.elapsedAt(DateTime.utc(2026, 11, 26, 11, 0, 0)), 1500000);
+  test(
+    'FocusSession.elapsedAt cộng thời gian khi chạy và giữ nguyên khi tạm dừng',
+    () {
+      final running = FocusSession({
+        'id': 'sess-1',
+        'status': 'IN_PROGRESS',
+        'target_duration_seconds': 1500,
+        'elapsed_milliseconds': 10000,
+        'revision': 1,
+        'ambient_sound': 'SILENT',
+        'running_since': '2026-11-26T10:00:00Z',
+        'server_now': '2026-11-26T10:00:12Z',
+      });
+      expect(running.elapsedAt(DateTime.utc(2026, 11, 26, 10, 0, 12)), 22000);
+      // Không vượt quá target_duration_seconds.
+      expect(running.elapsedAt(DateTime.utc(2026, 11, 26, 11, 0, 0)), 1500000);
 
-    final paused = FocusSession({
-      'id': 'sess-2',
-      'status': 'PAUSED',
-      'target_duration_seconds': 1500,
-      'elapsed_milliseconds': 22000,
-      'revision': 2,
-      'ambient_sound': 'SILENT',
-      'running_since': null,
-      'server_now': '2026-11-26T10:05:00Z',
-    });
-    expect(paused.elapsedAt(DateTime.utc(2026, 11, 26, 10, 10, 0)), 22000);
-  });
+      final paused = FocusSession({
+        'id': 'sess-2',
+        'status': 'PAUSED',
+        'target_duration_seconds': 1500,
+        'elapsed_milliseconds': 22000,
+        'revision': 2,
+        'ambient_sound': 'SILENT',
+        'running_since': null,
+        'server_now': '2026-11-26T10:05:00Z',
+      });
+      expect(paused.elapsedAt(DateTime.utc(2026, 11, 26, 10, 10, 0)), 22000);
+    },
+  );
 
-  test('Ngưỡng responsive tách rõ Mobile (< 840dp) và Desktop (>= 840dp)', () {
+  test('Phiên tập trung dùng ngưỡng desktop chung 1024dp', () {
     expect(isFocusDesktopWidth(390), isFalse);
-    expect(isFocusDesktopWidth(839.9), isFalse);
-    expect(isFocusDesktopWidth(840), isTrue);
+    expect(isFocusDesktopWidth(840), isFalse);
+    expect(isFocusDesktopWidth(1023.9), isFalse);
+    expect(isFocusDesktopWidth(1024), isTrue);
     expect(isFocusDesktopWidth(1280), isTrue);
   });
 }

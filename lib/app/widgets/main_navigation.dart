@@ -29,7 +29,7 @@ class MainNavigation extends StatelessWidget {
           heightFactor: 1,
           child: ConstrainedBox(
             constraints: const BoxConstraints(
-              maxWidth: AppLayout.maxContentWidth,
+              maxWidth: AppLayout.tabletBreakpoint,
             ),
             child: Row(
               children: [

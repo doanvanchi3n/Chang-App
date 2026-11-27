@@ -1,4 +1,5 @@
 import '../../../app/widgets/app_layout.dart';
+import '../../../app/widgets/adaptive_content.dart';
 
 import 'package:flutter/material.dart';
 
@@ -243,7 +244,7 @@ class _DailyPlanPageState extends ConsumerState<DailyPlanPage> {
               child: Center(
                 child: ConstrainedBox(
                   constraints: const BoxConstraints(
-                    maxWidth: AppLayout.maxContentWidth,
+                    maxWidth: AppLayout.maxDesktopWidth,
                   ),
                   child: Padding(
                     padding: AppLayout.pagePadding(context),
@@ -340,148 +341,156 @@ class _DailyPlanPageState extends ConsumerState<DailyPlanPage> {
     final remaining = budgetValid ? budget - total : null;
     return Form(
       key: _form,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          PlanBudget(controller: _available, onChanged: _changed),
-          const SizedBox(height: 24),
-          Text(
-            '${_chosen.length} việc trong kế hoạch',
-            style: const TextStyle(
-              color: inboxInk,
-              fontSize: 22,
-              fontWeight: FontWeight.w800,
-            ),
-          ),
-          const SizedBox(height: 8),
-          const Text(
-            'Gồm việc đã lên lịch hôm nay và việc bạn chọn thêm.',
-            style: TextStyle(color: inboxMuted),
-          ),
-          if (_notice != null)
-            Padding(
-              padding: const EdgeInsets.only(top: 12),
-              child: PlanNotice(_notice!),
-            ),
-          const SizedBox(height: 16),
-          if (_chosen.isEmpty)
-            const Padding(
-              padding: EdgeInsets.symmetric(vertical: 20),
-              child: PlanNotice(
-                'Chưa chọn việc nào. Thêm việc từ Hộp việc hoặc các kế hoạch còn dang dở.',
+      child: AdaptiveColumns(
+        primaryFlex: 2,
+        secondaryFlex: 1,
+        primary: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            PlanBudget(controller: _available, onChanged: _changed),
+            const SizedBox(height: 24),
+            Text(
+              '${_chosen.length} việc trong kế hoạch',
+              style: const TextStyle(
+                color: inboxInk,
+                fontSize: 22,
+                fontWeight: FontWeight.w800,
               ),
-            )
-          else
-            ReorderableListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              buildDefaultDragHandles: false,
-              // Keep the card's rounded Material; the default drag proxy paints
-              // a rectangle behind the entire item, including its spacing.
-              proxyDecorator: (child, _, _) => child,
-              itemCount: _chosen.length,
-              onReorderItem: _move,
-              itemBuilder: (_, index) {
-                final task = _chosen[index];
-                return PlanTaskCard(
-                  key: ValueKey(task.id),
-                  task: task,
-                  index: index,
-                  total: _chosen.length,
-                  minutes: _minutes[task.id]!,
-                  onChanged: _changed,
-                  onMove: (delta) => _move(index, index + delta),
-                  onRemove: () => setState(() {
-                    _chosen.removeAt(index);
-                    _dirty = true;
-                  }),
-                );
-              },
             ),
-          Align(
-            alignment: Alignment.centerLeft,
-            child: TextButton.icon(
-              onPressed: _pick,
-              icon: const Icon(Icons.add),
-              label: const Text('Chọn thêm từ hộp việc'),
-              style: TextButton.styleFrom(foregroundColor: inboxBlue),
+            const SizedBox(height: 8),
+            const Text(
+              'Gồm việc đã lên lịch hôm nay và việc bạn chọn thêm.',
+              style: TextStyle(color: inboxMuted),
             ),
-          ),
-          const SizedBox(height: 8),
-          const PlanNotice(
-            'Thứ tự là gợi ý; bạn có thể bắt đầu với bất kỳ việc nào.',
-          ),
-          const SizedBox(height: 20),
-          Container(
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: const Color(0xFFFFF8E6),
-              borderRadius: BorderRadius.circular(18),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Wrap(
-                  spacing: 20,
-                  runSpacing: 8,
-                  children: [
-                    Text(
-                      '${_chosen.length} việc đã chọn',
-                      style: const TextStyle(
-                        color: inboxInk,
-                        fontSize: 20,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    Text(
-                      valid ? '$total phút dự kiến' : 'Chưa đủ thời lượng',
-                      style: const TextStyle(
-                        color: inboxInk,
-                        fontSize: 20,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ],
+            if (_notice != null)
+              Padding(
+                padding: const EdgeInsets.only(top: 12),
+                child: PlanNotice(_notice!),
+              ),
+            const SizedBox(height: 16),
+            if (_chosen.isEmpty)
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 20),
+                child: PlanNotice(
+                  'Chưa chọn việc nào. Thêm việc từ Hộp việc hoặc các kế hoạch còn dang dở.',
                 ),
-                const SizedBox(height: 10),
-                Text(
-                  !valid || remaining == null
-                      ? 'Nhập thời lượng từng việc và quỹ thời gian để so sánh.'
-                      : remaining > 0
-                      ? 'Còn $remaining phút so với thời gian bạn chọn.'
-                      : remaining == 0
-                      ? 'Vừa đủ thời gian bạn chọn.'
-                      : 'Vượt ${-remaining} phút so với thời gian bạn chọn. Bạn có thể điều chỉnh lại.',
-                  style: TextStyle(
-                    color: valid && remaining != null && remaining >= 0
-                        ? const Color(0xFF237344)
-                        : inboxMuted,
-                    height: 1.5,
+              )
+            else
+              ReorderableListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                buildDefaultDragHandles: false,
+                // Keep the card's rounded Material; the default drag proxy paints
+                // a rectangle behind the entire item, including its spacing.
+                proxyDecorator: (child, _, _) => child,
+                itemCount: _chosen.length,
+                onReorderItem: _move,
+                itemBuilder: (_, index) {
+                  final task = _chosen[index];
+                  return PlanTaskCard(
+                    key: ValueKey(task.id),
+                    task: task,
+                    index: index,
+                    total: _chosen.length,
+                    minutes: _minutes[task.id]!,
+                    onChanged: _changed,
+                    onMove: (delta) => _move(index, index + delta),
+                    onRemove: () => setState(() {
+                      _chosen.removeAt(index);
+                      _dirty = true;
+                    }),
+                  );
+                },
+              ),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: TextButton.icon(
+                onPressed: _pick,
+                icon: const Icon(Icons.add),
+                label: const Text('Chọn thêm từ hộp việc'),
+                style: TextButton.styleFrom(foregroundColor: inboxBlue),
+              ),
+            ),
+            const SizedBox(height: 8),
+            const PlanNotice(
+              'Thứ tự là gợi ý; bạn có thể bắt đầu với bất kỳ việc nào.',
+            ),
+          ],
+        ),
+        secondary: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: const Color(0xFFFFF8E6),
+                borderRadius: BorderRadius.circular(18),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Wrap(
+                    spacing: 20,
+                    runSpacing: 8,
+                    children: [
+                      Text(
+                        '${_chosen.length} việc đã chọn',
+                        style: const TextStyle(
+                          color: inboxInk,
+                          fontSize: 20,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      Text(
+                        valid ? '$total phút dự kiến' : 'Chưa đủ thời lượng',
+                        style: const TextStyle(
+                          color: inboxInk,
+                          fontSize: 20,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-                const SizedBox(height: 16),
-                const PlanNotice(
-                  'Chưa xếp giờ cụ thể. Các lịch hẹn hiện có không thay đổi.',
-                ),
-              ],
+                  const SizedBox(height: 10),
+                  Text(
+                    !valid || remaining == null
+                        ? 'Nhập thời lượng từng việc và quỹ thời gian để so sánh.'
+                        : remaining > 0
+                        ? 'Còn $remaining phút so với thời gian bạn chọn.'
+                        : remaining == 0
+                        ? 'Vừa đủ thời gian bạn chọn.'
+                        : 'Vượt ${-remaining} phút so với thời gian bạn chọn. Bạn có thể điều chỉnh lại.',
+                    style: TextStyle(
+                      color: valid && remaining != null && remaining >= 0
+                          ? const Color(0xFF237344)
+                          : inboxMuted,
+                      height: 1.5,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  const PlanNotice(
+                    'Chưa xếp giờ cụ thể. Các lịch hẹn hiện có không thay đổi.',
+                  ),
+                ],
+              ),
             ),
-          ),
-          const SizedBox(height: 24),
-          PlanActions(
-            saving: _saving,
-            onSave:
-                _saving ||
-                    _needsReload ||
-                    (_chosen.isEmpty && _data!.todayTasks.isEmpty)
-                ? null
-                : _save,
-            onBack: _back,
-          ),
-          const SizedBox(height: 16),
-          const PlanNotice(
-            'Chỉ lưu khi bạn xác nhận. Việc bỏ khỏi kế hoạch hôm nay sẽ trở về Hộp việc.',
-          ),
-        ],
+            const SizedBox(height: 24),
+            PlanActions(
+              saving: _saving,
+              onSave:
+                  _saving ||
+                      _needsReload ||
+                      (_chosen.isEmpty && _data!.todayTasks.isEmpty)
+                  ? null
+                  : _save,
+              onBack: _back,
+            ),
+            const SizedBox(height: 16),
+            const PlanNotice(
+              'Chỉ lưu khi bạn xác nhận. Việc bỏ khỏi kế hoạch hôm nay sẽ trở về Hộp việc.',
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -15,11 +15,13 @@ class FeatureSurface extends StatelessWidget {
     required this.child,
     this.onBack,
     this.trailing,
+    this.maxWidth = AppLayout.maxFormWidth,
   });
   final String title;
   final Widget child;
   final VoidCallback? onBack;
   final Widget? trailing;
+  final double maxWidth;
   @override
   Widget build(BuildContext context) => Scaffold(
     backgroundColor: Colors.white,
@@ -27,9 +29,7 @@ class FeatureSurface extends StatelessWidget {
       child: SingleChildScrollView(
         child: Center(
           child: ConstrainedBox(
-            constraints: const BoxConstraints(
-              maxWidth: AppLayout.maxContentWidth,
-            ),
+            constraints: BoxConstraints(maxWidth: maxWidth),
             child: Padding(
               padding: AppLayout.pagePadding(context, bottom: 28),
               child: Column(

@@ -355,7 +355,8 @@ class _TaskDetailPageState extends ConsumerState<TaskDetailPage> {
                       _buildMoreMenu(resolvedTask, includeEdit: true),
                   ],
                 ),
-          bottomNavigationBar: !isDesktop &&
+          bottomNavigationBar:
+              !isDesktop &&
                   resolvedTask != null &&
                   MediaQuery.viewInsetsOf(context).bottom == 0
               ? _MobileBottomActions(
@@ -405,7 +406,9 @@ class _TaskDetailPageState extends ConsumerState<TaskDetailPage> {
                   error: (_, _) => _ErrorView(onRetry: _refresh),
                   data: (fetched) {
                     final task = _localOverride ?? fetched;
-                    if (task == null) return _NotFoundView(onBack: _navigateBack);
+                    if (task == null) {
+                      return _NotFoundView(onBack: _navigateBack);
+                    }
                     final focusStep = task.resolveFocusStep(_selectedStepId);
                     return RefreshIndicator(
                       onRefresh: _refresh,
@@ -618,7 +621,7 @@ class _TaskDetailPageState extends ConsumerState<TaskDetailPage> {
     final overdue = task.isOverdue(DateTime.now());
     return Center(
       child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: AppLayout.maxContentWidth),
+        constraints: const BoxConstraints(maxWidth: AppLayout.maxFormWidth),
         child: Padding(
           padding: AppLayout.pagePadding(context),
           child: Column(
@@ -805,7 +808,7 @@ class _MobileBottomActions extends StatelessWidget {
             heightFactor: 1,
             child: ConstrainedBox(
               constraints: const BoxConstraints(
-                maxWidth: AppLayout.maxContentWidth,
+                maxWidth: AppLayout.maxSheetWidth,
               ),
               child: Padding(
                 padding: AppLayout.pagePadding(context, top: 12, bottom: 12),

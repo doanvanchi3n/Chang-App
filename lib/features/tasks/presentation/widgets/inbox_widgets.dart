@@ -170,7 +170,7 @@ class InboxTaskList extends StatelessWidget {
       clipBehavior: Clip.antiAlias,
       child: Column(
         children: [
-          ColoredBox(
+          Material(
             color: isDesktop ? const Color(0xFFF5F8FC) : inboxSoft,
             child: isDesktop
                 ? Padding(
@@ -436,7 +436,7 @@ class InboxBottomBar extends StatelessWidget {
             heightFactor: 1,
             child: ConstrainedBox(
               constraints: const BoxConstraints(
-                maxWidth: AppLayout.maxContentWidth,
+                maxWidth: AppLayout.maxDesktopWidth,
               ),
               child: Padding(
                 padding: const EdgeInsets.symmetric(
@@ -499,15 +499,16 @@ class InboxBottomBar extends StatelessWidget {
             ),
           ),
         ),
-        MainNavigation(
-          inboxActive: true,
-          onInbox: () => Navigator.of(context).pushReplacement(
-            MaterialPageRoute<void>(builder: (_) => const TaskListPage()),
+        if (AppLayout.isMobile(context))
+          MainNavigation(
+            inboxActive: true,
+            onInbox: () => Navigator.of(context).pushReplacement(
+              MaterialPageRoute<void>(builder: (_) => const TaskListPage()),
+            ),
+            onHome: Navigator.of(context).canPop()
+                ? () => Navigator.of(context).popUntil((route) => route.isFirst)
+                : null,
           ),
-          onHome: Navigator.of(context).canPop()
-              ? () => Navigator.of(context).popUntil((route) => route.isFirst)
-              : null,
-        ),
       ],
     ),
   );

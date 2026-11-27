@@ -4,9 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class IntroMascot extends StatefulWidget {
-  const IntroMascot({super.key, required this.onFinished, this.play = true});
+  const IntroMascot({
+    super.key,
+    required this.onFinished,
+    this.play = true,
+    this.height = 240,
+  });
   final VoidCallback onFinished;
   final bool play;
+  final double height;
 
   @override
   State<IntroMascot> createState() => _IntroMascotState();
@@ -56,7 +62,7 @@ class _IntroMascotState extends State<IntroMascot>
       image: true,
       child: ExcludeSemantics(
         child: SizedBox(
-          height: 240,
+          height: widget.height,
           child: Center(
             child: AspectRatio(
               aspectRatio: 745 / 790,

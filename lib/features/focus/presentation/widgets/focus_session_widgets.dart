@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../theme/app_colors.dart';
+import '../../../../app/widgets/app_layout.dart';
 import '../../../../theme/app_dimensions.dart';
 import '../../data/audio/audio_library.dart';
 import '../../data/audio/local_sound.dart';
 import '../background_audio_panel.dart';
 
-const double focusDesktopBreakpoint = 840;
+const double focusDesktopBreakpoint = AppLayout.desktopBreakpoint;
 const Color focusPrimaryBlue = Color(0xFF1F66B5);
 const Color focusSoftBlue = Color(0xFFE5F0FA);
 const Color focusTrackColor = Color(0xFFE4ECF4);
@@ -34,7 +35,7 @@ class FocusWebTopBar extends StatelessWidget {
     return Material(
       color: AppColors.surface,
       child: Container(
-        height: 68,
+        constraints: const BoxConstraints(minHeight: 68),
         decoration: const BoxDecoration(
           border: Border(bottom: BorderSide(color: AppColors.borderSubtle)),
         ),
@@ -405,7 +406,8 @@ class FocusActionControls extends StatelessWidget {
       label: const Text('Kết thúc phiên'),
     );
 
-    final useRow = isDesktop && MediaQuery.textScalerOf(context).scale(16) <= 24;
+    final useRow =
+        isDesktop && MediaQuery.textScalerOf(context).scale(16) <= 24;
     if (useRow) {
       return ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 460),

@@ -9,6 +9,7 @@ import 'package:uuid/uuid.dart';
 import '../../../app/widgets/choice_sheet.dart';
 import '../../../app/widgets/deadline_picker.dart';
 import '../../../app/widgets/feature_surface.dart';
+import '../../../app/widgets/adaptive_content.dart';
 import '../data/task_management_repository.dart';
 import '../data/task_repository.dart';
 import '../domain/task_detail.dart';
@@ -243,172 +244,180 @@ class _EditTaskPageState extends ConsumerState<EditTaskPage> {
                 absorbing: _saving || _pending != null,
                 child: ExcludeFocus(
                   excluding: _saving || _pending != null,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      TextFormField(
-                        controller: _title,
-                        maxLength: 200,
-                        decoration: changInput('Tên công việc *').copyWith(
-                          suffixIcon: IconButton(
-                            tooltip: 'Xóa tên',
-                            onPressed: () => setState(_title.clear),
-                            icon: const Icon(Icons.close),
+                  child: AdaptiveColumns(
+                    primary: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        TextFormField(
+                          controller: _title,
+                          maxLength: 200,
+                          decoration: changInput('Tên công việc *').copyWith(
+                            suffixIcon: IconButton(
+                              tooltip: 'Xóa tên',
+                              onPressed: () => setState(_title.clear),
+                              icon: const Icon(Icons.close),
+                            ),
+                          ),
+                          validator: (v) => v == null || v.trim().isEmpty
+                              ? 'Nhập tên công việc.'
+                              : null,
+                        ),
+                        const SizedBox(height: 16),
+                        TextFormField(
+                          controller: _description,
+                          maxLength: 4000,
+                          minLines: 3,
+                          maxLines: 6,
+                          decoration: changInput('Mô tả'),
+                        ),
+                      ],
+                    ),
+                    secondary: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        projects.when(
+                          data: (items) => ChoiceField(
+                            label: 'Dự án',
+                            icon: Icons.folder_outlined,
+                            value:
+                                items
+                                    .where((p) => p.id == _project)
+                                    .firstOrNull
+                                    ?.name ??
+                                (_project == _base.project?.id
+                                    ? _base.project?.name
+                                    : null) ??
+                                'Không gắn dự án',
+                            onTap: () async {
+                              final selected = await showChangChoices(
+                                context,
+                                title: 'Chọn dự án',
+                                subtitle: 'Gắn công việc vào dự án học tập.',
+                                selected: _project ?? '',
+                                choices: [
+                                  const ChangChoice(
+                                    '',
+                                    'Không gắn dự án',
+                                    icon: Icons.inbox_outlined,
+                                  ),
+                                  if (_base.project != null &&
+                                      !items.any(
+                                        (p) => p.id == _base.project!.id,
+                                      ))
+                                    ChangChoice(
+                                      _base.project!.id,
+                                      _base.project!.name,
+                                    ),
+                                  for (final p in items)
+                                    ChangChoice(
+                                      p.id,
+                                      p.name,
+                                      icon: Icons.folder_outlined,
+                                    ),
+                                ],
+                              );
+                              if (mounted && selected != null) {
+                                setState(
+                                  () => _project = selected.isEmpty
+                                      ? null
+                                      : selected,
+                                );
+                              }
+                            },
+                          ),
+                          loading: () => const LinearProgressIndicator(),
+                          error: (_, _) => TextButton(
+                            onPressed: () =>
+                                ref.invalidate(taskProjectsProvider),
+                            child: const Text('Tải lại dự án'),
                           ),
                         ),
-                        validator: (v) => v == null || v.trim().isEmpty
-                            ? 'Nhập tên công việc.'
-                            : null,
-                      ),
-                      const SizedBox(height: 16),
-                      TextFormField(
-                        controller: _description,
-                        maxLength: 4000,
-                        minLines: 3,
-                        maxLines: 6,
-                        decoration: changInput('Mô tả'),
-                      ),
-                      const SizedBox(height: 16),
-                      projects.when(
-                        data: (items) => ChoiceField(
-                          label: 'Dự án',
-                          icon: Icons.folder_outlined,
-                          value:
-                              items
-                                  .where((p) => p.id == _project)
-                                  .firstOrNull
-                                  ?.name ??
-                              (_project == _base.project?.id
-                                  ? _base.project?.name
-                                  : null) ??
-                              'Không gắn dự án',
+                        const SizedBox(height: 20),
+                        ChoiceField(
+                          label: 'Hạn hoàn thành',
+                          icon: Icons.calendar_month_outlined,
+                          value: _due == null
+                              ? 'Chưa đặt hạn'
+                              : _dateLabel(_due!),
                           onTap: () async {
-                            final selected = await showChangChoices(
+                            final date = await showChangDeadline(
                               context,
-                              title: 'Chọn dự án',
-                              subtitle: 'Gắn công việc vào dự án học tập.',
-                              selected: _project ?? '',
-                              choices: [
-                                const ChangChoice(
-                                  '',
-                                  'Không gắn dự án',
-                                  icon: Icons.inbox_outlined,
-                                ),
-                                if (_base.project != null &&
-                                    !items.any(
-                                      (p) => p.id == _base.project!.id,
-                                    ))
-                                  ChangChoice(
-                                    _base.project!.id,
-                                    _base.project!.name,
-                                  ),
-                                for (final p in items)
-                                  ChangChoice(
-                                    p.id,
-                                    p.name,
-                                    icon: Icons.folder_outlined,
-                                  ),
-                              ],
+                              initial: _due,
                             );
-                            if (mounted && selected != null) {
-                              setState(
-                                () => _project = selected.isEmpty
-                                    ? null
-                                    : selected,
-                              );
+                            if (mounted && date != null) {
+                              setState(() => _due = date);
                             }
                           },
                         ),
-                        loading: () => const LinearProgressIndicator(),
-                        error: (_, _) => TextButton(
-                          onPressed: () => ref.invalidate(taskProjectsProvider),
-                          child: const Text('Tải lại dự án'),
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      ChoiceField(
-                        label: 'Hạn hoàn thành',
-                        icon: Icons.calendar_month_outlined,
-                        value: _due == null
-                            ? 'Chưa đặt hạn'
-                            : _dateLabel(_due!),
-                        onTap: () async {
-                          final date = await showChangDeadline(
-                            context,
-                            initial: _due,
-                          );
-                          if (mounted && date != null) {
-                            setState(() => _due = date);
-                          }
-                        },
-                      ),
-                      if (_due != _base.dueDate?.toLocal() &&
-                          _base.dueDate != null)
-                        Padding(
-                          padding: const EdgeInsets.only(top: 8),
-                          child: Text(
-                            'Trước đó: ${_dateLabel(_base.dueDate!.toLocal())}',
-                            style: const TextStyle(color: changMuted),
-                          ),
-                        ),
-                      if (_due != null)
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: TextButton(
-                            onPressed: () => setState(() => _due = null),
-                            child: const Text('Bỏ hạn hoàn thành'),
-                          ),
-                        ),
-                      const SizedBox(height: 20),
-                      const Text(
-                        'Ưu tiên',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w700,
-                          color: changInk,
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      Wrap(
-                        spacing: 10,
-                        runSpacing: 8,
-                        children: [
-                          for (final p in TaskPriority.values)
-                            ChoiceChip(
-                              label: Text(p.label),
-                              selected: _priority == p,
-                              selectedColor: p == TaskPriority.high
-                                  ? const Color(0xFFFFDED6)
-                                  : changSoft,
-                              onSelected: (_) => setState(() => _priority = p),
+                        if (_due != _base.dueDate?.toLocal() &&
+                            _base.dueDate != null)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 8),
+                            child: Text(
+                              'Trước đó: ${_dateLabel(_base.dueDate!.toLocal())}',
+                              style: const TextStyle(color: changMuted),
                             ),
-                        ],
-                      ),
-                      const SizedBox(height: 20),
-                      TextFormField(
-                        controller: _minutes,
-                        decoration: changInput('Thời lượng dự kiến')
-                            .copyWith(suffixText: 'phút'),
-                        keyboardType: TextInputType.number,
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly,
-                        ],
-                        validator: (v) {
-                          final n = int.tryParse(v ?? '');
-                          return n == null || n < 1 || n > 1440
-                              ? 'Nhập 1–1440 phút.'
-                              : null;
-                        },
-                      ),
-                      const SizedBox(height: 20),
-                      ChoiceField(
-                        label:
-                            'Các bước nhỏ · ${_base.completedSubtaskCount}/${_base.subtasks.length} hoàn thành',
-                        value: 'Quản lý ${_base.subtasks.length} bước',
-                        icon: Icons.checklist_rounded,
-                        onTap: _manageSteps,
-                      ),
-                    ],
+                          ),
+                        if (_due != null)
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: TextButton(
+                              onPressed: () => setState(() => _due = null),
+                              child: const Text('Bỏ hạn hoàn thành'),
+                            ),
+                          ),
+                        const SizedBox(height: 20),
+                        const Text(
+                          'Ưu tiên',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w700,
+                            color: changInk,
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        Wrap(
+                          spacing: 10,
+                          runSpacing: 8,
+                          children: [
+                            for (final p in TaskPriority.values)
+                              ChoiceChip(
+                                label: Text(p.label),
+                                selected: _priority == p,
+                                selectedColor: p == TaskPriority.high
+                                    ? const Color(0xFFFFDED6)
+                                    : changSoft,
+                                onSelected: (_) =>
+                                    setState(() => _priority = p),
+                              ),
+                          ],
+                        ),
+                        const SizedBox(height: 20),
+                        TextFormField(
+                          controller: _minutes,
+                          decoration: changInput('Thời lượng dự kiến')
+                              .copyWith(suffixText: 'phút'),
+                          keyboardType: TextInputType.number,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly,
+                          ],
+                          validator: (v) {
+                            final n = int.tryParse(v ?? '');
+                            return n == null || n < 1 || n > 1440
+                                ? 'Nhập 1–1440 phút.'
+                                : null;
+                          },
+                        ),
+                        const SizedBox(height: 20),
+                        ChoiceField(
+                          label:
+                              'Các bước nhỏ · ${_base.completedSubtaskCount}/${_base.subtasks.length} hoàn thành',
+                          value: 'Quản lý ${_base.subtasks.length} bước',
+                          icon: Icons.checklist_rounded,
+                          onTap: _manageSteps,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),

@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../app/widgets/app_layout.dart';
+import '../../../app/widgets/adaptive_content.dart';
 import '../../../app/widgets/feature_surface.dart';
 import '../data/task_management_repository.dart';
 import '../domain/task_detail.dart';
@@ -154,7 +155,7 @@ class _ManageStepsPageState extends ConsumerState<ManageStepsPage> {
       backgroundColor: Colors.white,
       showDragHandle: true,
       isScrollControlled: true,
-      constraints: const BoxConstraints(maxWidth: AppLayout.maxContentWidth),
+      constraints: const BoxConstraints(maxWidth: AppLayout.maxSheetWidth),
       builder: (sheet) => SafeArea(
         child: SingleChildScrollView(
           child: Padding(
@@ -259,80 +260,89 @@ class _ManageStepsPageState extends ConsumerState<ManageStepsPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    for (final step in _steps)
-                      Padding(
-                        key: ValueKey(step.id),
-                        padding: const EdgeInsets.only(bottom: 12),
-                        child: Container(
-                          padding: const EdgeInsets.all(12),
-                          decoration: BoxDecoration(
-                            color: step.completed ? changSoft : Colors.white,
-                            border: Border.all(color: changBorder),
-                            borderRadius: BorderRadius.circular(18),
-                          ),
-                          child: Column(
-                            children: [
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                    AdaptiveCardGrid(
+                      maxColumns: 2,
+                      minCardWidth: 360,
+                      children: [
+                        for (final step in _steps)
+                          Padding(
+                            key: ValueKey(step.id),
+                            padding: const EdgeInsets.only(bottom: 12),
+                            child: Container(
+                              padding: const EdgeInsets.all(12),
+                              decoration: BoxDecoration(
+                                color: step.completed
+                                    ? changSoft
+                                    : Colors.white,
+                                border: Border.all(color: changBorder),
+                                borderRadius: BorderRadius.circular(18),
+                              ),
+                              child: Column(
                                 children: [
-                                  Checkbox(
-                                    value: step.completed,
-                                    activeColor: changBlue,
-                                    onChanged: (v) =>
-                                        setState(() => step.completed = v!),
-                                  ),
-                                  Expanded(
-                                    child: TextFormField(
-                                      controller: step.title,
-                                      maxLength: 200,
-                                      minLines: 1,
-                                      maxLines: 3,
-                                      decoration: changInput(
-                                        'Bước ${_steps.indexOf(step) + 1}',
-                                      ).copyWith(counterText: ''),
-                                      validator: (v) =>
-                                          v == null || v.trim().isEmpty
-                                          ? 'Nhập tên bước.'
-                                          : null,
-                                    ),
-                                  ),
-                                  IconButton(
-                                    tooltip:
-                                        'Tùy chọn bước ${_steps.indexOf(step) + 1}',
-                                    onPressed: () => _menu(step),
-                                    icon: const Icon(
-                                      Icons.more_horiz,
-                                      color: changInk,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 10),
-                              TextFormField(
-                                controller: step.duration,
-                                keyboardType: TextInputType.number,
-                                inputFormatters: [
-                                  FilteringTextInputFormatter.digitsOnly,
-                                ],
-                                decoration: changInput('Thời lượng dự kiến')
-                                    .copyWith(
-                                      suffixText: 'phút',
-                                      prefixIcon: const Icon(
-                                        Icons.schedule,
-                                        size: 20,
+                                  Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Checkbox(
+                                        value: step.completed,
+                                        activeColor: changBlue,
+                                        onChanged: (v) =>
+                                            setState(() => step.completed = v!),
                                       ),
-                                    ),
-                                validator: (v) {
-                                  final n = int.tryParse(v ?? '');
-                                  return n == null || n < 1 || n > 1440
-                                      ? 'Nhập 1–1440 phút.'
-                                      : null;
-                                },
+                                      Expanded(
+                                        child: TextFormField(
+                                          controller: step.title,
+                                          maxLength: 200,
+                                          minLines: 1,
+                                          maxLines: 3,
+                                          decoration: changInput(
+                                            'Bước ${_steps.indexOf(step) + 1}',
+                                          ).copyWith(counterText: ''),
+                                          validator: (v) =>
+                                              v == null || v.trim().isEmpty
+                                              ? 'Nhập tên bước.'
+                                              : null,
+                                        ),
+                                      ),
+                                      IconButton(
+                                        tooltip:
+                                            'Tùy chọn bước ${_steps.indexOf(step) + 1}',
+                                        onPressed: () => _menu(step),
+                                        icon: const Icon(
+                                          Icons.more_horiz,
+                                          color: changInk,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 10),
+                                  TextFormField(
+                                    controller: step.duration,
+                                    keyboardType: TextInputType.number,
+                                    inputFormatters: [
+                                      FilteringTextInputFormatter.digitsOnly,
+                                    ],
+                                    decoration: changInput('Thời lượng dự kiến')
+                                        .copyWith(
+                                          suffixText: 'phút',
+                                          prefixIcon: const Icon(
+                                            Icons.schedule,
+                                            size: 20,
+                                          ),
+                                        ),
+                                    validator: (v) {
+                                      final n = int.tryParse(v ?? '');
+                                      return n == null || n < 1 || n > 1440
+                                          ? 'Nhập 1–1440 phút.'
+                                          : null;
+                                    },
+                                  ),
+                                ],
                               ),
-                            ],
+                            ),
                           ),
-                        ),
-                      ),
+                      ],
+                    ),
                     if (_steps.isEmpty)
                       const FeatureCard(
                         color: changSoft,

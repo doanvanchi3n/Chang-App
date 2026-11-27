@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 
 import '../../../app/widgets/choice_sheet.dart';
 import '../../../app/widgets/feature_surface.dart';
+import '../../../app/widgets/app_layout.dart';
+import '../../../app/widgets/adaptive_content.dart';
 import '../../projects/presentation/widgets/project_widgets.dart';
 import '../data/task_management_repository.dart';
 import '../domain/task_detail.dart';
@@ -44,6 +46,7 @@ class _CompletedTasksPageState extends ConsumerState<CompletedTasksPage>
   Widget build(BuildContext context) {
     final tasks = ref.watch(taskListProvider);
     return FeatureSurface(
+      maxWidth: AppLayout.maxDesktopWidth,
       onBack: () {
         if (Navigator.canPop(context)) {
           Navigator.pop(context);
@@ -167,11 +170,10 @@ class _CompletedTasksPageState extends ConsumerState<CompletedTasksPage>
                         textAlign: TextAlign.center,
                       ),
                     ),
-                  for (final task in visible)
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 12),
-                      child: _card(task),
-                    ),
+                  AdaptiveCardGrid(
+                    maxColumns: 2,
+                    children: [for (final task in visible) _card(task)],
+                  ),
                 ],
               );
             },

@@ -23,9 +23,10 @@ Không cần service-role key trong app.
 - M30: thời gian thực tế, xác nhận bước độc lập, ghi chú, lưu về Home hoặc nghỉ 5 phút.
 
 Khung tham chiếu 390 × 844 dp; chiều cao theo thiết bị và cuộn theo nội dung.
-Mobile giữ chiều ngang nội dung tối đa 560 dp. Home, Hộp việc và công việc
-có bố cục desktop từ 840 dp, khung tối đa 1180 dp; lề 20 dp trên mobile,
-24 dp trên màn rộng. Phiên tập trung có bố cục riêng cho mobile và desktop.
+Mobile dùng chiều ngang cửa sổ. Tablet 600–1023 dp dùng điều hướng bên cạnh;
+desktop từ 1024 dp dùng thanh điều hướng trên. Nội dung tối đa 1180 dp,
+form tối đa 960 dp; lề 20 dp trên mobile, 24 dp trên màn rộng. Bố cục chia cột
+theo chỗ trống và cỡ chữ; xem `12_RESPONSIVE_LAYOUT.md`.
 Mascot M27, M29, M30 lấy từ asset được cung cấp. M13 nối tiếp sang M14/M15; xem `09_TASK_MANAGEMENT_AND_LAYOUT.md`.
 
 ## Tích hợp FEAT-18 với dự án và thông báo
@@ -36,7 +37,7 @@ Mascot M27, M29, M30 lấy từ asset được cung cấp. M13 nối tiếp sang
 - Giữ tab Dự án, danh sách đã hoàn thành/mở lại, dự án điền sẵn trong form
   và bộ chọn hạn hoàn thành từ `main`. Chuông thông báo hoạt động trên cả hai bố cục Home.
 - Điều hướng desktop rời form có nội dung phải xác nhận; chọn Ở lại giữ nội dung.
-  Thẻ công việc Home tự xếp dọc khi cột desktop hẹp để tránh tràn ở 840 dp.
+  Thẻ công việc Home tự xếp dọc khi cột nội dung hẹp để tránh tràn.
 - Lưu tổng kết làm mới cả danh sách công việc và lựa chọn phiên kế tiếp,
   giúp tiến độ dự án và trạng thái hoàn thành phản ánh dữ liệu vừa lưu.
 - Không bổ sung migration hay dependency cho đợt ghép FEAT-18 này.

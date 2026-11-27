@@ -18,7 +18,7 @@ Future<bool> showReopenTaskSheet(BuildContext context, TaskDetail task) async =>
       isDismissible: false,
       enableDrag: false,
       showDragHandle: true,
-      constraints: const BoxConstraints(maxWidth: AppLayout.maxContentWidth),
+      constraints: const BoxConstraints(maxWidth: AppLayout.maxSheetWidth),
       builder: (_) => _ReopenTaskSheet(task: task),
     ) ??
     false;

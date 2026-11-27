@@ -134,6 +134,7 @@ Kết quả ghi vào `docs/` theo vị trí project, không phụ thuộc thư m
 - [Danh sách tính năng và roadmap](docs/04_FUNCTION_LIST_AND_ROADMAP_DAY30.md)
 - [Supabase và bảo mật](docs/06_SUPABASE_MCP_AND_SECURITY_GUIDE.md)
 - [Cấu trúc file](docs/07_PROJECT_STRUCTURE.md)
+- [Responsive mobile, tablet và web/desktop](docs/12_RESPONSIVE_LAYOUT.md)
 
 Tham khảo công cụ: [Flutter CLI](https://docs.flutter.dev/reference/create-new-app),
 [Flutter web/Firefox](https://docs.flutter.dev/platform-integration/web/setup),

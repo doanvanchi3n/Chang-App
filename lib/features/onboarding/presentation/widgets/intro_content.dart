@@ -1,4 +1,5 @@
 import '../../../../app/widgets/app_layout.dart';
+import '../../../../app/widgets/adaptive_content.dart';
 
 import 'package:flutter/material.dart';
 
@@ -35,7 +36,7 @@ class IntroContent extends StatelessWidget {
               child: Center(
                 child: ConstrainedBox(
                   constraints: BoxConstraints(
-                    maxWidth: AppLayout.maxContentWidth,
+                    maxWidth: AppLayout.maxDesktopWidth,
                     minHeight: constraints.maxHeight,
                   ),
                   child: Padding(
@@ -57,74 +58,92 @@ class IntroContent extends StatelessWidget {
                           ],
                         ),
                         const SizedBox(height: 24),
-                        IntroMascot(onFinished: onIntroFinished),
-                        const _Highlights(),
-                        const SizedBox(height: 24),
-                        const Text(
-                          'Chặng nhỏ,\ntiến bộ mỗi ngày.',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: _ink,
-                            fontSize: 32,
-                            fontWeight: FontWeight.w800,
-                            height: 1.15,
-                            letterSpacing: -0.8,
-                          ),
-                        ),
-                        const SizedBox(height: 12),
-                        const Text(
-                          'Lên kế hoạch tự học theo nhịp của bạn.',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: _mutedBlue,
-                            fontSize: 16,
-                            height: 1.5,
-                          ),
-                        ),
-                        const SizedBox(height: 24),
-                        SizedBox(
-                          width: 320,
-                          child: FilledButton(
-                            onPressed: saving ? null : onContinue,
-                            style: FilledButton.styleFrom(
-                              backgroundColor: _blue,
-                              foregroundColor: Colors.white,
-                              minimumSize: const Size(48, 56),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
+                        AdaptiveColumns(
+                          minPaneWidth: 360,
+                          primary: Column(
+                            children: [
+                              IntroMascot(
+                                onFinished: onIntroFinished,
+                                height: AppLayout.isDesktop(context)
+                                    ? 360
+                                    : 240,
                               ),
-                            ),
-                            child: const Text(
-                              'Bắt đầu',
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w700,
+                              const _Highlights(),
+                            ],
+                          ),
+                          secondary: Column(
+                            children: [
+                              const Text(
+                                'Chặng nhỏ,\ntiến bộ mỗi ngày.',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: _ink,
+                                  fontSize: 32,
+                                  fontWeight: FontWeight.w800,
+                                  height: 1.15,
+                                  letterSpacing: -0.8,
+                                ),
                               ),
-                            ),
+                              const SizedBox(height: 12),
+                              const Text(
+                                'Lên kế hoạch tự học theo nhịp của bạn.',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: _mutedBlue,
+                                  fontSize: 16,
+                                  height: 1.5,
+                                ),
+                              ),
+                              const SizedBox(height: 24),
+                              SizedBox(
+                                width: 320,
+                                child: FilledButton(
+                                  onPressed: saving ? null : onContinue,
+                                  style: FilledButton.styleFrom(
+                                    backgroundColor: _blue,
+                                    foregroundColor: Colors.white,
+                                    minimumSize: const Size(48, 56),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                  ),
+                                  child: const Text(
+                                    'Bắt đầu',
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              if (saving)
+                                const Padding(
+                                  padding: EdgeInsets.only(top: 16),
+                                  child: CircularProgressIndicator(
+                                    semanticsLabel:
+                                        'Đang lưu trạng thái giới thiệu',
+                                  ),
+                                ),
+                              if (error != null) ...[
+                                const SizedBox(height: 16),
+                                Semantics(
+                                  liveRegion: true,
+                                  child: Text(
+                                    error!,
+                                    textAlign: TextAlign.center,
+                                    style: const TextStyle(
+                                      color: AppColors.error,
+                                    ),
+                                  ),
+                                ),
+                                TextButton(
+                                  onPressed: saving ? null : onContinue,
+                                  child: const Text('Thử lại'),
+                                ),
+                              ],
+                            ],
                           ),
                         ),
-                        if (saving)
-                          const Padding(
-                            padding: EdgeInsets.only(top: 16),
-                            child: CircularProgressIndicator(
-                              semanticsLabel: 'Đang lưu trạng thái giới thiệu',
-                            ),
-                          ),
-                        if (error != null) ...[
-                          const SizedBox(height: 16),
-                          Semantics(
-                            liveRegion: true,
-                            child: Text(
-                              error!,
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(color: AppColors.error),
-                            ),
-                          ),
-                          TextButton(
-                            onPressed: saving ? null : onContinue,
-                            child: const Text('Thử lại'),
-                          ),
-                        ],
                       ],
                     ),
                   ),

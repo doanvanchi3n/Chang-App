@@ -28,7 +28,7 @@ Future<String?> showChangChoices(
   useSafeArea: true,
   showDragHandle: true,
   backgroundColor: Colors.white,
-  constraints: const BoxConstraints(maxWidth: AppLayout.maxContentWidth),
+  constraints: const BoxConstraints(maxWidth: AppLayout.maxSheetWidth),
   shape: const RoundedRectangleBorder(
     borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
   ),

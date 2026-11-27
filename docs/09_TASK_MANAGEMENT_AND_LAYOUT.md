@@ -2,13 +2,15 @@
 
 ## Khung giao diện thống nhất
 
-Đã chốt với người dùng: **390 × 844 dp** làm khung tham chiếu, không cố định chiều cao thực tế.
+**390 × 844 dp** là khung tham chiếu mobile. Giao diện hiện thích ứng theo cửa sổ;
+quy tắc responsive đầy đủ được ghi tại `12_RESPONSIVE_LAYOUT.md`.
 `lib/app/widgets/app_layout.dart` là nguồn kích thước chung:
 
 - Mobile dùng chiều ngang thiết bị, lề 20 dp; nội dung dài cuộn dọc, tôn trọng SafeArea/bàn phím.
-- Laptop/tablet căn giữa, khung tối đa 560 dp, lề 24 dp từ cửa sổ rộng 600 dp.
+- Tablet 600–1023 dp có thanh điều hướng bên cạnh; desktop từ 1024 dp dùng thanh trên.
+- Trang chính căn giữa với chiều ngang tối đa 1180 dp; form tối đa 960 dp, lề 24 dp trên màn rộng.
 - Nút hành động chính cao tối thiểu 52 dp. Chữ được co giãn theo cài đặt hệ thống.
-- M01/M02/M05/M06 và flow tạo việc/tập trung dùng cùng giới hạn chiều ngang.
+- Danh sách chia cột theo chiều rộng thực tế. Form và các nhóm nội dung xếp dọc khi thiếu chỗ hoặc tăng cỡ chữ.
 - M13 đã chuyển về một cột trên laptop để thống nhất với các màn còn lại.
 - M11, M14, M15, M16 dựa theo ảnh người dùng; các hàng dài và bộ lọc xuống dòng trên mobile.
 

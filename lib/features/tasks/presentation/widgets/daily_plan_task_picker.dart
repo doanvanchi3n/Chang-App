@@ -21,7 +21,7 @@ Future<Set<String>?> showPlanTaskPicker(
     side: BorderSide(color: inboxBorder),
   ),
   clipBehavior: Clip.antiAlias,
-  constraints: const BoxConstraints(maxWidth: AppLayout.maxContentWidth),
+  constraints: const BoxConstraints(maxWidth: AppLayout.maxSheetWidth),
   builder: (_) => _TaskPicker(tasks: tasks, today: today),
 );
 

@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../app/widgets/feature_surface.dart';
+import '../../../app/widgets/app_layout.dart';
+import '../../../app/widgets/adaptive_content.dart';
 import '../../tasks/data/task_management_repository.dart';
 import '../../tasks/domain/task_detail.dart';
 import '../../tasks/presentation/completed_tasks_page.dart';
@@ -93,6 +95,7 @@ class _ProjectDetailPageState extends ConsumerState<ProjectDetailPage>
     final projects = ref.watch(projectListProvider),
         tasks = ref.watch(taskListProvider);
     return FeatureSurface(
+      maxWidth: AppLayout.maxDesktopWidth,
       title: 'Dự án',
       onBack: () {
         if (Navigator.canPop(context)) {
@@ -171,102 +174,111 @@ class _ProjectDetailPageState extends ConsumerState<ProjectDetailPage>
                                 (_tab == 'done'),
                       )
                       .toList();
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      FeatureCard(
-                        color: changSoft,
-                        child: ProjectProgressView(
-                          progress: progress,
-                          explain: true,
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      Wrap(
-                        alignment: WrapAlignment.spaceBetween,
-                        crossAxisAlignment: WrapCrossAlignment.center,
-                        spacing: 12,
-                        runSpacing: 8,
-                        children: [
-                          const Text(
-                            'Công việc trong dự án',
-                            style: TextStyle(
-                              color: changInk,
-                              fontSize: 21,
-                              fontWeight: FontWeight.w800,
-                            ),
-                          ),
-                          FilledButton.icon(
-                            style: FilledButton.styleFrom(
-                              backgroundColor: changBlue,
-                              foregroundColor: Colors.white,
-                              minimumSize: const Size(0, 48),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                            ),
-                            onPressed: () => _open(
-                              CreateTaskPage(
-                                initialProject: TaskProjectSummary(
-                                  id: project.id,
-                                  name: project.name,
-                                  colorHex: project.colorHex,
-                                ),
-                              ),
-                            ),
-                            icon: const Icon(Icons.add),
-                            label: const Text('Thêm việc'),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 12),
-                      Wrap(
-                        spacing: 10,
-                        runSpacing: 8,
-                        children: [
-                          for (final tab in [
-                            ('all', 'Tất cả', progress.total),
-                            (
-                              'todo',
-                              'Chưa xong',
-                              progress.total - progress.completed,
-                            ),
-                            ('done', 'Đã xong', progress.completed),
-                          ])
-                            ChoiceChip(
-                              label: Text('${tab.$2} ${tab.$3}'),
-                              selected: _tab == tab.$1,
-                              onSelected: (_) => setState(() => _tab = tab.$1),
-                            ),
-                        ],
-                      ),
-                      const SizedBox(height: 16),
-                      if (visible.isEmpty)
+                  return AdaptiveColumns(
+                    primaryFlex: 1,
+                    secondaryFlex: 2,
+                    primary: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
                         FeatureCard(
                           color: changSoft,
-                          child: Text(
-                            progress.total == 0
-                                ? 'Dự án chưa có công việc. Nhấn “Thêm việc” để bắt đầu.'
-                                : 'Không có công việc trong tab này.',
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(color: changMuted),
+                          child: ProjectProgressView(
+                            progress: progress,
+                            explain: true,
                           ),
                         ),
-                      for (final task in visible) _taskRow(task),
-                      if (_tab == 'done')
-                        TextButton.icon(
-                          onPressed: () => _open(
-                            CompletedTasksPage(initialProjectId: project.id),
-                          ),
-                          icon: const Icon(Icons.inventory_2_outlined),
-                          label: const Text('Xem danh sách đã hoàn thành'),
+                      ],
+                    ),
+                    secondary: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Wrap(
+                          alignment: WrapAlignment.spaceBetween,
+                          crossAxisAlignment: WrapCrossAlignment.center,
+                          spacing: 12,
+                          runSpacing: 8,
+                          children: [
+                            const Text(
+                              'Công việc trong dự án',
+                              style: TextStyle(
+                                color: changInk,
+                                fontSize: 21,
+                                fontWeight: FontWeight.w800,
+                              ),
+                            ),
+                            FilledButton.icon(
+                              style: FilledButton.styleFrom(
+                                backgroundColor: changBlue,
+                                foregroundColor: Colors.white,
+                                minimumSize: const Size(0, 48),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                              ),
+                              onPressed: () => _open(
+                                CreateTaskPage(
+                                  initialProject: TaskProjectSummary(
+                                    id: project.id,
+                                    name: project.name,
+                                    colorHex: project.colorHex,
+                                  ),
+                                ),
+                              ),
+                              icon: const Icon(Icons.add),
+                              label: const Text('Thêm việc'),
+                            ),
+                          ],
                         ),
-                      const SizedBox(height: 12),
-                      const Text(
-                        'ⓘ  Bạn có thể mở lại công việc đã hoàn thành.',
-                        style: TextStyle(color: changMuted),
-                      ),
-                    ],
+                        const SizedBox(height: 12),
+                        Wrap(
+                          spacing: 10,
+                          runSpacing: 8,
+                          children: [
+                            for (final tab in [
+                              ('all', 'Tất cả', progress.total),
+                              (
+                                'todo',
+                                'Chưa xong',
+                                progress.total - progress.completed,
+                              ),
+                              ('done', 'Đã xong', progress.completed),
+                            ])
+                              ChoiceChip(
+                                label: Text('${tab.$2} ${tab.$3}'),
+                                selected: _tab == tab.$1,
+                                onSelected: (_) =>
+                                    setState(() => _tab = tab.$1),
+                              ),
+                          ],
+                        ),
+                        const SizedBox(height: 16),
+                        if (visible.isEmpty)
+                          FeatureCard(
+                            color: changSoft,
+                            child: Text(
+                              progress.total == 0
+                                  ? 'Dự án chưa có công việc. Nhấn “Thêm việc” để bắt đầu.'
+                                  : 'Không có công việc trong tab này.',
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(color: changMuted),
+                            ),
+                          ),
+                        for (final task in visible) _taskRow(task),
+                        if (_tab == 'done')
+                          TextButton.icon(
+                            onPressed: () => _open(
+                              CompletedTasksPage(initialProjectId: project.id),
+                            ),
+                            icon: const Icon(Icons.inventory_2_outlined),
+                            label: const Text('Xem danh sách đã hoàn thành'),
+                          ),
+                        const SizedBox(height: 12),
+                        const Text(
+                          'ⓘ  Bạn có thể mở lại công việc đã hoàn thành.',
+                          style: TextStyle(color: changMuted),
+                        ),
+                      ],
+                    ),
                   );
                 },
               ),

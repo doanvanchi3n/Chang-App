@@ -37,7 +37,7 @@ class DesktopTopBar extends StatelessWidget {
       key: const ValueKey('desktop-top-bar'),
       color: AppColors.surface,
       child: Container(
-        height: 68,
+        constraints: const BoxConstraints(minHeight: 68),
         decoration: const BoxDecoration(
           border: Border(bottom: BorderSide(color: AppColors.borderSubtle)),
         ),

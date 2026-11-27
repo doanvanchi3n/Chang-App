@@ -1,4 +1,5 @@
 import '../../../app/widgets/app_layout.dart';
+import '../../../app/widgets/adaptive_content.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -52,7 +53,7 @@ class _FocusPrepPageState extends ConsumerState<FocusPrepPage> {
       isScrollControlled: true,
       showDragHandle: true,
       backgroundColor: Colors.white,
-      constraints: const BoxConstraints(maxWidth: AppLayout.maxContentWidth),
+      constraints: const BoxConstraints(maxWidth: AppLayout.maxSheetWidth),
       builder: (context) => Consumer(
         builder: (context, ref, _) => SafeArea(
           child: Padding(
@@ -201,15 +202,13 @@ class _FocusPrepPageState extends ConsumerState<FocusPrepPage> {
                           final value = await showChangChoices(
                             context,
                             title: 'Bạn muốn tập trung vào đâu?',
-                            subtitle:
-                                'Chọn một bước nhỏ, hoặc dành phiên này cho cả công việc.',
+                            subtitle: 'Chọn một bước nhỏ, hoặc dành phiên này cho cả công việc.',
                             selected: step ?? '',
                             choices: [
                               const ChangChoice(
                                 '',
                                 'Toàn bộ công việc',
-                                subtitle:
-                                    'Tập trung chung, giữ nguyên tiến độ từng bước',
+                                subtitle: 'Tập trung chung, giữ nguyên tiến độ từng bước',
                                 icon: Icons.layers_outlined,
                               ),
                               for (final s in pending)
@@ -387,26 +386,14 @@ class _FocusPrepPageState extends ConsumerState<FocusPrepPage> {
             ),
           );
 
-          if (isDesktop) {
-            return Row(
-              key: const ValueKey('focus-prep-desktop-layout'),
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(flex: 11, child: selectedTaskCard),
-                const SizedBox(width: AppSpacing.s24),
-                Expanded(flex: 12, child: setupCard),
-              ],
-            );
-          }
-
-          return Column(
-            key: const ValueKey('focus-prep-mobile-layout'),
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              selectedTaskCard,
-              const SizedBox(height: 18),
-              setupCard,
-            ],
+          return AdaptiveColumns(
+            key: ValueKey(
+              isDesktop
+                  ? 'focus-prep-desktop-layout'
+                  : 'focus-prep-mobile-layout',
+            ),
+            primary: selectedTaskCard,
+            secondary: setupCard,
           );
         },
       );

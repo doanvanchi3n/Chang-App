@@ -6,6 +6,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../app/widgets/app_layout.dart';
+import '../../../app/widgets/adaptive_content.dart';
 import '../../../app/widgets/choice_sheet.dart';
 import '../../../app/widgets/confirmation_dialog.dart';
 import '../../../app/widgets/deadline_picker.dart';
@@ -452,15 +453,16 @@ class _CreateTaskPageState extends ConsumerState<CreateTaskPage> {
                       absorbing: locked,
                       child: ExcludeFocus(
                         excluding: locked,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            _buildTitleAndDescriptionFields(),
-                            const SizedBox(height: 16),
-                            _buildMetadataFields(projects),
-                            const SizedBox(height: 22),
-                            _buildStepsSection(framed: false),
-                          ],
+                        child: AdaptiveColumns(
+                          primary: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              _buildTitleAndDescriptionFields(),
+                              const SizedBox(height: 16),
+                              _buildMetadataFields(projects),
+                            ],
+                          ),
+                          secondary: _buildStepsSection(framed: false),
                         ),
                       ),
                     ),

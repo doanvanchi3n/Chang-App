@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../app/widgets/app_layout.dart';
+import '../../../app/widgets/adaptive_navigation_frame.dart';
 import '../../../app/widgets/desktop_top_bar.dart';
 import '../../../app/widgets/feature_surface.dart';
 import '../../../app/widgets/main_navigation.dart';
@@ -109,10 +110,17 @@ class _TaskListPageState extends ConsumerState<TaskListPage>
         final isDesktop = AppLayout.isDesktopWidth(constraints.maxWidth);
         return Scaffold(
           backgroundColor: isDesktop ? AppColors.page : Colors.white,
-          bottomNavigationBar: isDesktop
+          bottomNavigationBar: !AppLayout.isMobileWidth(constraints.maxWidth)
               ? null
               : MainNavigation(inboxActive: true, onHome: _goHome),
-          body: isDesktop ? _buildDesktopBody(tasks) : _buildMobileBody(tasks),
+          body: isDesktop
+              ? _buildDesktopBody(tasks)
+              : AdaptiveNavigationFrame(
+                  workSelected: true,
+                  onHome: _goHome,
+                  onWork: () {},
+                  child: _buildMobileBody(tasks),
+                ),
         );
       },
     );
@@ -618,7 +626,7 @@ class _TaskListPageState extends ConsumerState<TaskListPage>
       child: Center(
         child: ConstrainedBox(
           constraints: const BoxConstraints(
-            maxWidth: AppLayout.maxContentWidth,
+            maxWidth: AppLayout.maxDesktopWidth,
           ),
           child: RefreshIndicator(
             onRefresh: _refresh,

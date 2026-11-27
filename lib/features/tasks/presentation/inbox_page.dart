@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../app/widgets/app_layout.dart';
+import '../../../app/widgets/adaptive_navigation_frame.dart';
 import '../../../app/widgets/desktop_top_bar.dart';
 import '../../../theme/app_colors.dart';
 import '../../../theme/app_dimensions.dart';
@@ -53,8 +54,7 @@ class _InboxPageState extends ConsumerState<InboxPage> {
     } catch (_) {
       if (mounted) {
         setState(
-          () => _saveError =
-              'Chưa xác nhận được việc đã lưu. Hãy làm mới danh sách trước khi thử lại.',
+          () => _saveError = 'Chưa xác nhận được việc đã lưu. Hãy làm mới danh sách trước khi thử lại.',
         );
       }
     } finally {
@@ -109,9 +109,8 @@ class _InboxPageState extends ConsumerState<InboxPage> {
     if (_saving || _planning || _taskOpen) return;
     _taskOpen = true;
     try {
-      await Navigator.of(
-        context,
-      ).push(MaterialPageRoute<void>(builder: (_) => page));
+      await Navigator.of(context)
+          .push(MaterialPageRoute<void>(builder: (_) => page));
     } finally {
       _taskOpen = false;
       if (mounted) ref.invalidate(inboxProvider);
@@ -338,7 +337,16 @@ class _InboxPageState extends ConsumerState<InboxPage> {
                       ),
                 body: isDesktop
                     ? _buildDesktopBody(tasks, items, canAdd)
-                    : _buildMobileBody(tasks, items, canAdd),
+                    : AdaptiveNavigationFrame(
+                        workSelected: true,
+                        onHome: _goHome,
+                        onWork: () => Navigator.of(context).pushReplacement(
+                          MaterialPageRoute<void>(
+                            builder: (_) => const TaskListPage(),
+                          ),
+                        ),
+                        child: _buildMobileBody(tasks, items, canAdd),
+                      ),
               );
             },
           ),
@@ -454,9 +462,9 @@ class _InboxPageState extends ConsumerState<InboxPage> {
                                         child: Text(
                                           _saveError!,
                                           style: TextStyle(
-                                            color: Theme.of(
-                                              context,
-                                            ).colorScheme.error,
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .error,
                                           ),
                                         ),
                                       ),
@@ -500,7 +508,7 @@ class _InboxPageState extends ConsumerState<InboxPage> {
           child: Center(
             child: ConstrainedBox(
               constraints: const BoxConstraints(
-                maxWidth: AppLayout.maxContentWidth,
+                maxWidth: AppLayout.maxDesktopWidth,
               ),
               child: Padding(
                 padding: AppLayout.pagePadding(context),
