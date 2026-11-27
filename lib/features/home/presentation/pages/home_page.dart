@@ -6,6 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../app/widgets/main_navigation.dart';
+import '../../../notifications/data/notification_repository.dart';
+import '../../../notifications/presentation/notification_bell.dart';
+import '../../../notifications/presentation/notifications_page.dart';
 import '../../../tasks/presentation/inbox_page.dart';
 import '../../../tasks/presentation/task_list_page.dart';
 import '../../../tasks/presentation/create_task_page.dart';
@@ -52,6 +55,7 @@ class _HomePageState extends ConsumerState<HomePage>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
       ref.invalidate(dashboardProvider);
+      ref.invalidate(notificationListProvider);
       _scheduleMidnight();
     }
   }
@@ -77,6 +81,7 @@ class _HomePageState extends ConsumerState<HomePage>
 
   Future<void> _refresh() async {
     ref.invalidate(dashboardProvider);
+    ref.invalidate(notificationListProvider);
     try {
       await ref.read(dashboardProvider.future);
     } catch (_) {
@@ -181,12 +186,9 @@ class _HomePageState extends ConsumerState<HomePage>
                               color: dashboardInk,
                             ),
                           ),
-                          const Tooltip(
-                            message: 'Thông báo chưa khả dụng',
-                            child: IconButton(
-                              onPressed: null,
-                              icon: Icon(Icons.notifications_none),
-                            ),
+                          NotificationBell(
+                            onPressed: () =>
+                                _openTaskPage(const NotificationsPage()),
                           ),
                           const CircleAvatar(
                             backgroundColor: Color(0xFFFFB6A5),

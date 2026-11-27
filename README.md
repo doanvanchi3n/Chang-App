@@ -6,11 +6,16 @@
 
 Ứng dụng Flutter dùng Riverpod, go_router và Supabase. Đã có onboarding,
 Home, Hộp việc, kế hoạch hôm nay và luồng tạo công việc → chi tiết → chuẩn bị →
-tập trung/tạm dừng → tổng kết. Dữ liệu nghiệp vụ lấy từ Supabase, hiện dùng
+tập trung/tạm dừng → tổng kết; dự án học tập và danh sách công việc đã hoàn thành/mở lại.
+Nút chuông trên Home mở trung tâm thông báo trong ứng dụng, có bộ lọc và trạng thái đã đọc.
+Dữ liệu nghiệp vụ lấy từ Supabase, hiện dùng
 phiên đăng nhập ẩn danh; chưa có màn đăng nhập/đăng ký.
 
 Xem [hướng dẫn SQL và luồng công việc/phiên học](docs/08_TASK_AND_FOCUS_FLOW.md)
-trước khi chạy các màn mới. Phần giao diện/runtime của đợt bổ sung này chưa được chạy thử.
+trước khi chạy các màn công việc. Với M17–M20, xem
+[luồng dự án, việc đã hoàn thành và file SQL FEAT-10/11](docs/10_PROJECTS_AND_COMPLETED_TASKS.md).
+Xem [lịch, hộp xác nhận và SQL cho thông báo](docs/11_DIALOGS_AND_NOTIFICATIONS.md)
+để cấp quyền đọc/đánh dấu thông báo trên Supabase.
 
 ## Chạy dự án
 
@@ -82,7 +87,7 @@ Chang-app/
 │   ├── core/                 # Hằng số và cấu hình Supabase public
 │   ├── theme/                # Design tokens và ThemeData
 │   ├── data/remote/          # Supabase client provider dùng chung
-│   └── features/             # Onboarding, home, tasks, focus
+│   └── features/             # Onboarding, home, tasks, projects, focus
 ├── assets/                   # Hướng dẫn thêm tài nguyên khi cần
 ├── test/                     # Unit/widget tests; đã có test khởi động
 ├── supabase/

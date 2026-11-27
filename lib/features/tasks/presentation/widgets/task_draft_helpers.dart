@@ -2,30 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../../../../app/widgets/confirmation_dialog.dart';
+
 import '../../../home/data/dashboard_provider.dart';
 import '../../data/task_management_repository.dart';
 import '../../data/task_repository.dart';
 import '../inbox_provider.dart';
 
 Future<bool> confirmDiscardTaskDraft(BuildContext context) async =>
-    await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Bỏ thay đổi chưa lưu?'),
-        content: const Text('Dữ liệu đã lưu được giữ nguyên.'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: const Text('Tiếp tục sửa'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: const Text('Bỏ thay đổi'),
-          ),
-        ],
-      ),
-    ) ??
-    false;
+    showChangConfirmation(
+      context,
+      title: 'Bỏ thay đổi chưa lưu?',
+      message: 'Dữ liệu đã lưu được giữ nguyên.',
+      cancelLabel: 'Tiếp tục sửa',
+      confirmLabel: 'Bỏ thay đổi',
+    );
 
 void invalidateTaskViews(WidgetRef ref, String id) {
   ref.invalidate(taskDetailProvider(id));
@@ -73,23 +64,10 @@ String taskSaveError(Object error) {
 }
 
 Future<bool> confirmLeavePendingTaskSave(BuildContext context) async =>
-    await showDialog<bool>(
-      context: context,
-      builder: (c) => AlertDialog(
-        title: const Text('Kết quả lưu chưa được xác nhận'),
-        content: const Text(
-          'Thay đổi có thể đã được lưu trên máy chủ. Nếu rời màn hình, hãy tải lại công việc để kiểm tra trước khi sửa tiếp.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(c, false),
-            child: const Text('Ở lại thử lại'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(c, true),
-            child: const Text('Rời màn hình'),
-          ),
-        ],
-      ),
-    ) ??
-    false;
+    showChangConfirmation(
+      context,
+      title: 'Kết quả lưu chưa được xác nhận',
+      message: 'Thay đổi có thể đã được lưu trên máy chủ. Nếu rời màn hình, hãy tải lại dữ liệu để kiểm tra trước khi sửa tiếp.',
+      cancelLabel: 'Ở lại thử lại',
+      confirmLabel: 'Rời màn hình',
+    );

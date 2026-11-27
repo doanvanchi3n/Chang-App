@@ -5,16 +5,19 @@ import 'package:uuid/uuid.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../app/widgets/feature_surface.dart';
+import '../../../app/widgets/confirmation_dialog.dart';
 import '../../../app/widgets/choice_sheet.dart';
 import '../../../app/widgets/deadline_picker.dart';
 import '../../home/data/dashboard_provider.dart';
 import '../data/task_repository.dart';
 import '../data/task_management_repository.dart';
+import '../domain/task_detail.dart';
 import 'inbox_provider.dart';
 import 'task_detail_page.dart';
 
 class CreateTaskPage extends ConsumerStatefulWidget {
-  const CreateTaskPage({super.key});
+  const CreateTaskPage({super.key, this.initialProject});
+  final TaskProjectSummary? initialProject;
   @override
   ConsumerState<CreateTaskPage> createState() => _CreateTaskPageState();
 }
@@ -31,6 +34,12 @@ class _CreateTaskPageState extends ConsumerState<CreateTaskPage> {
   DateTime? _due;
   bool _saving = false, _dirty = false;
   Map<String, dynamic>? _pending;
+  @override
+  void initState() {
+    super.initState();
+    _project = widget.initialProject?.id;
+  }
+
   @override
   void dispose() {
     for (final c in [_title, _description, _minutes, ..._steps]) {
@@ -51,24 +60,12 @@ class _CreateTaskPageState extends ConsumerState<CreateTaskPage> {
   Future<void> _back() async {
     if (_saving) return;
     if (_dirty || _pending != null) {
-      final leave = await showDialog<bool>(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: const Text('Rời form tạo việc?'),
-          content: Text(
-            _pending == null ? 'Các thông tin chưa lưu sẽ bị bỏ.' : 'Kết quả lưu chưa được xác nhận. Hãy kiểm tra Hộp việc trước khi tạo lại.',
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context, false),
-              child: const Text('Ở lại'),
-            ),
-            TextButton(
-              onPressed: () => Navigator.pop(context, true),
-              child: const Text('Rời form'),
-            ),
-          ],
-        ),
+      final leave = await showChangConfirmation(
+        context,
+        title: 'Rời form tạo việc?',
+        message: _pending == null ? 'Các thông tin chưa lưu sẽ bị bỏ.' : 'Kết quả lưu chưa được xác nhận. Hãy kiểm tra Hộp việc trước khi tạo lại.',
+        cancelLabel: 'Ở lại',
+        confirmLabel: 'Rời form',
       );
       if (leave != true || !mounted) return;
     }
@@ -182,6 +179,9 @@ class _CreateTaskPageState extends ConsumerState<CreateTaskPage> {
                                   .where((p) => p.id == _project)
                                   .firstOrNull
                                   ?.name ??
+                              (_project == widget.initialProject?.id
+                                  ? widget.initialProject?.name
+                                  : null) ??
                               'Không gắn dự án',
                           onTap: () async {
                             final value = await showChangChoices(
@@ -215,8 +215,10 @@ class _CreateTaskPageState extends ConsumerState<CreateTaskPage> {
                         loading: () => const LinearProgressIndicator(),
                         error: (_, _) => Column(
                           children: [
-                            const Text(
-                              'Chưa tải được dự án. Bạn vẫn có thể tạo việc không gắn dự án.',
+                            Text(
+                              _project == null
+                                  ? 'Chưa tải được dự án. Bạn vẫn có thể tạo việc không gắn dự án.'
+                                  : 'Dự án: ${widget.initialProject?.name ?? 'Đã chọn'}. Chưa tải được danh sách dự án.',
                             ),
                             TextButton(
                               onPressed: () =>

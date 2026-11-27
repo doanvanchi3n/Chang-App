@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+
+import '../../../app/widgets/confirmation_dialog.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -184,25 +187,12 @@ class FocusSessionPage extends ConsumerWidget {
                   onPressed: state.busy || state.pending
                       ? null
                       : () async {
-                          final end = await showDialog<bool>(
-                            context: context,
-                            builder: (context) => AlertDialog(
-                              title: const Text('Kết thúc phiên tại đây?'),
-                              content: const Text(
-                                'Thời gian đã tập trung sẽ được giữ để bạn xem và lưu ở phần tổng kết.',
-                              ),
-                              actions: [
-                                TextButton(
-                                  onPressed: () =>
-                                      Navigator.pop(context, false),
-                                  child: const Text('Tiếp tục phiên'),
-                                ),
-                                FilledButton(
-                                  onPressed: () => Navigator.pop(context, true),
-                                  child: const Text('Kết thúc'),
-                                ),
-                              ],
-                            ),
+                          final end = await showChangConfirmation(
+                            context,
+                            title: 'Kết thúc phiên tại đây?',
+                            message: 'Thời gian đã tập trung sẽ được giữ để bạn xem và lưu ở phần tổng kết.',
+                            cancelLabel: 'Tiếp tục phiên',
+                            confirmLabel: 'Kết thúc',
                           );
                           if (end == true) await controller.command('FINISH');
                         },

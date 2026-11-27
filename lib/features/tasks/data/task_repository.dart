@@ -32,7 +32,7 @@ class TaskRepository {
       await client
           .from('tasks')
           .select(
-            'id,title,description,due_date,scheduled_date,priority,status,is_archived,estimated_minutes,updated_at,progress_percentage,projects(id,name,color_hex),'
+            'id,title,description,due_date,scheduled_date,priority,status,is_archived,estimated_minutes,updated_at,completed_at,progress_percentage,projects(id,name,color_hex),'
             'subtasks(id,title,order_index,estimated_minutes,is_completed)',
           )
           .eq('user_id', user)

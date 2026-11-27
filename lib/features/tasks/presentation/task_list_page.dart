@@ -7,10 +7,12 @@ import 'package:go_router/go_router.dart';
 import '../../../app/widgets/app_layout.dart';
 import '../../../app/widgets/feature_surface.dart';
 import '../../../app/widgets/main_navigation.dart';
+import '../../../app/widgets/work_section_tabs.dart';
 import '../data/task_management_repository.dart';
 import '../domain/task_detail.dart';
 import '../domain/task_filters.dart';
 import 'create_task_page.dart';
+import 'completed_tasks_page.dart';
 import 'edit_task_page.dart';
 import 'inbox_page.dart';
 import 'manage_steps_page.dart';
@@ -133,6 +135,13 @@ class _TaskListPageState extends ConsumerState<TaskListPage>
                             ],
                           ),
                           const SizedBox(height: 24),
+                          WorkSectionTabs(
+                            projects: false,
+                            onChanged: (value) {
+                              if (value) context.go('/projects');
+                            },
+                          ),
+                          const SizedBox(height: 16),
                           Row(
                             children: [
                               Expanded(
@@ -228,6 +237,13 @@ class _TaskListPageState extends ConsumerState<TaskListPage>
                                   ),
                               ],
                             ),
+                          TextButton.icon(
+                            onPressed: () => _open(const CompletedTasksPage()),
+                            icon: const Icon(Icons.inventory_2_outlined),
+                            label: const Text(
+                              'Đã hoàn thành · Mở lại công việc',
+                            ),
+                          ),
                           TextButton.icon(
                             onPressed: () => _open(const InboxPage()),
                             icon: const Icon(Icons.inbox_outlined),

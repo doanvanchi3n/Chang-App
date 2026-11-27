@@ -30,10 +30,12 @@ ThemeData changPickerTheme(BuildContext context) => Theme.of(context).copyWith(
   ),
 );
 
-Future<DateTime?> showChangDeadline(
+Future<DateTime?> showChangDate(
   BuildContext context, {
   DateTime? initial,
   DateTime? now,
+  String title = 'Hạn hoàn thành',
+  String confirmLabel = 'Chọn ngày',
 }) async {
   final today = DateUtils.dateOnly(now ?? DateTime.now());
   var selected = initial != null && !DateUtils.dateOnly(initial).isBefore(today)
@@ -70,10 +72,10 @@ Future<DateTime?> showChangDeadline(
                         ),
                       ),
                       const SizedBox(width: 12),
-                      const Expanded(
+                      Expanded(
                         child: Text(
-                          'Hạn hoàn thành',
-                          style: TextStyle(
+                          title,
+                          style: const TextStyle(
                             color: changInk,
                             fontWeight: FontWeight.w800,
                             fontSize: 22,
@@ -124,7 +126,7 @@ Future<DateTime?> showChangDeadline(
                     key: ValueKey(selected),
                     initialDate: selected,
                     firstDate: today,
-                    lastDate: DateTime(today.year + 10, 12, 31),
+                    lastDate: DateTime(today.year + 20, 12, 31),
                     onDateChanged: (value) => setState(() => selected = value),
                   ),
                   Wrap(
@@ -153,7 +155,7 @@ Future<DateTime?> showChangDeadline(
                   ),
                   const SizedBox(height: 20),
                   FeatureButton(
-                    'Tiếp tục · Chọn giờ',
+                    confirmLabel,
                     onPressed: () => Navigator.pop(context, selected),
                   ),
                   TextButton(
@@ -167,6 +169,20 @@ Future<DateTime?> showChangDeadline(
         ),
       ),
     ),
+  );
+  return date;
+}
+
+Future<DateTime?> showChangDeadline(
+  BuildContext context, {
+  DateTime? initial,
+  DateTime? now,
+}) async {
+  final date = await showChangDate(
+    context,
+    initial: initial,
+    now: now,
+    confirmLabel: 'Tiếp tục · Chọn giờ',
   );
   if (date == null || !context.mounted) return null;
   final time = await showTimePicker(
